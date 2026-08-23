@@ -336,7 +336,7 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 .vida-comp-item .lbl{font-size:.7rem;color:var(--txt3);margin-top:.1rem}
 
 /* Apoie / Pix */
-.topo-btn.apoie-btn{background:linear-gradient(135deg,#e84393,#fd79a8);color:#fff;border-color:transparent;animation:apoie-pulse 3s ease-in-out infinite}
+.topo-btn.apoie-btn{background:linear-gradient(135deg,#e84393,#fd79a8);color:#fff;border-color:transparent;animation:apoie-pulse 2s ease-in-out infinite;font-size:1.1rem}
 @keyframes apoie-pulse{0%,100%{box-shadow:0 0 0 0 rgba(232,67,147,.3)}50%{box-shadow:0 0 0 6px rgba(232,67,147,0)}}
 .pix-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
 .pix-modal-bg.ativo{opacity:1;pointer-events:auto}
@@ -355,6 +355,19 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 .pix-coracao{display:flex;justify-content:center;gap:.15rem;margin-bottom:.6rem;font-size:1.3rem;animation:heart-beat 1.5s ease-in-out infinite}
 @keyframes heart-beat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.1)}60%{transform:scale(1)}}
 .pix-modal .pix-relative{position:relative}
+
+/* Banner Apoie */
+.apoie-banner{background:linear-gradient(135deg,#e84393 0%,#fd79a8 40%,#fab1a0 70%,#ffeaa7 100%);color:#fff;padding:.7rem 1rem;display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap;font-size:.88rem;font-weight:600;position:relative;overflow:hidden;animation:banner-shimmer 3s ease-in-out infinite}
+@keyframes banner-shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.apoie-banner{background-size:200% 200%}
+.apoie-banner-text{display:flex;align-items:center;gap:.4rem;text-shadow:0 1px 2px rgba(0,0,0,.15)}
+.apoie-banner-text .emoji-pulse{animation:emoji-bounce 1.5s ease-in-out infinite;font-size:1.1rem}
+@keyframes emoji-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.apoie-banner-btn{background:rgba(255,255,255,.25);color:#fff;border:2px solid rgba(255,255,255,.5);border-radius:20px;padding:.35rem 1rem;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;backdrop-filter:blur(4px)}
+.apoie-banner-btn:hover{background:#fff;color:#e84393;border-color:#fff;transform:scale(1.05)}
+.apoie-banner-close{position:absolute;right:.6rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.2);border:none;color:#fff;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:.7rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.apoie-banner-close:hover{background:rgba(255,255,255,.5)}
+.apoie-banner.hide{display:none}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://henriquehabitz2014-bot.github.io/Organizaj-/#app","name":"OrganizaJá","alternateName":"Organiza Já","url":"https://henriquehabitz2014-bot.github.io/Organizaj-/","description":"App gratuito e completo para organizar tarefas, hábitos, metas, finanças, leitura, exercícios e muito mais. 22 ferramentas em um só lugar, incluindo o exclusivo Painel da Vida.","applicationCategory":"Productivity","operatingSystem":"Web Browser","browserRequirements":"Requires JavaScript","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL","availability":"https://schema.org/InStock"},"featureList":"Painel da Vida, Tarefas, Lista de Compras, Pomodoro, Hábitos, Metas, Notas, Orçamento, Rastreador de Água, Planejamento de Refeições, Planejamento Semanal, Gratidão, Tracker de Humor, Lista de Leitura, Exercícios, Contagem Regressiva, Gerenciador de Senhas, Calculadora, Lembretes, Decisor, Revisão Semanal, Frases Motivacionais","author":{"@type":"Organization","name":"OrganizaJá"},"inLanguage":"pt-BR"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"OrganizaJá","item":"https://henriquehabitz2014-bot.github.io/Organizaj-/"}]},{"@type":"WebSite","@id":"https://henriquehabitz2014-bot.github.io/Organizaj-/#site","url":"https://henriquehabitz2014-bot.github.io/Organizaj-/","name":"OrganizaJá","inLanguage":"pt-BR","potentialAction":{"@type":"SearchAction","target":"https://henriquehabitz2014-bot.github.io/Organizaj-/?q={search_term_string}","query-input":"required name=search_term_string"}}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"O que é o OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"O OrganizaJá é um aplicativo gratuito de organização pessoal e produtividade que funciona direto no navegador. Tem 22 ferramentas integradas: gerenciador de tarefas, rastreador de hábitos, timer Pomodoro, controle de orçamento, lista de compras, rastreador de água, planejamento de refeições, diário de gratidão, tracker de humor, lista de leitura, registro de exercícios, contagem regressiva, gerador de senhas, calculadora, lembretes, decisor, revisão semanal e frases motivacionais. Não precisa de cadastro nem instalação."}},{"@type":"Question","name":"O OrganizaJá é gratuito?","acceptedAnswer":{"@type":"Answer","text":"Sim, o OrganizaJá é 100% gratuito. Não tem assinatura, não tem versão premium e não cobra nada. Todas as 22 ferramentas estão disponíveis sem pagar um centavo."}},{"@type":"Question","name":"Preciso instalar o OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"Não precisa instalar. O OrganizaJá funciona direto no navegador do celular, tablet ou computador. Se quiser, pode instalar como app no celular usando a opção do navegador."}},{"@type":"Question","name":"Meus dados ficam seguros no OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"Sim. Todos os dados ficam salvos no seu próprio dispositivo usando o localStorage do navegador. Nada é enviado para servidores externos. Suas informações são totalmente privadas."}},{"@type":"Question","name":"Quais ferramentas o OrganizaJá tem?","acceptedAnswer":{"@type":"Answer","text":"O OrganizaJá tem 22 ferramentas: Painel da Vida (score de organização), gerenciador de tarefas com prioridades, lista de compras por categorias, timer Pomodoro personalizável, rastreador de hábitos semanal, planejador de metas com barra de progresso, bloco de notas, controle de orçamento e finanças, rastreador de água (8 copos por dia), planejamento de refeições, agenda semanal, diário de gratidão, tracker de humor, lista de leitura, registro de exercícios, contagem regressiva para eventos, gerador de senhas seguras, calculadora, lembretes com horário, decisor de escolhas, revisão semanal e frases motivacionais."}},{"@type":"Question","name":"O OrganizaJá funciona no celular?","acceptedAnswer":{"@type":"Answer","text":"Sim, o OrganizaJá funciona em qualquer dispositivo com navegador: celular, tablet e computador. É responsivo e se adapta ao tamanho da tela automaticamente."}},{"@type":"Question","name":"Como faço backup dos meus dados no OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"O OrganizaJá tem sistema de exportação e importação de dados. Clique no botão de exportar para baixar um arquivo JSON com todos os seus dados. Para restaurar, use o botão de importar e selecione o arquivo."}},{"@type":"Question","name":"O OrganizaJá tem modo escuro?","acceptedAnswer":{"@type":"Answer","text":"Sim, o OrganizaJá tem modo escuro integrado. Clique no ícone de lua na barra superior para alternar entre modo claro e modo escuro."}}]}</script>
@@ -376,6 +389,12 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 </div>
 </header>
 
+<div class="apoie-banner" id="apoieBanner">
+<span class="apoie-banner-text"><span class="emoji-pulse">💜</span> Apoie jovens desenvolvedores brasileiros! Qualquer Pix ajuda a manter o OrganizaJá gratuito</span>
+<button class="apoie-banner-btn" onclick="abrirPix()">💝 Doar via Pix</button>
+<button class="apoie-banner-close" onclick="fecharBanner()" title="Fechar">✕</button>
+</div>
+
 <div class="busca-wrap" id="buscaWrap"><input type="text" class="busca-input" id="buscaInput" placeholder="Buscar em tudo..." oninput="buscar()"><button class="btn btn-s" onclick="toggleBusca()">✕</button></div>
 <div class="busca-resultados" id="buscaResultados"></div>
 <input type="file" id="importarArquivo" accept=".json" style="display:none" onchange="processarImportacao(event)">
@@ -385,8 +404,8 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 <div class="pix-modal">
 <button class="pix-fechar" onclick="fecharPix()">✕</button>
 <div class="pix-coracao">❤️ 💛 💚</div>
-<h3>Apoie o OrganizaJá!</h3>
-<p>O OrganizaJá é 100% gratuito e sem anúncios. Se ele te ajuda, considere fazer uma doação via Pix pra ajudar a manter o projeto vivo! 🙏</p>
+<h3>🚀 Apoie Jovens Desenvolvedores!</h3>
+<p>O OrganizaJá foi criado por um jovem desenvolvedor brasileiro. É 100% gratuito, sem anúncios e sem pegadinha. Qualquer valor via Pix ajuda a manter esse projeto vivo e incentiva mais jovens a criar tecnologia! 💜</p>
 <div class="pix-chave-box">
 <span class="pix-icon">💳</span>
 <span class="pix-email">henriquehabitz2014@gmail.com</span>
@@ -1103,6 +1122,10 @@ novaDica();novaMotivacao();novoDesafio();
 function abrirPix(){document.getElementById("pixModal").classList.add("ativo")}
 function fecharPix(){document.getElementById("pixModal").classList.remove("ativo")}
 function copiarPix(){navigator.clipboard.writeText("henriquehabitz2014@gmail.com").then(function(){notificar("Chave Pix copiada! Obrigado pelo apoio! 💖")}).catch(function(){var t=document.createElement("textarea");t.value="henriquehabitz2014@gmail.com";document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);notificar("Chave Pix copiada! Obrigado pelo apoio! 💖")})}
+
+function fecharBanner(){var b=document.getElementById("apoieBanner");b.classList.add("hide");localStorage.setItem("apoieBannerFechado","1")}
+function mostrarBannerSeNaoFechado(){if(localStorage.getItem("apoieBannerFechado")!=="1"){document.getElementById("apoieBanner").classList.remove("hide")}else{document.getElementById("apoieBanner").classList.add("hide")}}
+mostrarBannerSeNaoFechado();
 </script>
 
 <footer class="seo-footer" style="background:var(--card);border-top:1px solid var(--borda);padding:1.5rem 1rem;text-align:center;font-size:.75rem;color:var(--txt3);line-height:1.7;display:block !important"><p><strong style="color:var(--txt2)">OrganizaJA</strong> e um aplicativo gratuito de organizacao pessoal e produtividade.</p><p style="margin-top:.3rem">App de produtividade gratis | Organizacao pessoal | Lista de tarefas | Painel da Vida | Rastreador de habitos | Timer Pomodoro | Controle financeiro | Planejamento semanal</p></footer>
