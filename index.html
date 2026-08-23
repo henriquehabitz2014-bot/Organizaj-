@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
 <title>OrganizaJA - App Gratis para Organizar Toda a Sua Vida | 21 Ferramentas</title>
-<meta name="description" content="OrganizaJA: app gratuito de organizacao pessoal e produtividade com 21 ferramentas. Gerencie tarefas, habitos, metas, orcamento, agua, refeicoes e muito mais. Sem cadastro, funciona offline.">
+<meta name="description" content="OrganizaJA: app gratuito de organizacao pessoal e produtividade com 22 ferramentas. Gerencie tarefas, habitos, metas, orcamento, agua, refeicoes e muito mais. Sem cadastro, funciona offline.">
 <meta name="keywords" content="organizacao pessoal, produtividade, app gratis, tarefas, habitos, metas, pomodoro, orcamento, lista de compras, agua, refeicoes, gratidao, humor, leitura, exercicios, senhas, calculadora, lembretes, organizacao, planejamento semanal, app de organizacao brasileiro">
 <meta name="author" content="OrganizaJA">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#6c5ce7">
 <meta property="og:title" content="OrganizaJA - App Gratis para Organizar Toda a Sua Vida">
-<meta property="og:description" content="Aplicativo gratuito de organizacao pessoal com 21 ferramentas: tarefas, habitos, metas, orcamento, pomodoro e muito mais. Sem cadastro, funciona offline!">
+<meta property="og:description" content="Aplicativo gratuito de organizacao pessoal com 22 ferramentas: tarefas, habitos, metas, orcamento, pomodoro e muito mais. Sem cadastro, funciona offline!">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://henriquehabitz2014-bot.github.io/Organizaj-/">
 <meta property="og:locale" content="pt_BR">
@@ -105,6 +105,7 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 .cat-nome.cat-fin{color:#e17055}
 .cat-nome.cat-plan{color:#0984e3}
 .cat-nome.cat-util{color:#d4a017}
+.cat-nome.cat-dest{color:#e84393;background:linear-gradient(90deg,#e84393,#fd79a8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800}
 .cat-count{font-size:.65rem;font-weight:600;background:var(--card2);color:var(--txt3);padding:.1rem .5rem;border-radius:10px;border:1px solid var(--borda)}
 .cat-line{height:2px;border-radius:1px;margin-bottom:.6rem}
 .cat-line.cat-prod{background:linear-gradient(90deg,#6c5ce7,#a29bfe,transparent)}
@@ -296,12 +297,50 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 .rodape-links a:hover{color:var(--cor)}
 @media(max-width:600px){.hero h1{font-size:1.3rem}.hero p{font-size:.8rem}.stats{grid-template-columns:repeat(3,1fr);gap:.4rem}.stat:nth-child(4),.stat:nth-child(5){grid-column:span 1}.ferramentas-grid{grid-template-columns:repeat(3,1fr);gap:.4rem}.tool-emoji{font-size:1.3rem}.tool-nome{font-size:.65rem}.orc-resumo{grid-template-columns:1fr}.pomodoro-tempo{font-size:2.5rem}.refeicoes-grid{grid-template-columns:1fr}.notas-grid{grid-template-columns:1fr}.habitos-grid{grid-template-columns:1fr}.topo-logo{font-size:.95rem}}
 @media(min-width:601px) and (max-width:900px){.stats{grid-template-columns:repeat(5,1fr)}.ferramentas-grid{grid-template-columns:repeat(4,1fr)}}
+
+/* === PAINEL DA VIDA === */
+.vida-container{text-align:center;padding:1rem 0}
+.vida-score-wrap{position:relative;width:180px;height:180px;margin:1rem auto}
+.vida-score-wrap svg{width:180px;height:180px;transform:rotate(-90deg)}
+.vida-score-bg{fill:none;stroke:var(--card2);stroke-width:12}
+.vida-score-bar{fill:none;stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 1.2s ease,stroke 0.6s ease}
+.vida-score-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:2.8rem;font-weight:800;line-height:1}
+.vida-score-label{font-size:.75rem;color:var(--txt3);margin-top:.15rem}
+.vida-nivel{font-size:.9rem;font-weight:600;margin:.6rem 0;padding:.25rem .8rem;border-radius:20px;display:inline-block}
+.vida-nivel.n4{background:linear-gradient(135deg,#00b894,#55efc4);color:#fff}
+.vida-nivel.n3{background:linear-gradient(135deg,#0984e3,#74b9ff);color:#fff}
+.vida-nivel.n2{background:linear-gradient(135deg,#fdcb6e,#ffeaa7);color:#2d3436}
+.vida-nivel.n1{background:linear-gradient(135deg,#e17055,#fab1a0);color:#fff}
+.vida-nivel.n0{background:linear-gradient(135deg,#636e72,#b2bec3);color:#fff}
+.vida-cats{display:grid;gap:.65rem;margin:1.2rem 0}
+.vida-cat{background:var(--card);border-radius:var(--raio2);padding:.75rem 1rem;display:flex;align-items:center;gap:.65rem;border:1px solid var(--borda);transition:transform .2s}
+.vida-cat:hover{transform:translateX(4px)}
+.vida-cat-icon{font-size:1.3rem;flex-shrink:0}
+.vida-cat-info{flex:1;min-width:0}
+.vida-cat-nome{font-size:.82rem;font-weight:600;color:var(--txt);margin-bottom:.25rem}
+.vida-cat-barra{height:8px;background:var(--card2);border-radius:4px;overflow:hidden}
+.vida-cat-fill{height:100%;border-radius:4px;transition:width 1s ease,background .5s ease}
+.vida-cat-score{font-size:.78rem;font-weight:700;flex-shrink:0;width:2.2rem;text-align:right}
+.vida-dica{background:var(--card);border-radius:var(--raio2);padding:.85rem 1rem;margin:.7rem 0;border:1px solid var(--borda);text-align:left;font-size:.82rem;color:var(--txt2);line-height:1.45;display:flex;align-items:flex-start;gap:.5rem}
+.vida-dica-icon{font-size:1.1rem;flex-shrink:0}
+.vida-streak{display:flex;align-items:center;gap:.4rem;justify-content:center;margin:.8rem 0;font-size:.85rem;color:var(--txt3)}
+.vida-streak strong{color:var(--cor);font-size:1.1rem}
+.vida-hist{display:flex;gap:3px;justify-content:center;margin:.8rem 0;flex-wrap:wrap}
+.vida-hist-dot{width:10px;height:10px;border-radius:3px;transition:background .3s}
+.vida-empty{text-align:center;padding:2rem 1rem;color:var(--txt3);font-size:.88rem}
+.vida-refresh{font-size:.75rem;color:var(--txt3);margin-top:.5rem;cursor:pointer;text-align:center}
+.vida-refresh:hover{color:var(--cor)}
+.vida-comp{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0}
+.vida-comp-item{background:var(--card);border-radius:var(--raio2);padding:.6rem .8rem;border:1px solid var(--borda);text-align:center}
+.vida-comp-item .num{font-size:1.3rem;font-weight:700;color:var(--cor)}
+.vida-comp-item .lbl{font-size:.7rem;color:var(--txt3);margin-top:.1rem}
 </style>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://henriquehabitz2014-bot.github.io/Organizaj-/#app","name":"OrganizaJá","alternateName":"Organiza Já","url":"https://henriquehabitz2014-bot.github.io/Organizaj-/","description":"App gratuito e completo para organizar tarefas, hábitos, metas, finanças, leitura, exercícios e muito mais. 21 ferramentas em um só lugar.","applicationCategory":"Productivity","operatingSystem":"Web Browser","browserRequirements":"Requires JavaScript","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL","availability":"https://schema.org/InStock"},"featureList":"Tarefas, Lista de Compras, Pomodoro, Hábitos, Metas, Notas, Orçamento, Rastreador de Água, Planejamento de Refeições, Planejamento Semanal, Gratidão, Tracker de Humor, Lista de Leitura, Exercícios, Contagem Regressiva, Gerenciador de Senhas, Calculadora, Lembretes, Decisor, Revisão Semanal, Frases Motivacionais","author":{"@type":"Organization","name":"OrganizaJá"},"inLanguage":"pt-BR"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"OrganizaJá","item":"https://henriquehabitz2014-bot.github.io/Organizaj-/"}]},{"@type":"WebSite","@id":"https://henriquehabitz2014-bot.github.io/Organizaj-/#site","url":"https://henriquehabitz2014-bot.github.io/Organizaj-/","name":"OrganizaJá","inLanguage":"pt-BR","potentialAction":{"@type":"SearchAction","target":"https://henriquehabitz2014-bot.github.io/Organizaj-/?q={search_term_string}","query-input":"required name=search_term_string"}}]}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"O que é o OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"O OrganizaJá é um aplicativo gratuito de organização pessoal e produtividade que funciona direto no navegador. Tem 21 ferramentas integradas: gerenciador de tarefas, rastreador de hábitos, timer Pomodoro, controle de orçamento, lista de compras, rastreador de água, planejamento de refeições, diário de gratidão, tracker de humor, lista de leitura, registro de exercícios, contagem regressiva, gerador de senhas, calculadora, lembretes, decisor, revisão semanal e frases motivacionais. Não precisa de cadastro nem instalação."}},{"@type":"Question","name":"O OrganizaJá é gratuito?","acceptedAnswer":{"@type":"Answer","text":"Sim, o OrganizaJá é 100% gratuito. Não tem assinatura, não tem versão premium e não cobra nada. Todas as 21 ferramentas estão disponíveis sem pagar um centavo."}},{"@type":"Question","name":"Preciso instalar o OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"Não precisa instalar. O OrganizaJá funciona direto no navegador do celular, tablet ou computador. Se quiser, pode instalar como app no celular usando a opção do navegador."}},{"@type":"Question","name":"Meus dados ficam seguros no OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"Sim. Todos os dados ficam salvos no seu próprio dispositivo usando o localStorage do navegador. Nada é enviado para servidores externos. Suas informações são totalmente privadas."}},{"@type":"Question","name":"Quais ferramentas o OrganizaJá tem?","acceptedAnswer":{"@type":"Answer","text":"O OrganizaJá tem 21 ferramentas: gerenciador de tarefas com prioridades, lista de compras por categorias, timer Pomodoro personalizável, rastreador de hábitos semanal, planejador de metas com barra de progresso, bloco de notas, controle de orçamento e finanças, rastreador de água (8 copos por dia), planejamento de refeições, agenda semanal, diário de gratidão, tracker de humor, lista de leitura, registro de exercícios, contagem regressiva para eventos, gerador de senhas seguras, calculadora, lembretes com horário, decisor de escolhas, revisão semanal e frases motivacionais."}},{"@type":"Question","name":"O OrganizaJá funciona no celular?","acceptedAnswer":{"@type":"Answer","text":"Sim, o OrganizaJá funciona em qualquer dispositivo com navegador: celular, tablet e computador. É responsivo e se adapta ao tamanho da tela automaticamente."}},{"@type":"Question","name":"Como faço backup dos meus dados no OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"O OrganizaJá tem sistema de exportação e importação de dados. Clique no botão de exportar para baixar um arquivo JSON com todos os seus dados. Para restaurar, use o botão de importar e selecione o arquivo."}},{"@type":"Question","name":"O OrganizaJá tem modo escuro?","acceptedAnswer":{"@type":"Answer","text":"Sim, o OrganizaJá tem modo escuro integrado. Clique no ícone de lua na barra superior para alternar entre modo claro e modo escuro."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://henriquehabitz2014-bot.github.io/Organizaj-/#app","name":"OrganizaJá","alternateName":"Organiza Já","url":"https://henriquehabitz2014-bot.github.io/Organizaj-/","description":"App gratuito e completo para organizar tarefas, hábitos, metas, finanças, leitura, exercícios e muito mais. 22 ferramentas em um só lugar, incluindo o exclusivo Painel da Vida.","applicationCategory":"Productivity","operatingSystem":"Web Browser","browserRequirements":"Requires JavaScript","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL","availability":"https://schema.org/InStock"},"featureList":"Painel da Vida, Tarefas, Lista de Compras, Pomodoro, Hábitos, Metas, Notas, Orçamento, Rastreador de Água, Planejamento de Refeições, Planejamento Semanal, Gratidão, Tracker de Humor, Lista de Leitura, Exercícios, Contagem Regressiva, Gerenciador de Senhas, Calculadora, Lembretes, Decisor, Revisão Semanal, Frases Motivacionais","author":{"@type":"Organization","name":"OrganizaJá"},"inLanguage":"pt-BR"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"OrganizaJá","item":"https://henriquehabitz2014-bot.github.io/Organizaj-/"}]},{"@type":"WebSite","@id":"https://henriquehabitz2014-bot.github.io/Organizaj-/#site","url":"https://henriquehabitz2014-bot.github.io/Organizaj-/","name":"OrganizaJá","inLanguage":"pt-BR","potentialAction":{"@type":"SearchAction","target":"https://henriquehabitz2014-bot.github.io/Organizaj-/?q={search_term_string}","query-input":"required name=search_term_string"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"O que é o OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"O OrganizaJá é um aplicativo gratuito de organização pessoal e produtividade que funciona direto no navegador. Tem 22 ferramentas integradas: gerenciador de tarefas, rastreador de hábitos, timer Pomodoro, controle de orçamento, lista de compras, rastreador de água, planejamento de refeições, diário de gratidão, tracker de humor, lista de leitura, registro de exercícios, contagem regressiva, gerador de senhas, calculadora, lembretes, decisor, revisão semanal e frases motivacionais. Não precisa de cadastro nem instalação."}},{"@type":"Question","name":"O OrganizaJá é gratuito?","acceptedAnswer":{"@type":"Answer","text":"Sim, o OrganizaJá é 100% gratuito. Não tem assinatura, não tem versão premium e não cobra nada. Todas as 22 ferramentas estão disponíveis sem pagar um centavo."}},{"@type":"Question","name":"Preciso instalar o OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"Não precisa instalar. O OrganizaJá funciona direto no navegador do celular, tablet ou computador. Se quiser, pode instalar como app no celular usando a opção do navegador."}},{"@type":"Question","name":"Meus dados ficam seguros no OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"Sim. Todos os dados ficam salvos no seu próprio dispositivo usando o localStorage do navegador. Nada é enviado para servidores externos. Suas informações são totalmente privadas."}},{"@type":"Question","name":"Quais ferramentas o OrganizaJá tem?","acceptedAnswer":{"@type":"Answer","text":"O OrganizaJá tem 22 ferramentas: Painel da Vida (score de organização), gerenciador de tarefas com prioridades, lista de compras por categorias, timer Pomodoro personalizável, rastreador de hábitos semanal, planejador de metas com barra de progresso, bloco de notas, controle de orçamento e finanças, rastreador de água (8 copos por dia), planejamento de refeições, agenda semanal, diário de gratidão, tracker de humor, lista de leitura, registro de exercícios, contagem regressiva para eventos, gerador de senhas seguras, calculadora, lembretes com horário, decisor de escolhas, revisão semanal e frases motivacionais."}},{"@type":"Question","name":"O OrganizaJá funciona no celular?","acceptedAnswer":{"@type":"Answer","text":"Sim, o OrganizaJá funciona em qualquer dispositivo com navegador: celular, tablet e computador. É responsivo e se adapta ao tamanho da tela automaticamente."}},{"@type":"Question","name":"Como faço backup dos meus dados no OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"O OrganizaJá tem sistema de exportação e importação de dados. Clique no botão de exportar para baixar um arquivo JSON com todos os seus dados. Para restaurar, use o botão de importar e selecione o arquivo."}},{"@type":"Question","name":"O OrganizaJá tem modo escuro?","acceptedAnswer":{"@type":"Answer","text":"Sim, o OrganizaJá tem modo escuro integrado. Clique no ícone de lua na barra superior para alternar entre modo claro e modo escuro."}}]}</script>
 </head>
 <body>
-<noscript><div style="padding:2rem;font-family:sans-serif;max-width:800px;margin:auto"><h1>OrganizaJá – App Grátis de Organização Pessoal</h1><p>O OrganizaJá é um aplicativo gratuito de organização pessoal e produtividade com 21 ferramentas integradas que funciona direto no navegador, sem cadastro e sem instalação.</p><h2>Ferramentas disponíveis</h2><ul><li>Gerenciador de tarefas com prioridades (alta, média e baixa)</li><li>Lista de compras organizada por categorias (alimentos, bebidas, limpeza, higiene e mais)</li><li>Timer Pomodoro personalizável para foco e produtividade</li><li>Rastreador de hábitos diários com visualização semanal</li><li>Planejador de metas com barra de progresso</li><li>Bloco de notas rápido para anotações</li><li>Controle de orçamento familiar: receitas, despesas e saldo</li><li>Rastreador de água: marque os copos que você bebeu</li><li>Planejamento de refeições da semana</li><li>Agenda e planejamento semanal</li><li>Diário de gratidão diário</li><li>Tracker de humor e bem-estar emocional</li><li>Lista de leitura e acompanhamento de livros</li><li>Registro de exercícios físicos (cardio, força, flexibilidade)</li><li>Contagem regressiva para eventos importantes</li><li>Gerador de senhas seguras e aleatórias</li><li>Calculadora rápida</li><li>Sistema de lembretes com horário</li><li>Decisor de escolhas para tomar decisões</li><li>Revisão semanal de produtividade</li><li>Frases motivacionais diárias</li></ul><h2>Por que usar o OrganizaJá?</h2><p>Porque é gratuito, não precisa de cadastro, funciona no celular e no computador, seus dados ficam no seu dispositivo e tem tudo que você precisa para organizar sua vida em um só lugar.</p><p>Acesse: <a href="https://henriquehabitz2014-bot.github.io/Organizaj-/">OrganizaJá</a></p></div></noscript>
+<noscript><div style="padding:2rem;font-family:sans-serif;max-width:800px;margin:auto"><h1>OrganizaJá – App Grátis de Organização Pessoal</h1><p>O OrganizaJá é um aplicativo gratuito de organização pessoal e produtividade com 22 ferramentas integradas que funciona direto no navegador, sem cadastro e sem instalação.</p><h2>Ferramentas disponíveis</h2><ul><li>Painel da Vida: score de organização pessoal 0-100</li>
+<li>Gerenciador de tarefas com prioridades (alta, média e baixa)</li><li>Lista de compras organizada por categorias (alimentos, bebidas, limpeza, higiene e mais)</li><li>Timer Pomodoro personalizável para foco e produtividade</li><li>Rastreador de hábitos diários com visualização semanal</li><li>Planejador de metas com barra de progresso</li><li>Bloco de notas rápido para anotações</li><li>Controle de orçamento familiar: receitas, despesas e saldo</li><li>Rastreador de água: marque os copos que você bebeu</li><li>Planejamento de refeições da semana</li><li>Agenda e planejamento semanal</li><li>Diário de gratidão diário</li><li>Tracker de humor e bem-estar emocional</li><li>Lista de leitura e acompanhamento de livros</li><li>Registro de exercícios físicos (cardio, força, flexibilidade)</li><li>Contagem regressiva para eventos importantes</li><li>Gerador de senhas seguras e aleatórias</li><li>Calculadora rápida</li><li>Sistema de lembretes com horário</li><li>Decisor de escolhas para tomar decisões</li><li>Revisão semanal de produtividade</li><li>Frases motivacionais diárias</li></ul><h2>Por que usar o OrganizaJá?</h2><p>Porque é gratuito, não precisa de cadastro, funciona no celular e no computador, seus dados ficam no seu dispositivo e tem tudo que você precisa para organizar sua vida em um só lugar.</p><p>Acesse: <a href="https://henriquehabitz2014-bot.github.io/Organizaj-/">OrganizaJá</a></p></div></noscript>
 
 <div class="instalar-banner" id="instalarBanner"><span>📲 Instale o OrganizaJA no dispositivo!</span><button class="instalar-btn" id="instalarBtn">Instalar</button><button class="icone-btn" onclick="fecharInstalar()" style="color:#fff;margin-left:.3rem;">✕</button></div>
 
@@ -326,7 +365,7 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 <div class="hero-shape"></div><div class="hero-shape"></div><div class="hero-shape"></div><div class="hero-shape"></div><div class="hero-shape"></div><div class="hero-shape"></div><div class="hero-shape"></div>
 </div>
 <h1>OrganizaJA - App Gratis para Organizar Toda a Sua Vida</h1>
-<p>Aplicativo gratuito de organizacao pessoal e produtividade com 21 ferramentas em um so lugar: gerenciador de tarefas, rastreador de habitos, timer Pomodoro, controle de orcamento e financas, lista de compras, rastreador de agua, planejador de refeicoes, diario de gratidao, tracker de humor, lista de leitura, registro de exercicios e muito mais. Funciona direto no navegador, sem cadastro e sem instalar nada!</p>
+<p>Aplicativo gratuito de organizacao pessoal e produtividade com 22 ferramentas em um so lugar: gerenciador de tarefas, rastreador de habitos, timer Pomodoro, controle de orcamento e financas, lista de compras, rastreador de agua, planejador de refeicoes, diario de gratidao, tracker de humor, lista de leitura, registro de exercicios e muito mais. Funciona direto no navegador, sem cadastro e sem instalar nada!</p>
 <div class="hero-badges">
 <span class="hero-badge">✨ 21 ferramentas gratis</span>
 <span class="hero-badge">📲 Instale no celular</span>
@@ -347,6 +386,10 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 <div class="ferramentas-section" id="ferramentasGrid">
 <h2>Escolha uma Ferramenta</h2>
 
+<div class="categoria-bloco" style="margin-bottom:1.5rem">
+<div class="cat-header" style="background:linear-gradient(90deg,rgba(232,67,147,.1),rgba(253,121,168,.08));border-radius:10px;padding:.5rem .6rem"><span class="cat-emoji">✨</span><span class="cat-nome cat-dest">Destaque</span><span class="cat-count">1</span></div>
+<div class="cat-tools"><button class="aba tool-card cat-dest" data-aba="vida" onclick="trocarAba('vida',this)" style="animation-delay:.05s;background:linear-gradient(135deg,rgba(232,67,147,.08),rgba(253,121,168,.06));border-color:rgba(232,67,147,.2)"><span class="tool-emoji">🌟</span><span class="tool-nome">Painel da Vida</span></button></div>
+</div>
 <div class="categoria-bloco">
 <div class="cat-header"><span class="cat-emoji">🚀</span><span class="cat-nome cat-prod">Produtividade</span><span class="cat-count">6</span></div>
 <div class="cat-line cat-prod"></div>
@@ -405,6 +448,25 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 </div>
 
 <div class="conteudo">
+<div class="painel" id="p-vida">
+<div class="secao"><h2 class="secao-titulo">🌟 Painel da Vida</h2>
+<p class="secao-desc" style="text-align:center;color:var(--txt3);font-size:.82rem;margin-bottom:.5rem">Veja como está a organização da sua vida em um só lugar</p>
+<div class="vida-container">
+<div class="vida-score-wrap" id="vidaScoreWrap">
+<svg viewBox="0 0 200 200"><circle class="vida-score-bg" cx="100" cy="100" r="85"/><circle class="vida-score-bar" id="vidaScoreBar" cx="100" cy="100" r="85" stroke-dasharray="534" stroke-dashoffset="534" stroke="var(--cor)"/></svg>
+<div class="vida-score-num" id="vidaScoreNum">0</div>
+<div class="vida-score-label">de 100</div>
+</div>
+<div class="vida-nivel n0" id="vidaNivel">Começando</div>
+<div class="vida-comp" id="vidaComp"></div>
+<div class="vida-cats" id="vidaCats"></div>
+<div id="vidaDicas"></div>
+<div class="vida-streak" id="vidaStreak"></div>
+<div class="vida-hist" id="vidaHist"></div>
+<div class="vida-refresh" onclick="renderVida()">🔄 Recalcular</div>
+</div>
+</div>
+</div>
 <div class="painel ativo" id="p-tarefas">
 <div class="secao"><h2 class="secao-titulo">✅ Tarefas</h2>
 <div class="linha"><input class="campo" id="tarefaInput" placeholder="Nova tarefa..."><select class="select" id="tarefaPrio"><option value="media">Média</option><option value="alta">Alta</option><option value="baixa">Baixa</option></select><button class="btn btn-p" onclick="addTarefa()">Adicionar</button></div>
@@ -727,7 +789,199 @@ function favoritarFrase(){if(!estado.fraseAtual)return notificar("Veja uma frase
 function delFraseFav(idx){estado.frasesFav.splice(idx,1);salvar();renderFrasesFav()}
 function renderFrasesFav(){var lista=document.getElementById("frasesFavLista");lista.innerHTML=estado.frasesFav.map(function(f,i){return'<li><span class="texto">\"+f.t+\" - '+f.a+'</span><button class="icone-btn" onclick="delFraseFav('+i+')">🗑️</button></li>'}).join("")}
 function atualizarStats(){var total=estado.tarefas.length;var feitas=estado.tarefas.filter(function(t){return t.feito}).length;var hoje=new Date();var hojeIdx=hoje.getDay()===0?6:hoje.getDay()-1;var s=chaveSemana();var habHoje=estado.habitos.filter(function(h){return h.semanas[s]&&h.semanas[s][hojeIdx]}).length;var pomoData=hoje.toISOString().slice(0,10);if(estado.pomodorosData!==pomoData){estado.pomodorosHoje=0;estado.pomodorosData=pomoData;salvar()}document.getElementById("statTarefas").textContent=total;document.getElementById("statFeitas").textContent=feitas;document.getElementById("statHabitos").textContent=habHoje;document.getElementById("statPomo").textContent=estado.pomodorosHoje;document.getElementById("statAgua").textContent=estado.aguaHoje}
-function renderTudo(){renderTarefas();renderCompras();renderPomo();renderHabitos();renderMetas();renderNotas();renderOrcamento();renderAgua();renderRefeicoes();renderPlanejamento();renderGratidao();renderHumor();renderLeitura();renderExercicios();renderRegressiva();renderLembretes();renderDecisor();renderRevisao();renderFrasesFav();atualizarStats();if(estado.fraseAtual){document.getElementById("fraseBox").textContent="\""+estado.fraseAtual.t+"\"";document.getElementById("fraseAutor").textContent="- "+estado.fraseAtual.a}}
+
+/* === PAINEL DA VIDA === */
+function calcularVida(){
+  var hoje=new Date();
+  var hojeIdx=hoje.getDay()===0?6:hoje.getDay()-1;
+  var s=chaveSemana();
+  var pomoData=hoje.toISOString().slice(0,10);
+  var scores={};
+
+  // PRODUTIVIDADE (0-100)
+  var tTotal=estado.tarefas.length;
+  var tFeitas=estado.tarefas.filter(function(t){return t.feito}).length;
+  var tPrio=estado.tarefas.filter(function(t){return t.feito&&t.prio==="alta"}).length;
+  var tScore=tTotal>0?Math.round((tFeitas/tTotal)*60+(tPrio>0?15:0)):15;
+  var pomoScore=Math.min(30,estado.pomodorosHoje*8);
+  var metaScore=estado.metas.length>0?Math.round(estado.metas.reduce(function(s,m){return s+m.progresso},0)/estado.metas.length*0.25):5;
+  scores.produtividade=Math.min(100,tScore+pomoScore+metaScore);
+
+  // SAUDE (0-100)
+  var aguaScore=Math.round((estado.aguaHoje/8)*25);
+  var hSemana=estado.habitos.length>0?estado.habitos.filter(function(h){return h.semanas[s]&&h.semanas[s][hojeIdx]}).length:0;
+  var habScore=estado.habitos.length>0?Math.round((hSemana/estado.habitos.length)*30):5;
+  var exSemana=estado.exercicios.filter(function(e){var partes=e.data.split("/");var d=partes.length===3?new Date(partes[2]+"-"+partes[1]+"-"+partes[0]):new Date(e.data);if(isNaN(d))return false;var diff=Math.floor((hoje-d)/86400000);return diff>=0&&diff<7}).length;
+  var exScore=Math.min(25,exSemana*5);
+  var humData=hoje.toISOString().slice(0,10);
+  var humHoje=estado.humor.find(function(r){return r.data===humData});
+  var humScore=humHoje?((humHoje.humor.indexOf("Feliz")>=0||humHoje.humor.indexOf("Agradecido")>=0)?20:humHoje.humor.indexOf("Neutro")>=0?12:5):0;
+  scores.saude=Math.min(100,aguaScore+habScore+exScore+humScore);
+
+  // FINANCAS (0-100)
+  var rec=0,des=0;
+  estado.transacoes.forEach(function(t){if(t.tipo==="receita")rec+=t.valor;else des+=t.valor});
+  var saldo=rec-des;
+  var finScore;
+  if(estado.transacoes.length===0){finScore=15}
+  else if(saldo>=0){finScore=Math.min(80,40+Math.round((saldo/(rec||1))*40))}
+  else{finScore=Math.max(5,30-Math.round(Math.abs(saldo)/(rec||1)*30))}
+  var planScore=Object.values(estado.planejamento||{}).filter(function(v){return v&&v.trim().length>0}).length>0?20:0;
+  scores.financas=Math.min(100,finScore+planScore);
+
+  // PLANEJAMENTO (0-100)
+  var mProg=estado.metas.length>0?Math.round(estado.metas.reduce(function(s,m){return s+m.progresso},0)/estado.metas.length):0;
+  var planDias=Object.values(estado.planejamento||{}).filter(function(v){return v&&v.trim().length>0}).length;
+  var planScore2=Math.round((planDias/7)*35);
+  var refDias=0;
+  if(estado.refeicoes){Object.values(estado.refeicoes).forEach(function(v){if(v&&v.trim().length>0)refDias++})}
+  var refScore=Math.min(25,refDias*2);
+  var compFeitas=estado.compras.filter(function(c){return c.comprado}).length;
+  var compTotal=estado.compras.length;
+  var compScore=compTotal>0?Math.round((compFeitas/compTotal)*20):5;
+  scores.planejamento=Math.min(100,mProg*0.35+planScore2+refScore+compScore);
+
+  // BEM-ESTAR (0-100)
+  var gratHoje=estado.gratidao.length>0?Math.min(25,estado.gratidao.length*3):0;
+  var humScore2=humHoje?15:0;
+  var gratSemana=estado.gratidao.filter(function(g){var diff=Math.floor((hoje-new Date(g.data||g.id))/(86400000));return diff>=0&&diff<7}).length;
+  var gratScore2=Math.min(20,gratSemana*5);
+  var livLendo=estado.leitura.filter(function(l){return l.status==="lendo"}).length;
+  var livScore=Math.min(20,livLendo*8);
+  var revSemana=estado.revisao&&(estado.revisao.vitorias||estado.revisao.desafios||estado.revisao.aprendidos||estado.revisao.proxSemana)?20:0;
+  scores.bemestar=Math.min(100,gratScore2+humScore2+gratHoje+livScore+revSemana);
+
+  // OVERALL (weighted)
+  var overall=Math.round(scores.produtividade*0.22+scores.saude*0.25+scores.financas*0.18+scores.planejamento*0.18+scores.bemestar*0.17);
+
+  // Nivel
+  var nivel,nivelClass,nivelEmoji;
+  if(overall>=80){nivel="Brilhante";nivelClass="n4";nivelEmoji="🌟"}
+  else if(overall>=60){nivel="No caminho certo";nivelClass="n3";nivelEmoji="🚀"}
+  else if(overall>=40){nivel="Melhorando";nivelClass="n2";nivelEmoji="💪"}
+  else if(overall>=20){nivel="Começando";nivelClass="n1";nivelEmoji="🌱"}
+  else{nivel="Zona de oportunidade";nivelClass="n0";nivelEmoji="💡"}
+
+  // Dicas contextuais
+  var dicas=[];
+  if(scores.produtividade<40)dicas.push({icon:"☑️",texto:"Conclua tarefas pendentes e use o Pomodoro para aumentar seu foco."});
+  if(scores.saude<40)dicas.push({icon:"💧",texto:"Beba mais água, marque seus hábitos e registre como está se sentindo."});
+  if(scores.financas<40)dicas.push({icon:"💰",texto:"Registre suas receitas e despesas no orçamento para ter controle financeiro."});
+  if(scores.planejamento<40)dicas.push({icon:"📅",texto:"Planeje sua semana e defina metas com prazos para organizar melhor."});
+  if(scores.bemestar<40)dicas.push({icon:"🙏",texto:"Escreva gratidões diárias e revise sua semana para aumentar bem-estar."});
+  if(dicas.length===0)dicas.push({icon:"🎉",texto:"Você está indo muito bem! Continue mantendo suas rotinas."});
+
+  // Streak: dias seguidos com pelo menos 1 acao
+  var streak=0;
+  var vidaHist=JSON.parse(localStorage.getItem("vidaHist")||"[]");
+  for(var i=vidaHist.length-1;i>=0;i--){
+    if(vidaHist[i].score>5)streak++;else break
+  }
+
+  // Competencias (mini stats)
+  var tFeitasCount=estado.tarefas.filter(function(t){return t.feito}).length;
+  var habHojeCount=estado.habitos.filter(function(h){return h.semanas[s]&&h.semanas[s][hojeIdx]}).length;
+  var gratCount=estado.gratidao.length;
+
+  return{overall:overall,nivel:nivel,nivelClass:nivelClass,nivelEmoji:nivelEmoji,scores:scores,dicas:dicas,streak:streak,comp:{tarefasFeitas:tFeitasCount,habitosHoje:habHojeCount,gratidao:gratCount},hist:vidaHist}
+}
+
+function salvarVidaHist(score){
+  var hoje=new Date().toISOString().slice(0,10);
+  var vidaHist=JSON.parse(localStorage.getItem("vidaHist")||"[]");
+  if(vidaHist.length>0&&vidaHist[vidaHist.length-1].data===hoje){vidaHist[vidaHist.length-1].score=score}
+  else{vidaHist.push({data:hoje,score:score})}
+  if(vidaHist.length>60)vidaHist=vidaHist.slice(-60);
+  localStorage.setItem("vidaHist",JSON.stringify(vidaHist));
+  return vidaHist
+}
+
+function renderVida(){
+  var v=calcularVida();
+  salvarVidaHist(v.overall);
+  var circ=2*Math.PI*85;
+  var offset=circ-(v.overall/100)*circ;
+  var bar=document.getElementById("vidaScoreBar");
+  var cor;
+  if(v.overall>=80)cor="#00b894";
+  else if(v.overall>=60)cor="#0984e3";
+  else if(v.overall>=40)cor="#fdcb6e";
+  else if(v.overall>=20)cor="#e17055";
+  else cor="#636e72";
+  bar.setAttribute("stroke",cor);
+  bar.style.strokeDashoffset=offset;
+
+  // Animate number
+  var numEl=document.getElementById("vidaScoreNum");
+  var current=parseInt(numEl.textContent)||0;
+  var diff=v.overall-current;
+  var steps=30;
+  var step=0;
+  var interval=setInterval(function(){
+    step++;
+    var val=Math.round(current+(diff*(step/steps)));
+    numEl.textContent=val;
+    if(step>=steps){clearInterval(interval);numEl.textContent=v.overall}
+  },30);
+
+  // Nivel
+  var nEl=document.getElementById("vidaNivel");
+  nEl.textContent=v.nivelEmoji+" "+v.nivel;
+  nEl.className="vida-nivel "+v.nivelClass;
+
+  // Comp mini stats
+  var compEl=document.getElementById("vidaComp");
+  compEl.innerHTML='<div class="vida-comp-item"><div class="num">'+v.comp.tarefasFeitas+'</div><div class="lbl">Tarefas feitas</div></div><div class="vida-comp-item"><div class="num">'+v.comp.habitosHoje+'</div><div class="lbl">Hábitos hoje</div></div><div class="vida-comp-item"><div class="num">'+v.comp.gratidao+'</div><div class="lbl">Gratidões</div></div><div class="vida-comp-item"><div class="num">'+estado.pomodorosHoje+'</div><div class="lbl">Pomodoros</div></div>';
+
+  // Categories
+  var cats=[
+    {key:"produtividade",icon:"🚀",nome:"Produtividade"},
+    {key:"saude",icon:"💚",nome:"Saúde e Hábitos"},
+    {key:"financas",icon:"💰",nome:"Finanças"},
+    {key:"planejamento",icon:"📅",nome:"Planejamento"},
+    {key:"bemestar",icon:"🙏",nome:"Bem-estar"}
+  ];
+  var catsEl=document.getElementById("vidaCats");
+  catsEl.innerHTML=cats.map(function(c){
+    var sc=v.scores[c.key];
+    var fillCor;
+    if(sc>=80)fillCor="#00b894";
+    else if(sc>=60)fillCor="#0984e3";
+    else if(sc>=40)fillCor="#fdcb6e";
+    else if(sc>=20)fillCor="#e17055";
+    else fillCor="#636e72";
+    return'<div class="vida-cat"><span class="vida-cat-icon">'+c.icon+'</span><div class="vida-cat-info"><div class="vida-cat-nome">'+c.nome+'</div><div class="vida-cat-barra"><div class="vida-cat-fill" style="width:0%;background:'+fillCor+'" data-w="'+sc+'%"></div></div></div><span class="vida-cat-score" style="color:'+fillCor+'">'+sc+'</span></div>'
+  }).join("");
+
+  // Animate bars after render
+  setTimeout(function(){document.querySelectorAll(".vida-cat-fill").forEach(function(el){el.style.width=el.getAttribute("data-w")})},100);
+
+  // Dicas
+  var dicasEl=document.getElementById("vidaDicas");
+  dicasEl.innerHTML=v.dicas.map(function(d){return'<div class="vida-dica"><span class="vida-dica-icon">'+d.icon+'</span><span>'+d.texto+'</span></div>'}).join("");
+
+  // Streak
+  var streakEl=document.getElementById("vidaStreak");
+  streakEl.innerHTML=v.streak>0?'🔥 Sequência de <strong>'+v.streak+'</strong> dia'+(v.streak>1?"s":"")+" usando o app":'💡 Use o app todos os dias para criar uma sequência!';
+
+  // History dots (last 30 days)
+  var histEl=document.getElementById("vidaHist");
+  var hist=v.hist.slice(-30);
+  if(hist.length>0){
+    histEl.innerHTML=hist.map(function(h){
+      var cor;
+      if(h.score>=80)cor="#00b894";
+      else if(h.score>=60)cor="#0984e3";
+      else if(h.score>=40)cor="#fdcb6e";
+      else if(h.score>=20)cor="#e17055";
+      else cor="#636e72";
+      return'<div class="vida-hist-dot" style="background:'+cor+'" title="'+h.data+': '+h.score+'"></div>'
+    }).join("")
+  }else{
+    histEl.innerHTML=''
+  }
+}
+function renderTudo(){renderTarefas();renderCompras();renderPomo();renderHabitos();renderMetas();renderNotas();renderOrcamento();renderAgua();renderRefeicoes();renderPlanejamento();renderGratidao();renderHumor();renderLeitura();renderExercicios();renderRegressiva();renderLembretes();renderDecisor();renderRevisao();renderFrasesFav();renderVida();atualizarStats();if(estado.fraseAtual){document.getElementById("fraseBox").textContent="\""+estado.fraseAtual.t+"\"";document.getElementById("fraseAutor").textContent="- "+estado.fraseAtual.a}}
 carregar();aplicarTema();renderTudo();
 if(estado.abaAtual&&estado.abaAtual!=="tarefas"){var abas=document.querySelectorAll(".aba");abas.forEach(function(b){b.classList.remove("ativa")});var paineis=document.querySelectorAll(".painel");paineis.forEach(function(p){p.classList.remove("ativo")});abas.forEach(function(b){if(b.textContent.toLowerCase().indexOf(estado.abaAtual)>=0||b.getAttribute("onclick")&&b.getAttribute("onclick").indexOf(estado.abaAtual)>=0){b.classList.add("ativa")}});var p=document.getElementById("p-"+estado.abaAtual);if(p)p.classList.add("ativo")}
 setInterval(function(){renderRegressiva()},60000);
@@ -812,7 +1066,7 @@ function novoDesafio(){document.getElementById("desafioTexto").textContent=desaf
 novaDica();novaMotivacao();novoDesafio();
 </script>
 
-<footer class="seo-footer" style="background:var(--card);border-top:1px solid var(--borda);padding:1.5rem 1rem;text-align:center;font-size:.75rem;color:var(--txt3);line-height:1.7;display:block !important"><p><strong style="color:var(--txt2)">OrganizaJA</strong> e um aplicativo gratuito de organizacao pessoal e produtividade.</p><p style="margin-top:.3rem">App de produtividade gratis | Organizacao pessoal | Lista de tarefas | Rastreador de habitos | Timer Pomodoro | Controle financeiro | Planejamento semanal</p></footer>
+<footer class="seo-footer" style="background:var(--card);border-top:1px solid var(--borda);padding:1.5rem 1rem;text-align:center;font-size:.75rem;color:var(--txt3);line-height:1.7;display:block !important"><p><strong style="color:var(--txt2)">OrganizaJA</strong> e um aplicativo gratuito de organizacao pessoal e produtividade.</p><p style="margin-top:.3rem">App de produtividade gratis | Organizacao pessoal | Lista de tarefas | Painel da Vida | Rastreador de habitos | Timer Pomodoro | Controle financeiro | Planejamento semanal</p></footer>
 <section style="display:none" aria-hidden="true"><h2>Ferramentas de organizacao pessoal gratuitas</h2><p>O OrganizaJA oferece 21 ferramentas gratuitas para organizar toda a sua vida.</p></section>
 </main></body>
 </html>
