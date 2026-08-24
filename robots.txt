@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://henriquehabitz2014-bot.github.io/Organizaj-/sitemap.xml
