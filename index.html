@@ -180,7 +180,7 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 .meta-nome{font-weight:600;font-size:.9rem}
 .meta-barra{height:8px;background:var(--borda);border-radius:4px;margin:.5rem 0;overflow:hidden}
 .meta-progresso{height:100%;background:linear-gradient(90deg,var(--cor),var(--cor2));border-radius:4px;transition:width .5s;box-shadow:0 0 8px rgba(108,92,231,.2)}
-.meta-info{display:flex;justify-content:space-between;font-size:.75rem;color:var(--txt3)}
+.meta-info{display:flex;justify-content:space-between;font-size:.9rem;color:var(--txt2)}
 .notas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem}
 .nota-card{background:var(--card2);border-radius:var(--raio);padding:.8rem;border:1px solid var(--borda);position:relative;transition:all .2s}
 .nota-card:hover{box-shadow:var(--sombra1);transform:translateY(-1px)}
@@ -426,13 +426,17 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 <h1>OrganizaJA - App Gratis para Organizar Toda a Sua Vida</h1>
 <p>Aplicativo gratuito de organizacao pessoal e produtividade com 22 ferramentas em um so lugar: gerenciador de tarefas, rastreador de habitos, timer Pomodoro, controle de orcamento e financas, lista de compras, rastreador de agua, planejador de refeicoes, diario de gratidao, tracker de humor, lista de leitura, registro de exercicios e muito mais. Funciona direto no navegador, sem cadastro e sem instalar nada!</p>
 <div class="hero-badges">
-<span class="hero-badge">✨ 22 ferramentas gratis</span>
+<a href="./ferramentas/" class="hero-badge" style="text-decoration:none;color:inherit">✨ 22 ferramentas gratis</a>
 <span class="hero-badge">📲 Instale no celular</span>
 <span class="hero-badge">💯 100% gratuito</span>
 <span class="hero-badge">🔒 Sem cadastro</span>
 <span class="hero-badge">📴 Funciona offline</span>
 </div>
 </section>
+
+<div style="text-align:center;padding:1.2rem 1rem;max-width:800px;margin:0 auto">
+<a href="./ferramentas/" style="display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;text-decoration:none;padding:.75rem 1.8rem;border-radius:50px;font-size:1rem;font-weight:700;box-shadow:0 4px 20px rgba(108,92,231,.3)">🧰 Conheça as 22 ferramentas em detalhes →</a>
+</div>
 
 <div class="stats" id="statsBar">
 <div class="stat"><div class="stat-icon">✅</div><div class="stat-num" id="statTarefas">0</div><div class="stat-lbl">Tarefas</div></div>
@@ -447,18 +451,18 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 
 <div class="categoria-bloco" style="margin-bottom:1.5rem">
 <div class="cat-header" style="background:linear-gradient(90deg,rgba(232,67,147,.1),rgba(253,121,168,.08));border-radius:10px;padding:.5rem .6rem"><span class="cat-emoji">✨</span><span class="cat-nome cat-dest">Destaque</span><span class="cat-count">1</span></div>
-<div class="cat-tools"><button class="aba tool-card cat-dest" data-aba="vida" onclick="trocarAba('vida',this)" style="animation-delay:.05s;background:linear-gradient(135deg,rgba(232,67,147,.08),rgba(253,121,168,.06));border-color:rgba(232,67,147,.2)"><span class="tool-emoji">🌟</span><span class="tool-nome">Painel da Vida</span></button></div>
+<div class="cat-tools"><button class="aba tool-card cat-dest" data-aba="vida" onclick="trocarAba('vida',this)" style="animation-delay:.05s;background:linear-gradient(135deg,rgba(232,67,147,.08),rgba(253,121,168,.06));border-color:rgba(232,67,147,.2)"><span class="tool-emoji">🌟</span><span class="tool-nome">Painel da Vida</span><a href="./painel-da-vida/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button></div>
 </div>
 <div class="categoria-bloco">
 <div class="cat-header"><span class="cat-emoji">🚀</span><span class="cat-nome cat-prod">Produtividade</span><span class="cat-count">6</span></div>
 <div class="cat-line cat-prod"></div>
 <div class="ferramentas-grid">
-<button class="aba tool-card cat-prod" data-aba="tarefas" onclick="trocarAba('tarefas',this)" style="animation-delay:.05s"><span class="tool-emoji">✅</span><span class="tool-nome">Tarefas</span></button>
-<button class="aba tool-card cat-prod" data-aba="pomodoro" onclick="trocarAba('pomodoro',this)" style="animation-delay:.1s"><span class="tool-emoji">⏱️</span><span class="tool-nome">Pomodoro</span></button>
-<button class="aba tool-card cat-prod" data-aba="metas" onclick="trocarAba('metas',this)" style="animation-delay:.15s"><span class="tool-emoji">🎯</span><span class="tool-nome">Metas</span></button>
-<button class="aba tool-card cat-prod" data-aba="notas" onclick="trocarAba('notas',this)" style="animation-delay:.2s"><span class="tool-emoji">📝</span><span class="tool-nome">Notas</span></button>
-<button class="aba tool-card cat-prod" data-aba="lembretes" onclick="trocarAba('lembretes',this)" style="animation-delay:.25s"><span class="tool-emoji">🔔</span><span class="tool-nome">Lembretes</span></button>
-<button class="aba tool-card cat-prod" data-aba="decisor" onclick="trocarAba('decisor',this)" style="animation-delay:.3s"><span class="tool-emoji">🗳️</span><span class="tool-nome">Decisor</span></button>
+<button class="aba tool-card cat-prod" data-aba="tarefas" onclick="trocarAba('tarefas',this)" style="animation-delay:.05s"><span class="tool-emoji">✅</span><span class="tool-nome">Tarefas</span><a href="./lista-de-tarefas/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-prod" data-aba="pomodoro" onclick="trocarAba('pomodoro',this)" style="animation-delay:.1s"><span class="tool-emoji">⏱️</span><span class="tool-nome">Pomodoro</span><a href="./timer-pomodoro/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-prod" data-aba="metas" onclick="trocarAba('metas',this)" style="animation-delay:.15s"><span class="tool-emoji">🎯</span><span class="tool-nome">Metas</span><a href="./metas-e-objetivos/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-prod" data-aba="notas" onclick="trocarAba('notas',this)" style="animation-delay:.2s"><span class="tool-emoji">📝</span><span class="tool-nome">Notas</span><a href="./bloco-de-notas/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-prod" data-aba="lembretes" onclick="trocarAba('lembretes',this)" style="animation-delay:.25s"><span class="tool-emoji">🔔</span><span class="tool-nome">Lembretes</span><a href="./lembretes/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-prod" data-aba="decisor" onclick="trocarAba('decisor',this)" style="animation-delay:.3s"><span class="tool-emoji">🗳️</span><span class="tool-nome">Decisor</span><a href="./decisor/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
 </div>
 </div>
 
@@ -466,12 +470,12 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 <div class="cat-header"><span class="cat-emoji">💚</span><span class="cat-nome cat-saude">Saude e Bem-estar</span><span class="cat-count">6</span></div>
 <div class="cat-line cat-saude"></div>
 <div class="ferramentas-grid">
-<button class="aba tool-card cat-saude" data-aba="habitos" onclick="trocarAba('habitos',this)" style="animation-delay:.1s"><span class="tool-emoji">🔥</span><span class="tool-nome">Habitos</span></button>
-<button class="aba tool-card cat-saude" data-aba="agua" onclick="trocarAba('agua',this)" style="animation-delay:.15s"><span class="tool-emoji">💧</span><span class="tool-nome">Agua</span></button>
-<button class="aba tool-card cat-saude" data-aba="exercicios" onclick="trocarAba('exercicios',this)" style="animation-delay:.2s"><span class="tool-emoji">🏋️</span><span class="tool-nome">Exercicios</span></button>
-<button class="aba tool-card cat-saude" data-aba="humor" onclick="trocarAba('humor',this)" style="animation-delay:.25s"><span class="tool-emoji">😊</span><span class="tool-nome">Humor</span></button>
-<button class="aba tool-card cat-saude" data-aba="gratidao" onclick="trocarAba('gratidao',this)" style="animation-delay:.3s"><span class="tool-emoji">🙏</span><span class="tool-nome">Gratidao</span></button>
-<button class="aba tool-card cat-saude" data-aba="refeicoes" onclick="trocarAba('refeicoes',this)" style="animation-delay:.35s"><span class="tool-emoji">🍽️</span><span class="tool-nome">Refeicoes</span></button>
+<button class="aba tool-card cat-saude" data-aba="habitos" onclick="trocarAba('habitos',this)" style="animation-delay:.1s"><span class="tool-emoji">🔥</span><span class="tool-nome">Habitos</span><a href="./rastreador-de-habitos/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-saude" data-aba="agua" onclick="trocarAba('agua',this)" style="animation-delay:.15s"><span class="tool-emoji">💧</span><span class="tool-nome">Agua</span><a href="./rastreador-de-agua/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-saude" data-aba="exercicios" onclick="trocarAba('exercicios',this)" style="animation-delay:.2s"><span class="tool-emoji">🏋️</span><span class="tool-nome">Exercicios</span><a href="./registro-de-exercicios/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-saude" data-aba="humor" onclick="trocarAba('humor',this)" style="animation-delay:.25s"><span class="tool-emoji">😊</span><span class="tool-nome">Humor</span><a href="./tracker-de-humor/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-saude" data-aba="gratidao" onclick="trocarAba('gratidao',this)" style="animation-delay:.3s"><span class="tool-emoji">🙏</span><span class="tool-nome">Gratidao</span><a href="./diario-de-gratidao/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-saude" data-aba="refeicoes" onclick="trocarAba('refeicoes',this)" style="animation-delay:.35s"><span class="tool-emoji">🍽️</span><span class="tool-nome">Refeicoes</span><a href="./planejamento-de-refeicoes/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
 </div>
 </div>
 
@@ -479,8 +483,8 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 <div class="cat-header"><span class="cat-emoji">💰</span><span class="cat-nome cat-fin">Financas</span><span class="cat-count">2</span></div>
 <div class="cat-line cat-fin"></div>
 <div class="ferramentas-grid">
-<button class="aba tool-card cat-fin" data-aba="orcamento" onclick="trocarAba('orcamento',this)" style="animation-delay:.15s"><span class="tool-emoji">💰</span><span class="tool-nome">Orcamento</span></button>
-<button class="aba tool-card cat-fin" data-aba="compras" onclick="trocarAba('compras',this)" style="animation-delay:.2s"><span class="tool-emoji">🛒</span><span class="tool-nome">Compras</span></button>
+<button class="aba tool-card cat-fin" data-aba="orcamento" onclick="trocarAba('orcamento',this)" style="animation-delay:.15s"><span class="tool-emoji">💰</span><span class="tool-nome">Orcamento</span><a href="./controle-de-orcamento/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-fin" data-aba="compras" onclick="trocarAba('compras',this)" style="animation-delay:.2s"><span class="tool-emoji">🛒</span><span class="tool-nome">Compras</span><a href="./lista-de-compras/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
 </div>
 </div>
 
@@ -488,8 +492,8 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 <div class="cat-header"><span class="cat-emoji">📅</span><span class="cat-nome cat-plan">Planejamento</span><span class="cat-count">2</span></div>
 <div class="cat-line cat-plan"></div>
 <div class="ferramentas-grid">
-<button class="aba tool-card cat-plan" data-aba="planejamento" onclick="trocarAba('planejamento',this)" style="animation-delay:.2s"><span class="tool-emoji">📅</span><span class="tool-nome">Semanal</span></button>
-<button class="aba tool-card cat-plan" data-aba="regressiva" onclick="trocarAba('regressiva',this)" style="animation-delay:.25s"><span class="tool-emoji">⏰</span><span class="tool-nome">Regressiva</span></button>
+<button class="aba tool-card cat-plan" data-aba="planejamento" onclick="trocarAba('planejamento',this)" style="animation-delay:.2s"><span class="tool-emoji">📅</span><span class="tool-nome">Semanal</span><a href="./planejamento-semanal/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-plan" data-aba="regressiva" onclick="trocarAba('regressiva',this)" style="animation-delay:.25s"><span class="tool-emoji">⏰</span><span class="tool-nome">Regressiva</span><a href="./contagem-regressiva/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
 </div>
 </div>
 
@@ -497,11 +501,11 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-heig
 <div class="cat-header"><span class="cat-emoji">🛠️</span><span class="cat-nome cat-util">Utilidades</span><span class="cat-count">5</span></div>
 <div class="cat-line cat-util"></div>
 <div class="ferramentas-grid">
-<button class="aba tool-card cat-util" data-aba="calculadora" onclick="trocarAba('calculadora',this)" style="animation-delay:.25s"><span class="tool-emoji">📐</span><span class="tool-nome">Calculadora</span></button>
-<button class="aba tool-card cat-util" data-aba="senhas" onclick="trocarAba('senhas',this)" style="animation-delay:.3s"><span class="tool-emoji">🔐</span><span class="tool-nome">Senhas</span></button>
-<button class="aba tool-card cat-util" data-aba="leitura" onclick="trocarAba('leitura',this)" style="animation-delay:.35s"><span class="tool-emoji">📚</span><span class="tool-nome">Leitura</span></button>
-<button class="aba tool-card cat-util" data-aba="revisao" onclick="trocarAba('revisao',this)" style="animation-delay:.4s"><span class="tool-emoji">📊</span><span class="tool-nome">Revisao</span></button>
-<button class="aba tool-card cat-util" data-aba="frases" onclick="trocarAba('frases',this)" style="animation-delay:.45s"><span class="tool-emoji">💭</span><span class="tool-nome">Frases</span></button>
+<button class="aba tool-card cat-util" data-aba="calculadora" onclick="trocarAba('calculadora',this)" style="animation-delay:.25s"><span class="tool-emoji">📐</span><span class="tool-nome">Calculadora</span><a href="./calculadora/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-util" data-aba="senhas" onclick="trocarAba('senhas',this)" style="animation-delay:.3s"><span class="tool-emoji">🔐</span><span class="tool-nome">Senhas</span><a href="./gerador-de-senhas/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-util" data-aba="leitura" onclick="trocarAba('leitura',this)" style="animation-delay:.35s"><span class="tool-emoji">📚</span><span class="tool-nome">Leitura</span><a href="./lista-de-leitura/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-util" data-aba="revisao" onclick="trocarAba('revisao',this)" style="animation-delay:.4s"><span class="tool-emoji">📊</span><span class="tool-nome">Revisao</span><a href="./revisao-semanal/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
+<button class="aba tool-card cat-util" data-aba="frases" onclick="trocarAba('frases',this)" style="animation-delay:.45s"><span class="tool-emoji">💭</span><span class="tool-nome">Frases</span><a href="./frases-motivacionais/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
 </div>
 </div>
 </div>
@@ -1164,28 +1168,28 @@ requestAnimationFrame(anim)}
 <footer class="seo-footer" style="background:var(--card);border-top:1px solid var(--borda);padding:1.5rem 1rem;text-align:center;font-size:.75rem;color:var(--txt3);line-height:1.7;display:block !important"><p><strong style="color:var(--txt2)">OrganizaJA</strong> e um aplicativo gratuito de organizacao pessoal e produtividade.</p><p style="margin-top:.3rem">App de produtividade gratis | Organizacao pessoal | Lista de tarefas | Painel da Vida | Rastreador de habitos | Timer Pomodoro | Controle financeiro | Planejamento semanal</p>
 <p style="margin-top:.7rem"><a href="./ferramentas/" style="color:var(--cor);text-decoration:none;font-weight:700">🧰 Conheca as 22 ferramentas uma por uma</a></p>
 <div style="margin-top:.8rem;max-width:820px;margin-left:auto;margin-right:auto;line-height:2.2">
-<a href="./painel-da-vida/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Painel da Vida</a>
-<a href="./lista-de-tarefas/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Tarefas</a>
-<a href="./timer-pomodoro/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Pomodoro</a>
-<a href="./metas-e-objetivos/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Metas</a>
-<a href="./bloco-de-notas/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Notas</a>
-<a href="./lembretes/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Lembretes</a>
-<a href="./decisor/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Decisor</a>
-<a href="./rastreador-de-habitos/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Habitos</a>
-<a href="./rastreador-de-agua/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Agua</a>
-<a href="./registro-de-exercicios/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Exercicios</a>
-<a href="./tracker-de-humor/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Humor</a>
-<a href="./diario-de-gratidao/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Gratidao</a>
-<a href="./planejamento-de-refeicoes/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Refeicoes</a>
-<a href="./controle-de-orcamento/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Orcamento</a>
-<a href="./lista-de-compras/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Compras</a>
-<a href="./planejamento-semanal/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Semanal</a>
-<a href="./contagem-regressiva/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Regressiva</a>
-<a href="./calculadora/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Calculadora</a>
-<a href="./gerador-de-senhas/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Senhas</a>
-<a href="./lista-de-leitura/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Leitura</a>
-<a href="./revisao-semanal/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Revisao</a>
-<a href="./frases-motivacionais/" style="color:var(--txt3);text-decoration:none;margin:0 .35rem">Frases</a>
+<a href="./painel-da-vida/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Painel da Vida</a>
+<a href="./lista-de-tarefas/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Tarefas</a>
+<a href="./timer-pomodoro/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Pomodoro</a>
+<a href="./metas-e-objetivos/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Metas</a>
+<a href="./bloco-de-notas/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Notas</a>
+<a href="./lembretes/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Lembretes</a>
+<a href="./decisor/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Decisor</a>
+<a href="./rastreador-de-habitos/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Habitos</a>
+<a href="./rastreador-de-agua/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Agua</a>
+<a href="./registro-de-exercicios/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Exercicios</a>
+<a href="./tracker-de-humor/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Humor</a>
+<a href="./diario-de-gratidao/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Gratidao</a>
+<a href="./planejamento-de-refeicoes/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Refeicoes</a>
+<a href="./controle-de-orcamento/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Orcamento</a>
+<a href="./lista-de-compras/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Compras</a>
+<a href="./planejamento-semanal/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Semanal</a>
+<a href="./contagem-regressiva/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Regressiva</a>
+<a href="./calculadora/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Calculadora</a>
+<a href="./gerador-de-senhas/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Senhas</a>
+<a href="./lista-de-leitura/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Leitura</a>
+<a href="./revisao-semanal/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Revisao</a>
+<a href="./frases-motivacionais/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Frases</a>
 </div></footer>
 <section style="display:none" aria-hidden="true"><h2>Ferramentas de organizacao pessoal gratuitas</h2><p>O OrganizaJA oferece 22 ferramentas gratuitas para organizar toda a sua vida.</p></section>
 </main></body>
