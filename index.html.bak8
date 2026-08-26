@@ -63,9 +63,6 @@
   <div class="sidebar-item" data-page="habitos" onclick="navegarPara('habitos',this)">
     <div class="s-icon">🔥</div><span>Hábitos</span>
   </div>
-  <div class="sidebar-item" data-page="progresso" onclick="navegarPara('progresso',this)">
-    <div class="s-icon">📊</div><span>Meu Progresso</span>
-  </div>
   <div class="sidebar-divider"></div>
   <div class="sidebar-section">Ferramentas</div>
   <div class="sidebar-more-btn" onclick="toggleSidebarTools()">
@@ -531,16 +528,6 @@
         <button class="btn btn-p" onclick="addHabito()">Adicionar</button>
       </div>
       <div class="habitos-grid" id="habitosGrid"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ======== PAGE: MEU PROGRESSO ======== -->
-<div class="page" id="page-progresso">
-  <div class="content-wrap">
-    <div class="secao">
-      <h2 class="secao-titulo">📊 Meu Progresso</h2>
-      <div id="progressoConteudo"></div>
     </div>
   </div>
 </div>
