@@ -1684,7 +1684,7 @@ function abrirCalEventoModal(editId) {
   calEventoEditId = editId || null;
   var modal = document.getElementById('calEventModal');
   if (!modal) return;
-  modal.classList.add('ativo');
+  modal.classList.add('visivel');
   // Populate materias datalist
   var dl = document.getElementById('calMateriaList');
   if (dl) {
@@ -1719,7 +1719,7 @@ function abrirCalEventoModal(editId) {
 function fecharCalEventoModal(e) {
   if (e && e.target && !e.target.classList.contains('tk-modal-bg')) return;
   var modal = document.getElementById('calEventModal');
-  if (modal) modal.classList.remove('ativo');
+  if (modal) modal.classList.remove('visivel');
   calEventoEditId = null;
 }
 
@@ -1789,7 +1789,7 @@ function abrirMateriaModal(editId) {
   matEditId = editId || null;
   var modal = document.getElementById('materiaModal');
   if (!modal) return;
-  modal.classList.add('ativo');
+  modal.classList.add('visivel');
   if (matEditId) {
     var m = estado.estudos.materias.find(function(x){ return x.id === matEditId; });
     if (m) {
@@ -1808,7 +1808,7 @@ function abrirMateriaModal(editId) {
 
 function fecharMateriaModal(e) {
   if (e && e.target !== e.currentTarget) return;
-  document.getElementById('materiaModal').classList.remove('ativo');
+  document.getElementById('materiaModal').classList.remove('visivel');
   matEditId = null;
 }
 
@@ -2068,7 +2068,7 @@ function addAnotacao() {
   anotEditIdx = null;
   var modal = document.getElementById('anotacaoModal');
   if (!modal) return;
-  modal.classList.add('ativo');
+  modal.classList.add('visivel');
   document.getElementById('anotTituloInput').value = '';
   document.getElementById('anotContInput').value = '';
   document.getElementById('anotModalTitle').textContent = '📓 Nova anotação';
@@ -2081,7 +2081,7 @@ function editarAnotacao(idx) {
   var a = m.anotacoes[idx];
   var modal = document.getElementById('anotacaoModal');
   if (!modal) return;
-  modal.classList.add('ativo');
+  modal.classList.add('visivel');
   document.getElementById('anotTituloInput').value = a.titulo || '';
   document.getElementById('anotContInput').value = a.conteudo || '';
   document.getElementById('anotModalTitle').textContent = '✏️ Editar anotação';
@@ -2089,7 +2089,7 @@ function editarAnotacao(idx) {
 
 function fecharAnotacaoModal(e) {
   if (e && e.target !== e.currentTarget) return;
-  document.getElementById('anotacaoModal').classList.remove('ativo');
+  document.getElementById('anotacaoModal').classList.remove('visivel');
   anotEditIdx = null;
 }
 
@@ -2176,7 +2176,7 @@ function abrirProvaModal(editId) {
   provaEditId = editId || null;
   var modal = document.getElementById('provaModal');
   if (!modal) return;
-  modal.classList.add('ativo');
+  modal.classList.add('visivel');
   // Populate materias datalist
   var dl = document.getElementById('provaMateriaList');
   if (dl) {
@@ -2214,7 +2214,7 @@ function abrirProvaModal(editId) {
 function fecharProvaModal(e) {
   if (e && e.target && !e.target.classList.contains('tk-modal-bg')) return;
   var modal = document.getElementById('provaModal');
-  if (modal) modal.classList.remove('ativo');
+  if (modal) modal.classList.remove('visivel');
   provaEditId = null;
 }
 
@@ -2311,7 +2311,7 @@ function abrirTrabalhoModal(editId) {
   trabalhoEditId = editId || null;
   var modal = document.getElementById('trabalhoModal');
   if (!modal) return;
-  modal.classList.add('ativo');
+  modal.classList.add('visivel');
   // Populate materias datalist
   var dl = document.getElementById('trabMateriaList');
   if (dl) {
@@ -2349,7 +2349,7 @@ function abrirTrabalhoModal(editId) {
 function fecharTrabalhoModal(e) {
   if (e && e.target && !e.target.classList.contains('tk-modal-bg')) return;
   var modal = document.getElementById('trabalhoModal');
-  if (modal) modal.classList.remove('ativo');
+  if (modal) modal.classList.remove('visivel');
   trabalhoEditId = null;
 }
 
@@ -3730,15 +3730,13 @@ function closePix() {
 
 // ---- CONFIRM MODAL ----
 function showConfirm(msg, onOk) {
-  document.getElementById('confirmMsg').textContent = msg;
-  document.getElementById('modalConfirmar').classList.add('ativo');
-  document.getElementById('modalConfirmar').onclick = function() {
-    document.getElementById('modalConfirmar').classList.remove('ativo');
-    if (onOk) onOk();
-  };
+  document.getElementById('modalMsg').textContent = msg;
+  modalCallback = onOk;
+  document.getElementById('modalOverlay').classList.add('visivel');
 }
 function closeConfirm() {
-  document.getElementById('modalConfirmar').classList.remove('ativo');
+  document.getElementById('modalOverlay').classList.remove('visivel');
+  modalCallback = null;
 }
 
 // ---- APOIE BANNER ----
@@ -4055,7 +4053,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('click', function(e) {
     var bs = document.getElementById('moreSheet');
     if (bs && bs.classList.contains('aberto')) {
-      if (!bs.contains(e.target) && !e.target.closest('[onclick*="toggleMaisBottom"]')) {
+      if (!bs.contains(e.target) && !e.target.closest('[onclick*="toggleMoreSheet"]')) {
         bs.classList.remove('aberto');
       }
     }
@@ -4065,11 +4063,11 @@ document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
       var so = document.getElementById('buscaOverlay');
-      if (so && so.classList.contains('ativo')) so.classList.remove('ativo');
+      if (so && so.classList.contains('visivel')) so.classList.remove('visivel');
       var pm = document.getElementById('pixModal');
       if (pm && pm.classList.contains('ativo')) pm.classList.remove('ativo');
-      var cm = document.getElementById('modalConfirmar');
-      if (cm && cm.classList.contains('ativo')) cm.classList.remove('ativo');
+      var mo = document.getElementById('modalOverlay');
+      if (mo && mo.classList.contains('visivel')) mo.classList.remove('visivel');
     }
   });
 
