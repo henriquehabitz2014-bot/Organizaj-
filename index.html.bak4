@@ -373,7 +373,6 @@
       <div class="cal-view-toggle">
         <button class="ativo" onclick="setCalView('mes',this)">Mês</button>
         <button onclick="setCalView('semana',this)">Semana</button>
-        <button data-view="dia" onclick="setCalView('dia',this)">Dia</button>
       </div>
       <div class="cal-header">
         <button onclick="calNav(-1)">◀</button>
@@ -1010,54 +1009,6 @@
     <div class="tk-modal-foot">
       <button class="btn btn-s" onclick="fecharEdicaoTarefa()">Cancelar</button>
       <button class="btn btn-p" onclick="salvarEdicaoTarefa()">💾 Salvar alterações</button>
-    </div>
-  </div>
-</div>
-
-<!-- Calendar Event Modal -->
-<div class="tk-modal-bg" id="calEventModal" onclick="fecharCalEventoModal(event)">
-  <div class="tk-modal" onclick="event.stopPropagation()">
-    <div class="tk-modal-head">
-      <h3 id="calEvtModalTitle">＋ Novo evento</h3>
-      <button class="tk-modal-x" onclick="fecharCalEventoModal()" title="Fechar">✕</button>
-    </div>
-    <div class="tk-modal-body">
-      <div class="tk-field">
-        <label class="tk-lbl" for="calEvtTitulo">📌 Título *</label>
-        <input class="campo" id="calEvtTitulo" placeholder="Ex: Prova de Matemática">
-      </div>
-      <div class="tk-adv-grid">
-        <div class="tk-field">
-          <label class="tk-lbl" for="calEvtData">📅 Data</label>
-          <input class="campo" id="calEvtData" type="date">
-        </div>
-        <div class="tk-field">
-          <label class="tk-lbl" for="calEvtHora">🕐 Horário</label>
-          <input class="campo" id="calEvtHora" type="time">
-        </div>
-        <div class="tk-field">
-          <label class="tk-lbl" for="calEvtTipo">🏷️ Tipo</label>
-          <select class="select" id="calEvtTipo">
-            <option value="evento">📌 Evento</option>
-            <option value="tarefa">✅ Tarefa</option>
-            <option value="prova">📝 Prova</option>
-            <option value="trabalho">📋 Trabalho</option>
-          </select>
-        </div>
-        <div class="tk-field">
-          <label class="tk-lbl" for="calEvtMateria">📚 Matéria</label>
-          <input class="campo" id="calEvtMateria" list="calMateriaList" placeholder="Ex: História">
-          <datalist id="calMateriaList"></datalist>
-        </div>
-      </div>
-      <div class="tk-field">
-        <label class="tk-lbl" for="calEvtDesc">📝 Descrição</label>
-        <textarea class="campo tk-ta" id="calEvtDesc" rows="3" placeholder="Detalhes do evento"></textarea>
-      </div>
-    </div>
-    <div class="tk-modal-foot">
-      <button class="btn btn-s" onclick="fecharCalEventoModal()">Cancelar</button>
-      <button class="btn btn-p" onclick="salvarCalEvento()">💾 Salvar</button>
     </div>
   </div>
 </div>

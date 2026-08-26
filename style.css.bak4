@@ -728,35 +728,6 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
 .csd-header{font-size:.8rem;font-weight:700;color:var(--cor);margin-bottom:.3rem}
 .csd-nome{font-size:.75rem;font-weight:600}
 .csd-num{font-size:.7rem;color:var(--txt3)}
-.csd-evt-hora{font-size:.62rem;color:var(--txt3);margin-right:.2rem;font-weight:600}
-
-/* Calendário: Visualização Dia */
-.cal-dia-view{display:flex;flex-direction:column;gap:.8rem;padding:.3rem 0}
-.cdv-header{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.3rem}
-.cdv-date{font-size:1.05rem;font-weight:700;color:var(--txt2)}
-.cdv-hoje-badge{background:var(--cor);color:#fff;font-size:.65rem;padding:.15rem .5rem;border-radius:12px;font-weight:700}
-.cdv-add-btn{margin-left:auto;font-size:.75rem;padding:.35rem .8rem}
-.cdv-list{display:flex;flex-direction:column;gap:.5rem}
-.cdv-evt{background:var(--card2);border-radius:var(--raio);padding:.7rem .9rem;transition:var(--transition)}
-.cdv-evt:hover{background:var(--card3)}
-.cdv-evt-top{display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem;flex-wrap:wrap}
-.cdv-evt-icon{font-size:.85rem}
-.cdv-evt-tipo{font-size:.68rem;font-weight:700;text-transform:uppercase;color:var(--txt3);letter-spacing:.3px}
-.cdv-evt-hora{font-size:.72rem;color:var(--cor);font-weight:600;margin-left:auto}
-.cdv-evt-mat{font-size:.65rem;background:var(--card3);padding:.1rem .4rem;border-radius:6px;color:var(--txt3)}
-.cdv-evt-titulo{font-size:.88rem;font-weight:600;color:var(--txt1);margin-bottom:.2rem}
-.cdv-evt-desc{font-size:.75rem;color:var(--txt3);margin-bottom:.4rem;white-space:pre-wrap;word-break:break-word}
-.cdv-evt-acoes{display:flex;gap:.4rem;margin-top:.2rem}
-.cdv-evt-edit,.cdv-evt-del{font-size:.68rem;padding:.2rem .5rem}
-.cdv-empty{text-align:center;padding:2rem 1rem}
-.cdv-empty-icon{font-size:2.5rem;margin-bottom:.5rem}
-.cdv-empty-text{color:var(--txt3);font-size:.82rem;margin-bottom:1rem}
-
-/* Calendário: evento pills com hover */
-.cal-evento{cursor:pointer;transition:var(--transition)}
-.cal-evento:hover{filter:brightness(1.2);transform:scale(1.05)}
-.cal-dia[onclick]{cursor:pointer}
-.cal-dia[onclick]:hover{background:var(--card3);transform:scale(1.02)}
 .csd-eventos{margin-top:.2rem}
 .csd-evt{font-size:.65rem;padding:.15rem .3rem;border-radius:4px;margin-bottom:.1rem}
 .csd-evt-empty{font-size:.65rem;color:var(--txt3);font-style:italic}
@@ -1082,16 +1053,6 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
   .dash-shortcut{font-size:.72rem;padding:.45rem .5rem}
   .dash-shortcut .ds-icon{font-size:.9rem}
   .cal-semana{grid-template-columns:repeat(3,1fr)}
-  .cal-semana-grid{grid-template-columns:1fr}
-  .cdv-header{flex-direction:column;align-items:stretch}
-  .cdv-add-btn{margin-left:0;width:100%;text-align:center}
-  .cdv-evt-top{flex-wrap:wrap}
-  .cdv-evt-hora{margin-left:0}
-  .cdv-evt-acoes{flex-direction:column}
-  .cdv-evt-edit,.cdv-evt-del{width:100%;text-align:center}
-  .cal-dia{min-height:48px;padding:.3rem}
-  .cal-evento{font-size:.5rem;padding:.05rem .2rem}
-  .cdv-evt{padding:.55rem .7rem}
   .tk-adv-grid{grid-template-columns:1fr}
   .tk-mini{flex:1;min-width:0}
   .tk-more-btn{margin-left:0;width:100%}

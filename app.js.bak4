@@ -36,8 +36,6 @@ var estado = {
   calMes: null,
   calAno: null,
   calSemanaStart: null,
-  calDiaSel: null,
-  calEventos: [],
   ordemTarefas: 'data',
   ordemTarefasDesc: false,
   senhas: [],
@@ -163,8 +161,6 @@ function carregarEstado() {
   if (!estado.estudos.provas) estado.estudos.provas = [];
   if (!estado.estudos.trabalhos) estado.estudos.trabalhos = [];
   if (!estado.calView) estado.calView = 'mes';
-  if (!estado.calEventos) estado.calEventos = [];
-  if (estado.calDiaSel === undefined) estado.calDiaSel = null;
   if (!estado.ordemTarefas) estado.ordemTarefas = 'data';
   if (estado.ordemTarefasDesc === undefined) estado.ordemTarefasDesc = false;
   var filtrosValidos = ['todas','hoje','amanha','semana','atrasadas','concluidas'];
@@ -1293,13 +1289,11 @@ function renderCalendario() {
     estado.calAno = d.getFullYear();
   }
   if (estado.calView === 'mes') renderCalMes();
-  else if (estado.calView === 'semana') renderCalSemana();
-  else if (estado.calView === 'dia') renderCalDia();
+  else renderCalSemana();
 }
 
 function setCalView(v, btn) {
   estado.calView = v;
-  if (v === 'dia' && !estado.calDiaSel) estado.calDiaSel = hojeStr();
   document.querySelectorAll('.cal-view-toggle button').forEach(function(b){b.classList.remove('ativo');});
   if (btn) btn.classList.add('ativo');
   renderCalendario();
@@ -1310,16 +1304,11 @@ function calNav(dir) {
     estado.calMes += dir;
     if (estado.calMes > 11) { estado.calMes = 0; estado.calAno++; }
     if (estado.calMes < 0) { estado.calMes = 11; estado.calAno--; }
-  } else if (estado.calView === 'semana') {
+  } else {
     if (!estado.calSemanaStart) estado.calSemanaStart = new Date();
     var d = new Date(estado.calSemanaStart);
     d.setDate(d.getDate() + dir * 7);
     estado.calSemanaStart = d;
-  } else if (estado.calView === 'dia') {
-    if (!estado.calDiaSel) estado.calDiaSel = hojeStr();
-    var dd = new Date(estado.calDiaSel + 'T12:00:00');
-    dd.setDate(dd.getDate() + dir);
-    estado.calDiaSel = dd.getFullYear() + '-' + String(dd.getMonth()+1).padStart(2,'0') + '-' + String(dd.getDate()).padStart(2,'0');
   }
   renderCalendario();
 }
@@ -1329,50 +1318,28 @@ function calHoje() {
   estado.calMes = d.getMonth();
   estado.calAno = d.getFullYear();
   estado.calSemanaStart = d;
-  estado.calDiaSel = hojeStr();
   renderCalendario();
 }
 
 function getCalEvents(dateStr) {
   var evts = [];
   estado.tarefas.forEach(function(t) {
-    if (t.data === dateStr) evts.push({id: t.id, texto: t.texto, cor: catCores[t.categoria] || '#6c5ce7', tipo: 'tarefa', hora: t.hora || '', materia: t.materia || '', origem: 'tarefa'});
+    if (t.data === dateStr) evts.push({texto: t.texto, cor: catCores[t.categoria] || 'var(--cor)', tipo: 'tarefa'});
   });
   estado.lembretes.forEach(function(l) {
-    if (l.data === dateStr) evts.push({id: l.id, texto: l.texto, cor: '#fdcb6e', tipo: 'lembrete', hora: '', materia: '', origem: 'lembrete'});
+    if (l.data === dateStr) evts.push({texto: l.texto, cor: 'var(--amarelo)', tipo: 'lembrete'});
   });
   if (estado.estudos && estado.estudos.provas) {
     estado.estudos.provas.forEach(function(p) {
-      if (p.data === dateStr) evts.push({id: p.id, texto: p.texto, cor: '#e17055', tipo: 'prova', hora: '', materia: p.materia || '', origem: 'prova'});
+      if (p.data === dateStr) evts.push({texto: 'Prova: ' + p.texto, cor: '#e17055', tipo: 'prova'});
     });
   }
   if (estado.estudos && estado.estudos.trabalhos) {
     estado.estudos.trabalhos.forEach(function(tr) {
-      if (tr.data === dateStr) evts.push({id: tr.id, texto: tr.texto, cor: '#0984e3', tipo: 'trabalho', hora: '', materia: tr.materia || '', origem: 'trabalho'});
+      if (tr.data === dateStr) evts.push({texto: 'Trabalho: ' + tr.texto, cor: '#0984e3', tipo: 'trabalho'});
     });
   }
-  (estado.calEventos || []).forEach(function(c) {
-    if (c.data === dateStr) evts.push({id: c.id, texto: c.titulo, cor: calTipoCor(c.tipo), tipo: c.tipo, hora: c.hora || '', materia: c.materia || '', origem: 'calEvento'});
-  });
-  // Sort by hora
-  evts.sort(function(a, b) {
-    var ha = a.hora || '99:99';
-    var hb = b.hora || '99:99';
-    if (ha < hb) return -1;
-    if (ha > hb) return 1;
-    return 0;
-  });
   return evts;
-}
-
-function calTipoCor(tipo) {
-  var cores = {tarefa:'#6c5ce7', prova:'#e17055', trabalho:'#0984e3', evento:'#00b894'};
-  return cores[tipo] || '#636e72';
-}
-
-function calTipoIcon(tipo) {
-  var icons = {tarefa:'✅', prova:'📝', trabalho:'📋', evento:'📌', lembrete:'🔔'};
-  return icons[tipo] || '📌';
 }
 
 function renderCalMes() {
@@ -1398,13 +1365,12 @@ function renderCalMes() {
     var evts = getCalEvents(dateStr);
     var isHoje = dateStr === hoje;
     var cls = 'cal-dia' + (isHoje ? ' hoje' : '') + (evts.length ? ' has-events' : '');
-    html += '<div class="' + cls + '" onclick="abrirCalDia(\'' + dateStr + '\')" >';
+    html += '<div class="' + cls + '">';
     html += '<div class="cal-dia-num">' + dia + '</div>';
     if (evts.length) {
       html += '<div class="cal-dia-eventos">';
       evts.slice(0,3).forEach(function(e){
-        var icon = calTipoIcon(e.tipo);
-        html += '<div class="cal-evento" style="background:' + e.cor + '" title="' + esc(e.texto) + '">' + icon + '</div>';
+        html += '<div class="cal-evento" style="background:' + e.cor + '" title="' + esc(e.texto) + '"></div>';
       });
       if (evts.length > 3) html += '<div class="cal-evento-mais">+' + (evts.length-3) + '</div>';
       html += '</div>';
@@ -1433,176 +1399,17 @@ function renderCalSemana() {
     var dateStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
     var isHoje = dateStr === hoje;
     var evts = getCalEvents(dateStr);
-    html += '<div class="cal-semana-dia' + (isHoje ? ' hoje' : '') + '" onclick="abrirCalDia(\'' + dateStr + '\')" style="cursor:pointer">';
+    html += '<div class="cal-semana-dia' + (isHoje ? ' hoje' : '') + '">';
     html += '<div class="csd-header"><span class="csd-nome">' + diasSem[i].slice(0,3) + '</span><span class="csd-num">' + d.getDate() + '</span></div>';
     html += '<div class="csd-eventos">';
     evts.forEach(function(e){
-      var icon = calTipoIcon(e.tipo);
-      var horaStr = e.hora ? '<span class="csd-evt-hora">' + esc(e.hora) + '</span> ' : '';
-      html += '<div class="csd-evt" style="border-left:3px solid ' + e.cor + '">' + icon + ' ' + horaStr + esc(e.texto) + '</div>';
+      html += '<div class="csd-evt" style="border-left:3px solid ' + e.cor + '">' + esc(e.texto) + '</div>';
     });
     if (!evts.length) html += '<div class="csd-evt-empty">—</div>';
     html += '</div></div>';
   }
   html += '</div>';
   document.getElementById('calCorpo').innerHTML = html;
-}
-
-// ---- CALENDARIO: VISUALIZAÇÃO DIA ----
-function abrirCalDia(dateStr) {
-  estado.calDiaSel = dateStr;
-  estado.calView = 'dia';
-  document.querySelectorAll('.cal-view-toggle button').forEach(function(b){b.classList.remove('ativo');});
-  var diaBtn = document.querySelector('.cal-view-toggle button[data-view="dia"]');
-  if (diaBtn) diaBtn.classList.add('ativo');
-  renderCalendario();
-}
-
-function renderCalDia() {
-  var sel = estado.calDiaSel || hojeStr();
-  estado.calDiaSel = sel;
-  var d = new Date(sel + 'T12:00:00');
-  var diasSem = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
-  var meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-  document.getElementById('calTitulo').textContent = diasSem[d.getDay()] + ', ' + d.getDate() + ' de ' + meses[d.getMonth()];
-
-  var evts = getCalEvents(sel);
-  var isHoje = sel === hojeStr();
-
-  var html = '<div class="cal-dia-view">';
-  html += '<div class="cdv-header">';
-  html += '<span class="cdv-date">' + d.getDate() + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear() + '</span>';
-  if (isHoje) html += '<span class="cdv-hoje-badge">Hoje</span>';
-  html += '<button class="btn btn-p cdv-add-btn" onclick="abrirCalEventoModal()">＋ Adicionar evento</button>';
-  html += '</div>';
-
-  if (evts.length) {
-    html += '<div class="cdv-list">';
-    evts.forEach(function(e) {
-      var icon = calTipoIcon(e.tipo);
-      var horaStr = e.hora ? '<span class="cdv-evt-hora">' + esc(e.hora) + '</span>' : '';
-      var matStr = e.materia ? '<span class="cdv-evt-mat">' + esc(e.materia) + '</span>' : '';
-      var isCalEvt = e.origem === 'calEvento';
-      html += '<div class="cdv-evt" style="border-left:4px solid ' + e.cor + '">';
-      html += '<div class="cdv-evt-top">';
-      html += '<span class="cdv-evt-icon">' + icon + '</span>';
-      html += '<span class="cdv-evt-tipo">' + esc(e.tipo.charAt(0).toUpperCase() + e.tipo.slice(1)) + '</span>';
-      html += horaStr;
-      html += matStr;
-      html += '</div>';
-      html += '<div class="cdv-evt-titulo">' + esc(e.texto) + '</div>';
-      if (isCalEvt) {
-        var ce = estado.calEventos.find(function(c){ return c.id === e.id; });
-        if (ce && ce.descricao) {
-          html += '<div class="cdv-evt-desc">' + esc(ce.descricao) + '</div>';
-        }
-        html += '<div class="cdv-evt-acoes">';
-        html += '<button class="btn btn-s cdv-evt-edit" onclick="abrirCalEventoModal(\'' + e.id + '\')">✏️ Editar</button>';
-        html += '<button class="btn btn-d cdv-evt-del" onclick="delCalEvento(\'' + e.id + '\')">🗑️ Excluir</button>';
-        html += '</div>';
-      }
-      html += '</div>';
-    });
-    html += '</div>';
-  } else {
-    html += '<div class="cdv-empty">';
-    html += '<div class="cdv-empty-icon">📭</div>';
-    html += '<div class="cdv-empty-text">Nenhum evento neste dia</div>';
-    html += '<button class="btn btn-p" onclick="abrirCalEventoModal()">＋ Adicionar evento</button>';
-    html += '</div>';
-  }
-
-  html += '</div>';
-  document.getElementById('calCorpo').innerHTML = html;
-}
-
-// ---- CALENDARIO: CRUD EVENTOS ----
-var calEventoEditId = null;
-
-function abrirCalEventoModal(editId) {
-  calEventoEditId = editId || null;
-  var modal = document.getElementById('calEventModal');
-  if (!modal) return;
-  modal.classList.add('ativo');
-  // Populate materias datalist
-  var dl = document.getElementById('calMateriaList');
-  if (dl) {
-    var items = '';
-    (estado.estudos.materias || []).forEach(function(m) {
-      items += '<option value="' + esc(m.nome) + '">';
-    });
-    dl.innerHTML = items;
-  }
-  if (calEventoEditId) {
-    var ce = estado.calEventos.find(function(c){ return c.id === calEventoEditId; });
-    if (ce) {
-      document.getElementById('calEvtTitulo').value = ce.titulo || '';
-      document.getElementById('calEvtData').value = ce.data || estado.calDiaSel || hojeStr();
-      document.getElementById('calEvtHora').value = ce.hora || '';
-      document.getElementById('calEvtMateria').value = ce.materia || '';
-      document.getElementById('calEvtTipo').value = ce.tipo || 'evento';
-      document.getElementById('calEvtDesc').value = ce.descricao || '';
-      document.getElementById('calEvtModalTitle').textContent = '✏️ Editar evento';
-    }
-  } else {
-    document.getElementById('calEvtTitulo').value = '';
-    document.getElementById('calEvtData').value = estado.calDiaSel || hojeStr();
-    document.getElementById('calEvtHora').value = '';
-    document.getElementById('calEvtMateria').value = '';
-    document.getElementById('calEvtTipo').value = 'evento';
-    document.getElementById('calEvtDesc').value = '';
-    document.getElementById('calEvtModalTitle').textContent = '＋ Novo evento';
-  }
-}
-
-function fecharCalEventoModal(e) {
-  if (e && e.target && !e.target.classList.contains('tk-modal-bg')) return;
-  var modal = document.getElementById('calEventModal');
-  if (modal) modal.classList.remove('ativo');
-  calEventoEditId = null;
-}
-
-function salvarCalEvento() {
-  var titulo = document.getElementById('calEvtTitulo').value.trim();
-  var data = document.getElementById('calEvtData').value;
-  var hora = document.getElementById('calEvtHora').value;
-  var materia = document.getElementById('calEvtMateria').value.trim();
-  var tipo = document.getElementById('calEvtTipo').value;
-  var descricao = document.getElementById('calEvtDesc').value.trim();
-  if (!titulo) return;
-  if (!data) data = estado.calDiaSel || hojeStr();
-  if (calEventoEditId) {
-    var ce = estado.calEventos.find(function(c){ return c.id === calEventoEditId; });
-    if (ce) {
-      ce.titulo = titulo;
-      ce.data = data;
-      ce.hora = hora;
-      ce.materia = materia;
-      ce.tipo = tipo;
-      ce.descricao = descricao;
-    }
-  } else {
-    estado.calEventos.push({
-      id: uid(),
-      titulo: titulo,
-      data: data,
-      hora: hora,
-      materia: materia,
-      tipo: tipo,
-      descricao: descricao
-    });
-  }
-  salvarEstado();
-  fecharCalEventoModal();
-  renderCalendario();
-}
-
-function delCalEvento(id) {
-  showConfirm('Excluir este evento do calendário?', function() {
-    estado.calEventos = estado.calEventos.filter(function(c){ return c.id !== id; });
-    salvarEstado();
-    renderCalendario();
-  });
 }
 
 // ---- ESTUDOS ----
