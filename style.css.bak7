@@ -508,75 +508,10 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
 /* ---- METAS ---- */
 .meta-card{background:var(--card2);border-radius:var(--raio);padding:.8rem;margin-bottom:.6rem;border:1px solid var(--borda);transition:var(--transition)}
 .meta-card:hover{box-shadow:var(--sombra1)}
-.meta-card.meta-concluida{opacity:.75;border-left:3px solid var(--verde)}
-.meta-card.meta-atrasada{border-left:3px solid var(--vermelho)}
 .meta-nome{font-weight:600;font-size:.9rem}
 .meta-barra{height:8px;background:var(--borda);border-radius:4px;margin:.5rem 0;overflow:hidden}
 .meta-progresso{height:100%;background:linear-gradient(90deg,var(--cor),var(--cor2));border-radius:4px;transition:width .5s}
 .meta-info{display:flex;justify-content:space-between;font-size:.9rem;color:var(--txt2)}
-
-/* Metas - Stats header */
-.meta-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:.5rem;margin-bottom:.8rem}
-.meta-stat-card{background:var(--card2);border-radius:var(--raio);padding:.6rem .7rem;text-align:center;border:1px solid var(--borda);transition:var(--transition)}
-.meta-stat-card:hover{box-shadow:var(--sombra1)}
-.meta-stat-icon{font-size:1.2rem;display:block;margin-bottom:.1rem}
-.meta-stat-val{font-size:1.3rem;font-weight:800;color:var(--cor);display:block}
-.meta-stat-lbl{font-size:.68rem;color:var(--txt3);display:block}
-
-/* Metas - Nível bar */
-.meta-nivel-bar{margin-bottom:.8rem}
-.meta-nivel-info{font-size:.82rem;font-weight:600;margin-bottom:.3rem;color:var(--txt2)}
-
-/* Metas - Filter tabs */
-.meta-tabs{display:flex;gap:.4rem;margin-bottom:.7rem;flex-wrap:wrap}
-.meta-tab{background:var(--card2);border:1px solid var(--borda);border-radius:var(--raio);padding:.4rem .8rem;font-size:.78rem;font-weight:600;cursor:pointer;transition:var(--transition);color:var(--txt2)}
-.meta-tab:hover{background:var(--borda)}
-.meta-tab.ativo{background:var(--cor);color:#fff;border-color:var(--cor)}
-
-/* Metas - Add row */
-.meta-add-row{margin-bottom:.7rem}
-
-/* Metas - Card layout */
-.meta-card-top{display:flex;align-items:flex-start;gap:.5rem}
-.meta-check{cursor:pointer;width:24px;height:24px;border-radius:50%;border:2px solid var(--borda);display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0;transition:var(--transition);background:none;padding:0}
-.meta-check:hover{border-color:var(--cor);background:rgba(108,92,231,.08)}
-.meta-check.feito{background:var(--verde);border-color:var(--verde);color:#fff;font-size:.8rem}
-.meta-card-info{flex:1;min-width:0}
-.meta-card-info .meta-nome{display:block;margin-bottom:.15rem;word-break:break-word}
-.meta-card-acoes{display:flex;gap:.3rem;flex-shrink:0}
-.meta-btn-icon{padding:.2rem .35rem;font-size:.75rem;border-radius:var(--raio);min-width:auto}
-
-/* Metas - Description */
-.meta-desc{font-size:.78rem;color:var(--txt2);line-height:1.4;margin:.3rem 0;word-break:break-word}
-
-/* Metas - Category badge */
-.meta-cat-badge{font-size:.7rem;color:var(--txt3);display:inline-block}
-
-/* Metas - Progress slider */
-.meta-card-mid{display:flex;align-items:center;gap:.5rem;margin:.4rem 0}
-.meta-card-mid .meta-barra{flex:1;margin:0}
-.meta-progress-label{font-size:.72rem;font-weight:700;color:var(--cor);min-width:36px;text-align:right}
-.meta-slider-row{margin-bottom:.3rem}
-.meta-slider{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:var(--borda);border-radius:3px;outline:none;cursor:pointer}
-.meta-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:var(--cor);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.15)}
-.meta-slider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--cor);cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.15)}
-
-/* Metas - Card footer */
-.meta-card-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.4rem;margin-top:.3rem}
-.meta-prazo{font-size:.72rem;color:var(--txt3)}
-.meta-prazo.atrasada{color:var(--vermelho);font-weight:600}
-.meta-xp-badge{font-size:.72rem;font-weight:700;color:var(--amarelo);background:rgba(253,203,110,.12);padding:.1rem .4rem;border-radius:6px}
-
-/* Metas - Empty state */
-.meta-empty{text-align:center;padding:2rem 1rem;color:var(--txt3);font-size:.88rem;line-height:1.5}
-
-/* Metas - Encouragement */
-.meta-encorajamento{text-align:center;font-size:.85rem;color:var(--cor);font-weight:600;margin:.5rem 0;padding:.4rem .8rem;background:rgba(108,92,231,.06);border-radius:var(--raio);animation:fadeUp .3s ease}
-
-/* Metas - Celebration toast */
-.meta-celebracao{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--verde),#00b894);color:#fff;padding:.7rem 1.4rem;border-radius:var(--raio3);font-weight:700;font-size:.9rem;box-shadow:var(--sombra3);z-index:600;opacity:0;pointer-events:none;transition:all .4s ease;white-space:nowrap}
-.meta-celebracao.ativo{opacity:1;transform:translateX(-50%) translateY(-8px);pointer-events:auto;animation:metaCelebrar .6s ease}
-@keyframes metaCelebrar{0%{opacity:0;transform:translateX(-50%) translateY(20px)}50%{opacity:1;transform:translateX(-50%) translateY(-14px)}70%{transform:translateX(-50%) translateY(-4px)}100%{transform:translateX(-50%) translateY(-8px)}}
 
 /* ---- NOTAS ---- */
 .notas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem}
@@ -958,8 +893,11 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
 /* Matérias */
 .materia-nome{font-size:.9rem;font-weight:700;margin-bottom:.3rem}
 
-/* Metas - extras (superseded by new meta system) */
-.meta-item{display:none}
+/* Metas - extras */
+.meta-item{background:var(--card2);border-radius:var(--raio);padding:.7rem;margin-bottom:.5rem;border:1px solid var(--borda)}
+.meta-check{cursor:pointer;width:22px;height:22px;border-radius:50%;border:2px solid var(--borda);display:flex;align-items:center;justify-content:center;font-size:.6rem;flex-shrink:0;transition:var(--transition)}
+.meta-check.feito{background:var(--verde);border-color:var(--verde);color:#fff}
+.meta-texto{flex:1;font-weight:600;font-size:.88rem;word-break:break-word}
 
 /* Notas - extras */
 .nota-titulo{font-size:.9rem;font-weight:700;margin-bottom:.3rem}

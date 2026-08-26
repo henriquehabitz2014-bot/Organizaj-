@@ -158,20 +158,6 @@ function carregarEstado() {
   estado.lembretes.forEach(function(l) {
     if (!l.data) l.data = '';
   });
-  // Migration: metas — add new fields to existing items
-  estado.metas.forEach(function(m) {
-    if (!m.prazo) m.prazo = '';
-    if (!m.descricao) m.descricao = '';
-    if (m.progresso === undefined) m.progresso = m.feito ? 100 : 0;
-    if (!m.categoria) m.categoria = 'pessoal';
-    if (!m.criada) m.criada = '';
-    if (!m.concluidaData) m.concluidaData = '';
-    if (!m.xp) m.xp = 0;
-  });
-  if (!estado.metasXpTotal) estado.metasXpTotal = 0;
-  if (!estado.metasStreak) estado.metasStreak = 0;
-  if (!estado.metasStreakData) estado.metasStreakData = '';
-
   if (!estado.estudos) estado.estudos = { materias:[], provas:[], trabalhos:[] };
   if (!estado.estudos.materias) estado.estudos.materias = [];
   if (!estado.estudos.provas) estado.estudos.provas = [];
@@ -2445,356 +2431,35 @@ function playBeep() {
 }
 
 // ---- METAS ----
-// ---- METAS (sistema completo) ----
-var metaFiltroAtivo = 'todas';
-var metaEditId = null; // null=nova, id=editando
-
-function metaSliderInput(slider) {
-  var card = slider.closest('.meta-card');
-  if (!card) return;
-  var bar = card.querySelector('.meta-progresso');
-  var label = card.querySelector('.meta-progress-label');
-  if (bar) bar.style.width = slider.value + '%';
-  if (label) label.textContent = slider.value + '%';
-}
-var metaCategorias = [
-  {val:'pessoal', lbl:'Pessoal', icon:'👤'},
-  {val:'estudos', lbl:'Estudos', icon:'📚'},
-  {val:'trabalho', lbl:'Trabalho', icon:'💼'},
-  {val:'saude', lbl:'Saúde', icon:'💪'},
-  {val:'financas', lbl:'Finanças', icon:'💰'},
-  {val:'outro', lbl:'Outro', icon:'📌'}
-];
-
-var metaEncorajamentos = [
-  'Você está indo muito bem! 🌟',
-  'Cada passo conta! 👣',
-  'Continue assim! 💪',
-  'Quase lá, não desista! 🚀',
-  'Que progresso incrível! ✨',
-  'Você é dedicado(a)! 🏆',
-  'Mais um passo rumo ao objetivo! 🎯',
-  'Sua consistência é inspiradora! 💖'
-];
-
-var metaCelebracoes = [
-  '🎉 Parabéns! Meta concluída!',
-  '🏆 Sensacional! Você conseguiu!',
-  '🌟 Que conquista incrível!',
-  '👏 Meta alcançada! Que orgulho!',
-  '🎊 Você é demais!',
-  '💪 Determinação que inspira!'
-];
-
-function calcularXPMeta(meta) {
-  if (!meta.feito) return 0;
-  var base = 10;
-  // Bônus de conclusão antecipada
-  if (meta.prazo && meta.concluidaData) {
-    if (meta.concluidaData < meta.prazo) base += 5;
-  }
-  // Bônus por categoria
-  if (meta.categoria === 'estudos') base += 2;
-  if (meta.categoria === 'saude') base += 2;
-  // Bônus de progresso incremental (meta bem detalhada)
-  if (meta.descricao && meta.descricao.length > 20) base += 1;
-  return base;
-}
-
-function calcularNivelMetas() {
-  var xp = estado.metasXpTotal || 0;
-  if (xp <= 0) return {nivel: 1, titulo: 'Iniciante', xp: 0, proximo: 30, icone: '🌱'};
-  if (xp < 30) return {nivel: 1, titulo: 'Iniciante', xp: xp, proximo: 30, icone: '🌱'};
-  if (xp < 80) return {nivel: 2, titulo: 'Dedicado(a)', xp: xp, proximo: 80, icone: '🌿'};
-  if (xp < 160) return {nivel: 3, titulo: 'Focado(a)', xp: xp, proximo: 160, icone: '🌳'};
-  if (xp < 300) return {nivel: 4, titulo: 'Conquistador(a)', xp: xp, proximo: 300, icone: '⭐'};
-  if (xp < 500) return {nivel: 5, titulo: 'Vencedor(a)', xp: xp, proximo: 500, icone: '🏆'};
-  if (xp < 800) return {nivel: 6, titulo: 'Lendário(a)', xp: xp, proximo: 800, icone: '💎'};
-  return {nivel: 7, titulo: 'Mestre', xp: xp, proximo: xp + 100, icone: '👑'};
-}
-
-function calcularStreakMetas() {
-  var hoje = hojeStr();
-  // Verificar se já contamos hoje
-  if (estado.metasStreakData === hoje) return estado.metasStreak;
-  // Verificar se houve meta concluída ontem
-  var ontem = new Date();
-  ontem.setDate(ontem.getDate() - 1);
-  var ontemStr = ontem.getFullYear() + '-' + String(ontem.getMonth()+1).padStart(2,'0') + '-' + String(ontem.getDate()).padStart(2,'0');
-  var teveOntem = estado.metas.some(function(m) { return m.concluidaData === ontemStr; });
-  if (!teveOntem && estado.metasStreakData !== ontemStr) {
-    // Streak quebrou
-    estado.metasStreak = 0;
-  }
-  return estado.metasStreak;
-}
-
-function registrarConclusaoMeta(meta) {
-  meta.feito = true;
-  meta.progresso = 100;
-  meta.concluidaData = hojeStr();
-  var xpGanho = calcularXPMeta(meta);
-  meta.xp = xpGanho;
-  estado.metasXpTotal = (estado.metasXpTotal || 0) + xpGanho;
-  // Streak
-  var hoje = hojeStr();
-  if (estado.metasStreakData !== hoje) {
-    if (estado.metasStreakData !== '') {
-      var ontem = new Date();
-      ontem.setDate(ontem.getDate() - 1);
-      var ontemStr = ontem.getFullYear() + '-' + String(ontem.getMonth()+1).padStart(2,'0') + '-' + String(ontem.getDate()).padStart(2,'0');
-      if (estado.metasStreakData === ontemStr) {
-        estado.metasStreak = (estado.metasStreak || 0) + 1;
-      } else {
-        estado.metasStreak = 1;
-      }
-    } else {
-      estado.metasStreak = 1;
-    }
-    estado.metasStreakData = hoje;
-  }
-}
-
-function abrirMetaModal(id) {
-  metaEditId = id || null;
-  var modal = document.getElementById('metaModal');
-  var title = document.getElementById('metaModalTitle');
-  if (metaEditId) {
-    var m = estado.metas.find(function(x) { return x.id === metaEditId; });
-    if (!m) return;
-    title.textContent = '✏️ Editar meta';
-    document.getElementById('metaModTexto').value = m.texto || '';
-    document.getElementById('metaModDesc').value = m.descricao || '';
-    document.getElementById('metaModPrazo').value = m.prazo || '';
-    document.getElementById('metaModCategoria').value = m.categoria || 'pessoal';
-    document.getElementById('metaModProgresso').value = m.progresso || 0;
-    document.getElementById('metaModProgressoVal').textContent = (m.progresso || 0) + '%';
-  } else {
-    title.textContent = '🎯 Nova meta';
-    document.getElementById('metaModTexto').value = '';
-    document.getElementById('metaModDesc').value = '';
-    document.getElementById('metaModPrazo').value = '';
-    document.getElementById('metaModCategoria').value = 'pessoal';
-    document.getElementById('metaModProgresso').value = 0;
-    document.getElementById('metaModProgressoVal').textContent = '0%';
-  }
-  modal.classList.add('visivel');
-}
-
-function fecharMetaModal(e) {
-  if (e && e.target && !e.target.classList.contains('tk-modal-bg')) return;
-  document.getElementById('metaModal').classList.remove('visivel');
-  metaEditId = null;
-}
-
-function salvarMetaModal() {
-  var texto = document.getElementById('metaModTexto').value.trim();
-  if (!texto) return;
-  var desc = document.getElementById('metaModDesc').value.trim();
-  var prazo = document.getElementById('metaModPrazo').value;
-  var cat = document.getElementById('metaModCategoria').value;
-  var prog = parseInt(document.getElementById('metaModProgresso').value) || 0;
-  if (prog < 0) prog = 0;
-  if (prog > 100) prog = 100;
-
-  if (metaEditId) {
-    var m = estado.metas.find(function(x) { return x.id === metaEditId; });
-    if (m) {
-      m.texto = texto;
-      m.descricao = desc;
-      m.prazo = prazo;
-      m.categoria = cat;
-      m.progresso = prog;
-      if (prog === 100 && !m.feito) {
-        registrarConclusaoMeta(m);
-        mostrarCelebracaoMeta();
-      }
-    }
-  } else {
-    var nova = {
-      id: uid(),
-      texto: texto,
-      descricao: desc,
-      prazo: prazo,
-      categoria: cat,
-      progresso: prog,
-      feito: prog === 100,
-      criada: hojeStr(),
-      concluidaData: prog === 100 ? hojeStr() : '',
-      xp: 0
-    };
-    if (nova.feito) {
-      nova.xp = calcularXPMeta(nova);
-      estado.metasXpTotal = (estado.metasXpTotal || 0) + nova.xp;
-    }
-    estado.metas.push(nova);
-  }
-  document.getElementById('metaModal').classList.remove('visivel');
-  metaEditId = null;
-  salvarEstado();
-  renderMetas();
-}
-
-function toggleMetaConclusao(id) {
-  var m = estado.metas.find(function(x) { return x.id === id; });
-  if (!m) return;
-  if (m.feito) {
-    // Desmarcar conclusão
-    m.feito = false;
-    m.concluidaData = '';
-    if (m.xp > 0) {
-      estado.metasXpTotal = Math.max(0, (estado.metasXpTotal || 0) - m.xp);
-      m.xp = 0;
-    }
-  } else {
-    registrarConclusaoMeta(m);
-    mostrarCelebracaoMeta();
-  }
+function addMeta() {
+  var txt = document.getElementById('metaInput').value.trim();
+  if (!txt) return;
+  estado.metas.push({texto:txt, feito:false, id:uid()});
+  document.getElementById('metaInput').value = '';
   salvarEstado(); renderMetas();
 }
 
-function atualizarProgressoMeta(id, val) {
-  var m = estado.metas.find(function(x) { return x.id === id; });
-  if (!m) return;
-  var prog = parseInt(val) || 0;
-  if (prog < 0) prog = 0;
-  if (prog > 100) prog = 100;
-  m.progresso = prog;
-  if (prog === 100 && !m.feito) {
-    registrarConclusaoMeta(m);
-    mostrarCelebracaoMeta();
-  }
-  salvarEstado(); renderMetas();
+function toggleMeta(id) {
+  var m = estado.metas.find(function(x){return x.id===id;});
+  if (m) { m.feito = !m.feito; salvarEstado(); renderMetas(); }
 }
 
 function delMeta(id) {
-  var m = estado.metas.find(function(x) { return x.id === id; });
-  var msg = m ? 'Excluir a meta "' + esc(m.texto) + '"?' : 'Excluir esta meta?';
-  confirmar(msg, function() {
-    // Reembolsar XP se estava concluída
-    if (m && m.xp > 0) {
-      estado.metasXpTotal = Math.max(0, (estado.metasXpTotal || 0) - m.xp);
-    }
-    estado.metas = estado.metas.filter(function(x) { return x.id !== id; });
-    salvarEstado(); renderMetas();
-  });
-}
-
-function filtrarMetas(filtro) {
-  metaFiltroAtivo = filtro;
-  renderMetas();
-}
-
-function mostrarCelebracaoMeta() {
-  var el = document.getElementById('metaCelebracao');
-  if (!el) return;
-  var msg = metaCelebracoes[Math.floor(Math.random() * metaCelebracoes.length)];
-  el.textContent = msg;
-  el.classList.add('ativo');
-  setTimeout(function() { el.classList.remove('ativo'); }, 2800);
-}
-
-function renderMetaStats() {
-  var total = estado.metas.length;
-  var ativas = estado.metas.filter(function(m) { return !m.feito; }).length;
-  var concluidas = estado.metas.filter(function(m) { return m.feito; }).length;
-  var xpTotal = estado.metasXpTotal || 0;
-  var nivel = calcularNivelMetas();
-  var streak = estado.metasStreak || 0;
-  var html = '';
-  html += '<div class="meta-stat-card"><span class="meta-stat-icon">📋</span><span class="meta-stat-val">' + total + '</span><span class="meta-stat-lbl">Total</span></div>';
-  html += '<div class="meta-stat-card"><span class="meta-stat-icon">🔥</span><span class="meta-stat-val">' + ativas + '</span><span class="meta-stat-lbl">Ativas</span></div>';
-  html += '<div class="meta-stat-card"><span class="meta-stat-icon">✅</span><span class="meta-stat-val">' + concluidas + '</span><span class="meta-stat-lbl">Concluídas</span></div>';
-  html += '<div class="meta-stat-card"><span class="meta-stat-icon">' + nivel.icone + '</span><span class="meta-stat-val">' + nivel.nivel + '</span><span class="meta-stat-lbl">' + nivel.titulo + '</span></div>';
-  html += '<div class="meta-stat-card"><span class="meta-stat-icon">⭐</span><span class="meta-stat-val">' + xpTotal + '</span><span class="meta-stat-lbl">XP</span></div>';
-  if (streak > 0) {
-    html += '<div class="meta-stat-card"><span class="meta-stat-icon">🔥</span><span class="meta-stat-val">' + streak + '</span><span class="meta-stat-lbl">Streak</span></div>';
-  }
-  var statsEl = document.getElementById('metaStats');
-  if (statsEl) statsEl.innerHTML = html;
-  // Nível bar
-  var nivelEl = document.getElementById('metaNivelBar');
-  if (nivelEl) {
-    var pct = nivel.proximo > 0 ? Math.min(100, Math.round((nivel.xp / nivel.proximo) * 100)) : 100;
-    nivelEl.innerHTML = '<div class="meta-nivel-info">' + nivel.icone + ' Nível ' + nivel.nivel + ' — ' + nivel.titulo + ' <span style="color:var(--txt3);font-size:.72rem">(' + nivel.xp + '/' + nivel.proximo + ' XP)</span></div>' + '<div class="meta-barra"><div class="meta-progresso" style="width:' + pct + '%"></div></div>';
-  }
-}
-
-function renderMetaCards() {
-  var lista = estado.metas;
-  if (metaFiltroAtivo === 'ativas') lista = lista.filter(function(m) { return !m.feito; });
-  else if (metaFiltroAtivo === 'concluidas') lista = lista.filter(function(m) { return m.feito; });
-
-  var html = '';
-  lista.forEach(function(m) {
-    var catObj = metaCategorias.find(function(c) { return c.val === m.categoria; }) || {lbl:'Outro', icon:'📌'};
-    var prazoTxt = m.prazo ? dataLocal(m.prazo) : 'Sem prazo';
-    var atrasada = !m.feito && m.prazo && m.prazo < hojeStr();
-    var pct = m.progresso || 0;
-
-    html += '<div class="meta-card' + (m.feito ? ' meta-concluida' : '') + (atrasada ? ' meta-atrasada' : '') + '">';
-    html += '<div class="meta-card-top">';
-    html += '<button class="meta-check' + (m.feito ? ' feito' : '') + '" onclick="toggleMetaConclusao(\'' + m.id + '\')" title="' + (m.feito ? 'Desmarcar' : 'Concluir') + '">' + (m.feito ? '✅' : '⬜') + '</button>';
-    html += '<div class="meta-card-info">';
-    html += '<span class="meta-nome">' + esc(m.texto) + '</span>';
-    html += '<span class="meta-cat-badge">' + catObj.icon + ' ' + catObj.lbl + '</span>';
-    html += '</div>';
-    html += '<div class="meta-card-acoes">';
-    html += '<button class="btn btn-s meta-btn-icon" onclick="abrirMetaModal(\'' + m.id + '\')" title="Editar">✏️</button>';
-    html += '<button class="btn btn-s meta-btn-icon" onclick="delMeta(\'' + m.id + '\')" title="Excluir">🗑️</button>';
-    html += '</div>';
-    html += '</div>';
-
-    if (m.descricao) {
-      html += '<div class="meta-desc">' + esc(m.descricao) + '</div>';
-    }
-
-    html += '<div class="meta-card-mid">';
-    html += '<div class="meta-barra"><div class="meta-progresso" style="width:' + pct + '%"></div></div>';
-    html += '<div class="meta-progress-label">' + pct + '%</div>';
-    html += '</div>';
-
-    if (!m.feito) {
-      html += '<div class="meta-slider-row">';
-      html += '<input type="range" min="0" max="100" step="5" value="' + pct + '" class="meta-slider" data-meta-id="' + m.id + '" onchange="atualizarProgressoMeta(\'' + m.id + '\', this.value)" oninput="metaSliderInput(this)" title="Ajustar progresso">';
-      html += '</div>';
-    }
-
-    html += '<div class="meta-card-foot">';
-    html += '<span class="meta-prazo' + (atrasada ? ' atrasada' : '') + '">📅 ' + prazoTxt + '</span>';
-    if (m.xp > 0) {
-      html += '<span class="meta-xp-badge">⭐ +' + m.xp + ' XP</span>';
-    }
-    html += '</div>';
-
-    html += '</div>';
-  });
-
-  if (!html) {
-    var emptyMsg = metaFiltroAtivo === 'ativas' ? 'Nenhuma meta ativa. Crie uma nova meta! 🎯' : metaFiltroAtivo === 'concluidas' ? 'Nenhuma meta concluída ainda. Continue firme! 💪' : 'Nenhuma meta adicionada. Comece definindo um objetivo! 🌟';
-    html = '<div class="meta-empty">' + emptyMsg + '</div>';
-  }
-
-  var listaEl = document.getElementById('metasLista');
-  if (listaEl) listaEl.innerHTML = html;
-
-  // Encorajamento aleatório se há metas em andamento
-  var encEl = document.getElementById('metaEncorajamento');
-  if (encEl && estado.metas.some(function(m) { return !m.feito && m.progresso > 0 && m.progresso < 100; })) {
-    encEl.textContent = metaEncorajamentos[Math.floor(Math.random() * metaEncorajamentos.length)];
-    encEl.style.display = 'block';
-  } else if (encEl) {
-    encEl.style.display = 'none';
-  }
+  estado.metas = estado.metas.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderMetas();
 }
 
 function renderMetas() {
-  renderMetaStats();
-  renderMetaCards();
-  // Update filter tabs
-  document.querySelectorAll('.meta-tab').forEach(function(t) {
-    t.classList.toggle('ativo', t.getAttribute('data-filtro') === metaFiltroAtivo);
+  var html = '';
+  estado.metas.forEach(function(m) {
+    html += '<div class="meta-item' + (m.feito ? ' feito' : '') + '">';
+    html += '<span class="meta-check" onclick="toggleMeta(\''+m.id+'\')">' + (m.feito ? '🎯' : '⬜') + '</span>';
+    html += '<span class="meta-texto">' + esc(m.texto) + '</span>';
+    html += '<button class="btn btn-d" style="font-size:.65rem" onclick="delMeta(\''+m.id+'\')">✕</button>';
+    html += '</div>';
   });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma meta adicionada.</div>';
+  document.getElementById('metasLista').innerHTML = html;
 }
 
 // ---- NOTAS ----

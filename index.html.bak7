@@ -566,76 +566,12 @@
   <div class="content-wrap">
     <div class="secao">
       <h2 class="secao-titulo">🎯 Metas</h2>
-
-      <!-- Stats -->
-      <div class="meta-stats" id="metaStats"></div>
-      <div class="meta-nivel-bar" id="metaNivelBar"></div>
-
-      <!-- Filter tabs -->
-      <div class="meta-tabs">
-        <button class="meta-tab ativo" data-filtro="todas" onclick="filtrarMetas('todas')">📋 Todas</button>
-        <button class="meta-tab" data-filtro="ativas" onclick="filtrarMetas('ativas')">🔥 Ativas</button>
-        <button class="meta-tab" data-filtro="concluidas" onclick="filtrarMetas('concluidas')">✅ Concluídas</button>
+      <div class="linha">
+        <input class="campo" id="metaInput" placeholder="Nova meta...">
+        <input class="campo" id="metaPrazo" type="date" style="width:140px">
+        <button class="btn btn-p" onclick="addMeta()">Adicionar</button>
       </div>
-
-      <!-- Add button -->
-      <div class="meta-add-row">
-        <button class="btn btn-p" onclick="abrirMetaModal()">➕ Nova Meta</button>
-      </div>
-
-      <!-- Encorajamento -->
-      <div class="meta-encorajamento" id="metaEncorajamento" style="display:none"></div>
-
-      <!-- Meta cards -->
       <div id="metasLista"></div>
-    </div>
-  </div>
-
-  <!-- Celebration toast -->
-  <div class="meta-celebracao" id="metaCelebracao"></div>
-</div>
-
-<!-- META MODAL -->
-<div class="tk-modal-bg" id="metaModal" onclick="fecharMetaModal(event)">
-  <div class="tk-modal" onclick="event.stopPropagation()">
-    <div class="tk-modal-head">
-      <h3 id="metaModalTitle">🎯 Nova meta</h3>
-      <button class="tk-modal-x" onclick="fecharMetaModal()" title="Fechar">✕</button>
-    </div>
-    <div class="tk-modal-body">
-      <div class="tk-field">
-        <label class="tk-lbl" for="metaModTexto">📌 Título da meta *</label>
-        <input class="campo" id="metaModTexto" placeholder="Ex: Entregar todos os trabalhos da semana">
-      </div>
-      <div class="tk-field">
-        <label class="tk-lbl" for="metaModDesc">📝 Descrição</label>
-        <textarea class="campo tk-ta" id="metaModDesc" rows="3" placeholder="Descreva detalhes da sua meta..."></textarea>
-      </div>
-      <div class="tk-adv-grid">
-        <div class="tk-field">
-          <label class="tk-lbl" for="metaModPrazo">📅 Prazo</label>
-          <input class="campo" id="metaModPrazo" type="date">
-        </div>
-        <div class="tk-field">
-          <label class="tk-lbl" for="metaModCategoria">📂 Categoria</label>
-          <select class="campo" id="metaModCategoria">
-            <option value="pessoal">👤 Pessoal</option>
-            <option value="estudos">📚 Estudos</option>
-            <option value="trabalho">💼 Trabalho</option>
-            <option value="saude">💪 Saúde</option>
-            <option value="financas">💰 Finanças</option>
-            <option value="outro">📌 Outro</option>
-          </select>
-        </div>
-      </div>
-      <div class="tk-field">
-        <label class="tk-lbl" for="metaModProgresso">📈 Progresso: <span id="metaModProgressoVal">0%</span></label>
-        <input type="range" min="0" max="100" step="5" value="0" class="meta-slider" id="metaModProgresso" oninput="document.getElementById('metaModProgressoVal').textContent=this.value+'%'">
-      </div>
-    </div>
-    <div class="tk-modal-foot">
-      <button class="btn btn-s" onclick="fecharMetaModal()">Cancelar</button>
-      <button class="btn btn-p" onclick="salvarMetaModal()">💾 Salvar</button>
     </div>
   </div>
 </div>
