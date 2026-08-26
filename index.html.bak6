@@ -388,13 +388,14 @@
 
 <!-- ======== PAGE: ESTUDOS ======== -->
 <div class="page" id="page-estudos">
-  <div class="content-wrap" id="estudosMain">
+  <div class="content-wrap">
     <div class="secao">
-      <div class="secao-header">
-        <h2 class="secao-titulo" style="margin-bottom:0">📚 Meus Estudos</h2>
-        <button class="btn btn-p" onclick="abrirMateriaModal()">＋ Nova matéria</button>
+      <h2 class="secao-titulo">📚 Área de Estudos</h2>
+      <div class="linha">
+        <input class="campo" id="materiaInput" placeholder="Matéria...">
+        <input class="campo" id="materiaCor" type="color" value="#6c5ce7" style="width:40px;height:36px;padding:2px">
+        <button class="btn btn-p" onclick="addMateria()">Adicionar</button>
       </div>
-      <p class="estudos-sub" id="estudosSub">Organize suas matérias, acompanhe tarefas, provas e trabalhos.</p>
       <div class="estudos-materias" id="materiasGrid"></div>
     </div>
     <div class="secao">
@@ -410,109 +411,6 @@
         <button class="btn btn-p secao-add-btn" onclick="abrirTrabalhoModal()">＋ Adicionar</button>
       </div>
       <div class="estudos-trabalhos" id="trabalhosLista"></div>
-    </div>
-  </div>
-
-  <!-- MATÉRIA DETAIL SUB-PAGE -->
-  <div class="content-wrap" id="materiaDetalhe" style="display:none">
-    <div class="mat-detalhe-top">
-      <button class="btn btn-s mat-back" onclick="voltarEstudos()">← Voltar</button>
-      <div class="mat-detalhe-header" id="matDetalheHeader"></div>
-    </div>
-    <div class="mat-detalhe-progresso" id="matDetalheProgresso"></div>
-    <div class="mat-detalhe-pendentes" id="matDetalhePendentes"></div>
-    <div class="secao">
-      <div class="secao-header">
-        <h3 style="font-size:1rem;font-weight:700;margin:0">✅ Tarefas</h3>
-        <button class="btn btn-p secao-add-btn" onclick="abrirTarefaModalComMateria()">＋ Adicionar</button>
-      </div>
-      <div id="matDetalheTarefas"></div>
-    </div>
-    <div class="secao">
-      <div class="secao-header">
-        <h3 style="font-size:1rem;font-weight:700;margin:0">📝 Provas</h3>
-        <button class="btn btn-p secao-add-btn" onclick="abrirProvaModal()">＋ Adicionar</button>
-      </div>
-      <div id="matDetalheProvas"></div>
-    </div>
-    <div class="secao">
-      <div class="secao-header">
-        <h3 style="font-size:1rem;font-weight:700;margin:0">📄 Trabalhos</h3>
-        <button class="btn btn-p secao-add-btn" onclick="abrirTrabalhoModal()">＋ Adicionar</button>
-      </div>
-      <div id="matDetalheTrabalhos"></div>
-    </div>
-    <div class="secao">
-      <div class="secao-header">
-        <h3 style="font-size:1rem;font-weight:700;margin:0">📓 Anotações</h3>
-        <button class="btn btn-p secao-add-btn" onclick="addAnotacao()">＋ Adicionar</button>
-      </div>
-      <div class="mat-anotacoes-lista" id="matDetalheAnotacoes"></div>
-    </div>
-    <div class="secao">
-      <div class="secao-header">
-        <h3 style="font-size:1rem;font-weight:700;margin:0">⚙️ Configuração</h3>
-      </div>
-      <div class="mat-config-linha">
-        <label class="tk-lbl" for="matMetaHoras">🎯 Meta de horas de estudo</label>
-        <input class="campo" id="matMetaHoras" type="number" min="0" step="0.5" style="width:100px" onchange="salvarMetaHoras()">
-      </div>
-      <div style="margin-top:.8rem">
-        <button class="btn btn-p" onclick="abrirMateriaModal(matDetalheIdAtual)">✏️ Editar matéria</button>
-        <button class="btn btn-d" style="margin-left:.5rem" onclick="confirmarDelMateria(matDetalheIdAtual)">🗑️ Excluir matéria</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MATERIA MODAL -->
-<div class="tk-modal-bg" id="materiaModal" onclick="fecharMateriaModal(event)">
-  <div class="tk-modal" onclick="event.stopPropagation()">
-    <div class="tk-modal-head">
-      <h3 id="matModalTitle">＋ Nova matéria</h3>
-      <button class="tk-modal-x" onclick="fecharMateriaModal()" title="Fechar">✕</button>
-    </div>
-    <div class="tk-modal-body">
-      <div class="tk-field">
-        <label class="tk-lbl" for="matNomeInput">📚 Nome da matéria *</label>
-        <input class="campo" id="matNomeInput" placeholder="Ex: Matemática">
-      </div>
-      <div class="tk-field">
-        <label class="tk-lbl" for="matCorInput">🎨 Cor</label>
-        <input class="campo" id="matCorInput" type="color" value="#6c5ce7" style="width:50px;height:38px;padding:2px">
-      </div>
-      <div class="tk-field">
-        <label class="tk-lbl" for="matMetaInput">🎯 Meta de horas de estudo</label>
-        <input class="campo" id="matMetaInput" type="number" min="0" step="0.5" placeholder="Ex: 10">
-      </div>
-    </div>
-    <div class="tk-modal-foot">
-      <button class="btn btn-s" onclick="fecharMateriaModal()">Cancelar</button>
-      <button class="btn btn-p" onclick="salvarMateria()">💾 Salvar</button>
-    </div>
-  </div>
-</div>
-
-<!-- ANOTACAO MODAL -->
-<div class="tk-modal-bg" id="anotacaoModal" onclick="fecharAnotacaoModal(event)">
-  <div class="tk-modal" onclick="event.stopPropagation()">
-    <div class="tk-modal-head">
-      <h3 id="anotModalTitle">📓 Nova anotação</h3>
-      <button class="tk-modal-x" onclick="fecharAnotacaoModal()" title="Fechar">✕</button>
-    </div>
-    <div class="tk-modal-body">
-      <div class="tk-field">
-        <label class="tk-lbl" for="anotTituloInput">📌 Título *</label>
-        <input class="campo" id="anotTituloInput" placeholder="Ex: Fórmulas de derivada">
-      </div>
-      <div class="tk-field">
-        <label class="tk-lbl" for="anotContInput">📋 Conteúdo</label>
-        <textarea class="campo tk-ta" id="anotContInput" rows="5" placeholder="Escreva sua anotação aqui..."></textarea>
-      </div>
-    </div>
-    <div class="tk-modal-foot">
-      <button class="btn btn-s" onclick="fecharAnotacaoModal()">Cancelar</button>
-      <button class="btn btn-p" onclick="salvarAnotacao()">💾 Salvar</button>
     </div>
   </div>
 </div>

@@ -371,42 +371,6 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
 .materia-barra{height:8px;background:var(--borda);border-radius:4px;margin:.3rem 0;overflow:hidden}
 .materia-fill{height:100%;background:linear-gradient(90deg,var(--cor),var(--cor2));border-radius:4px;transition:width .5s}
 .materia-info{font-size:.75rem;color:var(--txt3);display:flex;justify-content:space-between}
-.materia-stats{font-size:.72rem;color:var(--txt3);margin-top:.25rem;display:flex;gap:.6rem;flex-wrap:wrap}
-.materia-pendentes{font-size:.7rem;color:var(--vermelho);font-weight:600;margin-top:.15rem}
-.estudos-sub{font-size:.78rem;color:var(--txt3);margin-bottom:.8rem}
-.estudos-vazio{text-align:center;padding:2rem;color:var(--txt3);font-size:.85rem}
-/* ---- Materia detalhe page ---- */
-.mat-detalhe-top{margin-bottom:1rem}
-.mat-detalhe-header{display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem}
-.mat-detalhe-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
-.mat-detalhe-nome{font-size:1.2rem;font-weight:700}
-.mat-detalhe-progresso{background:var(--card);border:1px solid var(--borda);border-radius:var(--raio2);padding:1rem;margin-bottom:1rem}
-.mat-prog-linha{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem}
-.mat-prog-pct{font-size:1rem;font-weight:700;min-width:50px}
-.mat-prog-detalhe{font-size:.75rem;color:var(--txt3)}
-.mat-detalhe-pendentes{background:var(--card);border:1px solid var(--borda);border-radius:var(--raio2);padding:1rem;margin-bottom:1rem}
-.mat-pend-card{background:var(--bg);border:1px solid var(--borda);border-radius:var(--raio);padding:.7rem;margin-bottom:.5rem}
-.mat-pend-titulo{font-size:.82rem;font-weight:600;margin-bottom:.3rem}
-.mat-pend-secao{font-size:.7rem;color:var(--txt3);margin-bottom:.2rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.mat-pend-item{font-size:.76rem;color:var(--txt2);padding:.2rem 0;display:flex;align-items:center;gap:.4rem}
-.mat-pend-ok{color:var(--verde);font-weight:600}
-/* ---- Materia config ---- */
-.mat-config-linha{display:flex;align-items:center;gap:.8rem;margin-bottom:.6rem}
-.mat-config-linha label{font-size:.78rem;color:var(--txt3);min-width:110px}
-/* ---- Anotacoes ---- */
-.anot-card{background:var(--card);border:1px solid var(--borda);border-radius:var(--raio2);padding:.9rem;margin-bottom:.7rem;transition:var(--transition)}
-.anot-card:hover{box-shadow:var(--sombra1)}
-.anot-titulo{font-size:.88rem;font-weight:600;margin-bottom:.3rem}
-.anot-conteudo{font-size:.78rem;color:var(--txt2);line-height:1.5;white-space:pre-wrap}
-.anot-data{font-size:.68rem;color:var(--txt3);margin-top:.4rem}
-.anot-botoes{display:flex;gap:.5rem;margin-top:.5rem}
-/* ---- Back button ---- */
-.mat-back{display:inline-flex;align-items:center;gap:.3rem;font-size:.82rem;color:var(--txt3);cursor:pointer;margin-bottom:.8rem;padding:.3rem .6rem;border-radius:var(--raio);border:1px solid var(--borda);background:var(--card);transition:var(--transition)}
-.mat-back:hover{background:var(--bg);color:var(--txt2)}
-/* ---- Secao header ---- */
-.secao-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem}
-.secao-header h3{font-size:.92rem;font-weight:700}
-.secao-header button{font-size:.75rem}
 .estudos-provas{margin-bottom:1rem}
 /* ---- PROVAS cards ---- */
 .pv-card{

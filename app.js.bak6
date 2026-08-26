@@ -173,12 +173,6 @@ function carregarEstado() {
     if (!tr.status) tr.status = 'pendente';
     if (!tr.hora) tr.hora = '';
   });
-  // Migration: add anotacoes/metaHoras to existing materias
-  estado.estudos.materias.forEach(function(m) {
-    if (!m.anotacoes) m.anotacoes = [];
-    if (!m.metaHoras) m.metaHoras = 0;
-    if (!m.id) m.id = uid();
-  });
   if (!estado.calView) estado.calView = 'mes';
   if (!estado.calEventos) estado.calEventos = [];
   if (estado.calDiaSel === undefined) estado.calDiaSel = null;
@@ -1629,406 +1623,39 @@ function delCalEvento(id) {
 }
 
 // ---- ESTUDOS ----
-// ---- ESTUDOS: Meus Estudos ----
-var matEditId = null;
-var matDetalheIdAtual = null;
-var anotEditIdx = null;
-
 function renderEstudos() {
-  // If detail view was open, return to main
-  matDetalheIdAtual = null;
-  var det = document.getElementById('materiaDetalhe');
-  var main = document.getElementById('estudosMain');
-  if (det) det.style.display = 'none';
-  if (main) main.style.display = '';
   renderMaterias();
   renderProvas();
   renderTrabalhos();
 }
 
-// --- Materia Modal ---
-function abrirMateriaModal(editId) {
-  matEditId = editId || null;
-  var modal = document.getElementById('materiaModal');
-  if (!modal) return;
-  modal.classList.add('ativo');
-  if (matEditId) {
-    var m = estado.estudos.materias.find(function(x){ return x.id === matEditId; });
-    if (m) {
-      document.getElementById('matNomeInput').value = m.nome || '';
-      document.getElementById('matCorInput').value = m.cor || '#6c5ce7';
-      document.getElementById('matMetaInput').value = m.metaHoras || 0;
-      document.getElementById('matModalTitle').textContent = '✏️ Editar matéria';
-    }
-  } else {
-    document.getElementById('matNomeInput').value = '';
-    document.getElementById('matCorInput').value = '#6c5ce7';
-    document.getElementById('matMetaInput').value = '';
-    document.getElementById('matModalTitle').textContent = '＋ Nova matéria';
-  }
-}
-
-function fecharMateriaModal(e) {
-  if (e && e.target !== e.currentTarget) return;
-  document.getElementById('materiaModal').classList.remove('ativo');
-  matEditId = null;
-}
-
-function salvarMateria() {
-  var nome = document.getElementById('matNomeInput').value.trim();
+function addMateria() {
+  var nome = document.getElementById('materiaInput').value.trim();
   if (!nome) return;
-  var cor = document.getElementById('matCorInput').value;
-  var meta = parseFloat(document.getElementById('matMetaInput').value) || 0;
-  if (matEditId) {
-    var m = estado.estudos.materias.find(function(x){ return x.id === matEditId; });
-    if (m) {
-      // Update materia name in related provas, trabalhos, tarefas
-      var oldNome = m.nome;
-      m.nome = nome;
-      m.cor = cor;
-      m.metaHoras = meta;
-      if (oldNome !== nome) {
-        estado.estudos.provas.forEach(function(p){ if (p.materia === oldNome) p.materia = nome; });
-        estado.estudos.trabalhos.forEach(function(t){ if (t.materia === oldNome) t.materia = nome; });
-        estado.tarefas.forEach(function(t){ if (t.materia === oldNome) t.materia = nome; });
-      }
-    }
-  } else {
-    estado.estudos.materias.push({nome:nome, cor:cor, id:uid(), anotacoes:[], metaHoras:meta});
-  }
-  salvarEstado();
-  fecharMateriaModal();
-  renderMaterias();
-  // If detail is open, refresh it
-  if (matDetalheIdAtual) renderMateriaDetalhe(matDetalheIdAtual);
-}
-
-function confirmarDelMateria(id) {
-  var m = estado.estudos.materias.find(function(x){ return x.id === id; });
-  var nome = m ? m.nome : 'esta matéria';
-  showConfirm('Excluir "' + nome + '" e todas as anotações? Provas, trabalhos e tarefas não serão excluídos.', function() {
-    estado.estudos.materias = estado.estudos.materias.filter(function(x){ return x.id !== id; });
-    salvarEstado();
-    voltarEstudos();
-    renderMaterias();
-  });
+  var cor = document.getElementById('materiaCor').value;
+  estado.estudos.materias.push({nome:nome, cor:cor, id:uid()});
+  document.getElementById('materiaInput').value = '';
+  salvarEstado(); renderMaterias();
 }
 
 function delMateria(id) {
-  confirmarDelMateria(id);
+  estado.estudos.materias = estado.estudos.materias.filter(function(m){return m.id!==id;});
+  salvarEstado(); renderMaterias();
 }
 
 function renderMaterias() {
   var html = '';
-  var hoje = hojeStr();
   estado.estudos.materias.forEach(function(m) {
-    var provas = estado.estudos.provas.filter(function(p){return p.materia===m.nome});
-    var trabs = estado.estudos.trabalhos.filter(function(t){return t.materia===m.nome});
-    var tarefas = estado.tarefas.filter(function(t){return t.materia===m.nome});
-    var nProvas = provas.length;
-    var nTrabs = trabs.length;
-    var nTarefas = tarefas.length;
-    var nAnotacoes = (m.anotacoes || []).length;
-    // Pendentes: provas futuras, trabalhos pendente/fazendo, tarefas nao feitas
-    var provasPend = provas.filter(function(p){return p.data && p.data >= hoje}).length;
-    var trabsPend = trabs.filter(function(t){return t.status !== 'concluido'}).length;
-    var tarefasPend = tarefas.filter(function(t){return !t.feito}).length;
-    var totalPend = provasPend + trabsPend + tarefasPend;
-    // Progress: completed / total
-    var tarefasDone = tarefas.filter(function(t){return t.feito}).length;
-    var trabsDone = trabs.filter(function(t){return t.status === 'concluido'}).length;
-    var totalItems = nTarefas + nTrabs;
-    var totalDone = tarefasDone + trabsDone;
-    var pct = totalItems > 0 ? Math.round((totalDone / totalItems) * 100) : 0;
-
-    html += '<div class="materia-card" style="border-left:4px solid ' + m.cor + '" onclick="abrirMateriaDetalhe(\'' + m.id + '\')" tabindex="0" role="button" aria-label="Ver detalhes de ' + esc(m.nome) + '">';
-    html += '<div class="materia-nome" style="color:' + m.cor + '">' + esc(m.nome) + '</div>';
-    if (totalItems > 0) {
-      html += '<div class="materia-barra"><div class="materia-fill" style="width:' + pct + '%;background:' + m.cor + '"></div></div>';
-      html += '<div class="materia-info">' + pct + '% concluído</div>';
-    } else {
-      html += '<div class="materia-info" style="margin-top:.3rem">Sem atividades ainda</div>';
-    }
-    html += '<div class="materia-stats">';
-    html += '<span>✅ ' + nTarefas + '</span>';
-    html += '<span>📝 ' + nProvas + '</span>';
-    html += '<span>📄 ' + nTrabs + '</span>';
-    html += '<span>📓 ' + nAnotacoes + '</span>';
-    html += '</div>';
-    if (totalPend > 0) {
-      html += '<div class="materia-pendentes">⏳ ' + totalPend + ' pendente' + (totalPend > 1 ? 's' : '') + '</div>';
-    }
+    var provas = estado.estudos.provas.filter(function(p){return p.materia===m.nome}).length;
+    var trabs = estado.estudos.trabalhos.filter(function(t){return t.materia===m.nome}).length;
+    html += '<div class="materia-card" style="border-left:4px solid ' + m.cor + '">';
+    html += '<div class="materia-nome">' + esc(m.nome) + '</div>';
+    html += '<div class="materia-info">📝 ' + provas + ' provas · 📄 ' + trabs + ' trabalhos</div>';
+    html += '<button class="btn btn-d" style="font-size:.65rem;padding:.2rem .5rem" onclick="delMateria(\''+m.id+'\')">Excluir</button>';
     html += '</div>';
   });
-  if (!html) html = '<div class="estudos-vazio">Nenhuma matéria adicionada.<br>Clique em <strong>＋ Nova matéria</strong> para começar.</div>';
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma matéria adicionada.</div>';
   document.getElementById('materiasGrid').innerHTML = html;
-}
-
-// --- Materia Detail ---
-function abrirMateriaDetalhe(id) {
-  matDetalheIdAtual = id;
-  var m = estado.estudos.materias.find(function(x){ return x.id === id; });
-  if (!m) return;
-  var main = document.getElementById('estudosMain');
-  var det = document.getElementById('materiaDetalhe');
-  if (main) main.style.display = 'none';
-  if (det) det.style.display = '';
-  renderMateriaDetalhe(id);
-  // Update topbar title
-  var t = document.getElementById('topbarTitle');
-  if (t) t.textContent = m.nome;
-}
-
-function voltarEstudos() {
-  matDetalheIdAtual = null;
-  var det = document.getElementById('materiaDetalhe');
-  var main = document.getElementById('estudosMain');
-  if (det) det.style.display = 'none';
-  if (main) main.style.display = '';
-  var t = document.getElementById('topbarTitle');
-  if (t) t.textContent = pageNames['estudos'] || 'Estudos';
-  renderMaterias();
-  renderProvas();
-  renderTrabalhos();
-}
-
-function renderMateriaDetalhe(id) {
-  var m = estado.estudos.materias.find(function(x){ return x.id === id; });
-  if (!m) return;
-  var hoje = hojeStr();
-  var tarefas = estado.tarefas.filter(function(t){return t.materia === m.nome});
-  var provas = estado.estudos.provas.filter(function(p){return p.materia === m.nome});
-  var trabs = estado.estudos.trabalhos.filter(function(t){return t.materia === m.nome});
-  var anotacoes = m.anotacoes || [];
-
-  // Header
-  var hdr = document.getElementById('matDetalheHeader');
-  if (hdr) {
-    hdr.innerHTML = '<span class="mat-detalhe-dot" style="background:' + m.cor + '"></span>' +
-      '<span class="mat-detalhe-nome">' + esc(m.nome) + '</span>';
-  }
-
-  // Progress
-  var tarefasDone = tarefas.filter(function(t){return t.feito}).length;
-  var trabsDone = trabs.filter(function(t){return t.status === 'concluido'}).length;
-  var totalItems = tarefas.length + trabs.length;
-  var totalDone = tarefasDone + trabsDone;
-  var pct = totalItems > 0 ? Math.round((totalDone / totalItems) * 100) : 0;
-  var progEl = document.getElementById('matDetalheProgresso');
-  if (progEl) {
-    progEl.innerHTML = '<div class="mat-prog-linha"><span>Progresso geral</span><span class="mat-prog-pct" style="color:' + m.cor + '">' + pct + '%</span></div>' +
-      '<div class="materia-barra" style="height:12px"><div class="materia-fill" style="width:' + pct + '%;background:' + m.cor + '"></div></div>' +
-      '<div class="mat-prog-detalhe">✅ ' + tarefasDone + '/' + tarefas.length + ' tarefas · 📄 ' + trabsDone + '/' + trabs.length + ' trabalhos</div>';
-  }
-
-  // Pendentes summary
-  var provasPend = provas.filter(function(p){return p.data && p.data >= hoje});
-  var trabsPend = trabs.filter(function(t){return t.status !== 'concluido'});
-  var tarefasPend = tarefas.filter(function(t){return !t.feito});
-  var pendEl = document.getElementById('matDetalhePendentes');
-  if (pendEl) {
-    var ph = '';
-    var totalPend = provasPend.length + trabsPend.length + tarefasPend.length;
-    if (totalPend > 0) {
-      ph += '<div class="mat-pend-card">';
-      ph += '<div class="mat-pend-titulo">⏳ Atividades pendentes (' + totalPend + ')</div>';
-      if (tarefasPend.length > 0) {
-        ph += '<div class="mat-pend-secao">✅ Tarefas (' + tarefasPend.length + ')</div>';
-        tarefasPend.slice(0, 5).forEach(function(t) {
-          ph += '<div class="mat-pend-item">' + esc(t.texto) + (t.data ? ' · ' + dataLocal(t.data) : '') + '</div>';
-        });
-        if (tarefasPend.length > 5) ph += '<div class="mat-pend-item" style="color:var(--txt3)">...e mais ' + (tarefasPend.length - 5) + '</div>';
-      }
-      if (provasPend.length > 0) {
-        ph += '<div class="mat-pend-secao">📝 Provas (' + provasPend.length + ')</div>';
-        provasPend.forEach(function(p) {
-          ph += '<div class="mat-pend-item">' + esc(p.texto) + ' · ' + dataLocal(p.data) + '</div>';
-        });
-      }
-      if (trabsPend.length > 0) {
-        ph += '<div class="mat-pend-secao">📄 Trabalhos (' + trabsPend.length + ')</div>';
-        trabsPend.slice(0, 5).forEach(function(t) {
-          ph += '<div class="mat-pend-item">' + esc(t.texto) + (t.data ? ' · ' + dataLocal(t.data) : '') + '</div>';
-        });
-        if (trabsPend.length > 5) ph += '<div class="mat-pend-item" style="color:var(--txt3)">...e mais ' + (trabsPend.length - 5) + '</div>';
-      }
-      ph += '</div>';
-    } else {
-      ph += '<div class="mat-pend-card mat-pend-ok">🎉 Tudo em dia! Nenhuma atividade pendente.</div>';
-    }
-    pendEl.innerHTML = ph;
-  }
-
-  // Tarefas
-  var tEl = document.getElementById('matDetalheTarefas');
-  if (tEl) {
-    var th = '';
-    if (tarefas.length === 0) {
-      th = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma tarefa nesta matéria.</div>';
-    } else {
-      tarefas.forEach(function(t) {
-        th += '<div class="pv-card" style="border-left:4px solid ' + m.cor + ';opacity:' + (t.feito ? '.55' : '1') + '">';
-        th += '<div class="duce-nome" style="text-decoration:' + (t.feito ? 'line-through' : 'none') + '">' + (t.feito ? '✅ ' : '⬜ ') + esc(t.texto) + '</div>';
-        if (t.data) th += '<div class="duce-info">📅 ' + dataLocal(t.data) + (t.hora ? ' ' + t.hora : '') + '</div>';
-        th += '</div>';
-      });
-    }
-    tEl.innerHTML = th;
-  }
-
-  // Provas
-  var pEl = document.getElementById('matDetalheProvas');
-  if (pEl) {
-    var pvh = '';
-    if (provas.length === 0) {
-      pvh = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma prova nesta matéria.</div>';
-    } else {
-      provas.forEach(function(p) {
-        pvh += '<div class="pv-card" style="border-left:4px solid #e17055">';
-        pvh += '<div class="duce-nome">' + esc(p.texto) + '</div>';
-        pvh += '<div class="duce-info">📅 ' + dataLocal(p.data) + (p.hora ? ' ' + p.hora : '') + '</div>';
-        if (p.conteudo) pvh += '<div class="duce-info">📋 ' + esc(p.conteudo) + '</div>';
-        pvh += '<div class="duce-botoes"><button class="btn btn-s" style="font-size:.65rem;padding:.15rem .4rem" onclick="abrirProvaModal(\'' + p.id + '\')">✏️</button>';
-        pvh += '<button class="btn btn-d" style="font-size:.65rem;padding:.15rem .4rem" onclick="delProva(\'' + p.id + '\')">🗑️</button></div>';
-        pvh += '</div>';
-      });
-    }
-    pEl.innerHTML = pvh;
-  }
-
-  // Trabalhos
-  var trEl = document.getElementById('matDetalheTrabalhos');
-  if (trEl) {
-    var trh = '';
-    if (trabs.length === 0) {
-      trh = '<div style="color:var(--txt3);font-size:.82rem">Nenhum trabalho nesta matéria.</div>';
-    } else {
-      trabs.forEach(function(t) {
-        var statusIcon = t.status === 'concluido' ? '✅' : t.status === 'fazendo' ? '🔄' : '⏳';
-        trh += '<div class="pv-card" style="border-left:4px solid #0984e3">';
-        trh += '<div class="duce-nome">' + statusIcon + ' ' + esc(t.texto) + '</div>';
-        trh += '<div class="duce-info">📅 ' + dataLocal(t.data) + (t.hora ? ' ' + t.hora : '') + ' · ' + (t.status === 'concluido' ? 'Concluído' : t.status === 'fazendo' ? 'Fazendo' : 'Pendente') + '</div>';
-        if (t.descricao) trh += '<div class="duce-info">📋 ' + esc(t.descricao) + '</div>';
-        trh += '<div class="duce-botoes"><button class="btn btn-s" style="font-size:.65rem;padding:.15rem .4rem" onclick="abrirTrabalhoModal(\'' + t.id + '\')">✏️</button>';
-        trh += '<button class="btn btn-d" style="font-size:.65rem;padding:.15rem .4rem" onclick="delTrabalho(\'' + t.id + '\')">🗑️</button></div>';
-        trh += '</div>';
-      });
-    }
-    trEl.innerHTML = trh;
-  }
-
-  // Anotacoes
-  renderAnotacoes();
-
-  // Config
-  var metaEl = document.getElementById('matMetaHoras');
-  if (metaEl) metaEl.value = m.metaHoras || 0;
-}
-
-// --- Anotacoes CRUD ---
-function addAnotacao() {
-  anotEditIdx = null;
-  var modal = document.getElementById('anotacaoModal');
-  if (!modal) return;
-  modal.classList.add('ativo');
-  document.getElementById('anotTituloInput').value = '';
-  document.getElementById('anotContInput').value = '';
-  document.getElementById('anotModalTitle').textContent = '📓 Nova anotação';
-}
-
-function editarAnotacao(idx) {
-  anotEditIdx = idx;
-  var m = estado.estudos.materias.find(function(x){ return x.id === matDetalheIdAtual; });
-  if (!m || !m.anotacoes || !m.anotacoes[idx]) return;
-  var a = m.anotacoes[idx];
-  var modal = document.getElementById('anotacaoModal');
-  if (!modal) return;
-  modal.classList.add('ativo');
-  document.getElementById('anotTituloInput').value = a.titulo || '';
-  document.getElementById('anotContInput').value = a.conteudo || '';
-  document.getElementById('anotModalTitle').textContent = '✏️ Editar anotação';
-}
-
-function fecharAnotacaoModal(e) {
-  if (e && e.target !== e.currentTarget) return;
-  document.getElementById('anotacaoModal').classList.remove('ativo');
-  anotEditIdx = null;
-}
-
-function salvarAnotacao() {
-  var m = estado.estudos.materias.find(function(x){ return x.id === matDetalheIdAtual; });
-  if (!m) return;
-  if (!m.anotacoes) m.anotacoes = [];
-  var titulo = document.getElementById('anotTituloInput').value.trim();
-  if (!titulo) return;
-  var conteudo = document.getElementById('anotContInput').value.trim();
-  var agora = new Date().toLocaleString('pt-BR');
-  if (anotEditIdx !== null && m.anotacoes[anotEditIdx]) {
-    m.anotacoes[anotEditIdx].titulo = titulo;
-    m.anotacoes[anotEditIdx].conteudo = conteudo;
-    m.anotacoes[anotEditIdx].editada = agora;
-  } else {
-    m.anotacoes.push({titulo: titulo, conteudo: conteudo, data: agora, id: uid()});
-  }
-  salvarEstado();
-  fecharAnotacaoModal();
-  renderAnotacoes();
-}
-
-function delAnotacao(idx) {
-  var m = estado.estudos.materias.find(function(x){ return x.id === matDetalheIdAtual; });
-  if (!m || !m.anotacoes) return;
-  showConfirm('Excluir esta anotação?', function() {
-    m.anotacoes.splice(idx, 1);
-    salvarEstado();
-    renderAnotacoes();
-  });
-}
-
-function renderAnotacoes() {
-  var m = estado.estudos.materias.find(function(x){ return x.id === matDetalheIdAtual; });
-  var el = document.getElementById('matDetalheAnotacoes');
-  if (!el || !m) return;
-  var anotacoes = m.anotacoes || [];
-  var h = '';
-  if (anotacoes.length === 0) {
-    h = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma anotação. Clique em ＋ Adicionar.</div>';
-  } else {
-    anotacoes.forEach(function(a, i) {
-      h += '<div class="anot-card">';
-      h += '<div class="anot-titulo">📌 ' + esc(a.titulo) + '</div>';
-      if (a.conteudo) h += '<div class="anot-conteudo">' + esc(a.conteudo).replace(/\n/g, '<br>') + '</div>';
-      h += '<div class="anot-data">' + (a.editada ? '✏️ ' + esc(a.editada) : '📅 ' + esc(a.data || '')) + '</div>';
-      h += '<div class="anot-botoes">';
-      h += '<button class="btn btn-s" style="font-size:.65rem;padding:.15rem .4rem" onclick="editarAnotacao(' + i + ')">✏️</button>';
-      h += '<button class="btn btn-d" style="font-size:.65rem;padding:.15rem .4rem" onclick="delAnotacao(' + i + ')">🗑️</button>';
-      h += '</div></div>';
-    });
-  }
-  el.innerHTML = h;
-}
-
-// --- Meta Horas ---
-function salvarMetaHoras() {
-  var m = estado.estudos.materias.find(function(x){ return x.id === matDetalheIdAtual; });
-  if (!m) return;
-  m.metaHoras = parseFloat(document.getElementById('matMetaHoras').value) || 0;
-  salvarEstado();
-}
-
-// --- Helper: open tarefa modal with materia pre-filled ---
-function abrirTarefaModalComMateria() {
-  var m = estado.estudos.materias.find(function(x){ return x.id === matDetalheIdAtual; });
-  // Navigate to tarefas page and pre-fill materia in the quick-add
-  navegarPara('tarefas');
-  if (m) {
-    setTimeout(function() {
-      var el = document.getElementById('tarefaMateria');
-      if (el) el.value = m.nome;
-      var inp = document.getElementById('tarefaInput');
-      if (inp) inp.focus();
-    }, 100);
-  }
 }
 
 // ---- PROVAS: CRUD ----
@@ -2063,11 +1690,6 @@ function abrirProvaModal(editId) {
   document.getElementById('provaModalTitle').textContent = '＋ Nova prova';
   document.getElementById('prvTitulo').value = '';
   document.getElementById('prvMateria').value = '';
-  // Pre-fill materia if opened from materia detail
-  if (matDetalheIdAtual) {
-    var mPre = estado.estudos.materias.find(function(x){ return x.id === matDetalheIdAtual; });
-    if (mPre) document.getElementById('prvMateria').value = mPre.nome;
-  }
   document.getElementById('prvData').value = '';
   document.getElementById('prvHora').value = '';
   document.getElementById('prvConteudo').value = '';
@@ -2201,11 +1823,6 @@ function abrirTrabalhoModal(editId) {
   document.getElementById('trbPrazo').value = '';
   document.getElementById('trbDescricao').value = '';
   document.getElementById('trbStatus').value = 'pendente';
-  // Pre-fill materia if opened from materia detail
-  if (matDetalheIdAtual) {
-    var mPre = estado.estudos.materias.find(function(x){ return x.id === matDetalheIdAtual; });
-    if (mPre) document.getElementById('trbMateria').value = mPre.nome;
-  }
 }
 
 function fecharTrabalhoModal(e) {
