@@ -154,50 +154,21 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
 .card:hover{box-shadow:var(--sombra1)}
 
 /* ---- DASHBOARD ---- */
-/* Hero */
-.dash-hero{padding:1.2rem 1rem .8rem}
-.dash-hero h2{font-size:1.35rem;font-weight:800;line-height:1.2}
-.dash-hero-date{font-size:.82rem;color:var(--txt2);margin-top:.2rem}
-.dash-hero-status{display:inline-block;padding:.25rem .7rem;border-radius:var(--raio);font-size:.75rem;font-weight:600;margin-top:.5rem}
-.dhs-ok{background:rgba(0,184,148,.12);color:var(--verde)}
-.dhs-normal{background:rgba(108,92,231,.1);color:var(--cor)}
-.dhs-alert{background:rgba(231,76,60,.1);color:var(--vermelho);font-weight:700}
-
-/* Cards */
-.dash-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem;padding:0 1rem .7rem}
+.dash-greeting{font-size:1.3rem;font-weight:800;padding:1.2rem 1rem .3rem}
+.dash-greeting-sub{font-size:.85rem;color:var(--txt2);padding:0 1rem .8rem}
+.dash-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.7rem;padding:0 1rem .8rem}
 .dash-card{
-  background:var(--card);border-radius:var(--raio2);padding:.85rem .9rem;border:1px solid var(--borda);
-  display:flex;flex-direction:column;gap:.15rem;transition:var(--transition);cursor:default
+  background:var(--card);border-radius:var(--raio2);padding:1rem;border:1px solid var(--borda);
+  display:flex;flex-direction:column;gap:.2rem;transition:var(--transition)
 }
 .dash-card:hover{transform:translateY(-2px);box-shadow:var(--sombra2)}
-.dash-card .dc-num{font-size:1.5rem;font-weight:800;line-height:1}
-.dash-card .dc-label{font-size:.7rem;color:var(--txt3);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.dash-card.dc-tarefas{border-left:3px solid var(--cor)}
-.dash-card.dc-atrasadas{border-left:3px solid var(--vermelho)}
-.dash-card.dc-feitas{border-left:3px solid var(--verde)}
-.dash-card.dc-pomo{border-left:3px solid var(--amarelo)}
-.dash-card.dc-agua{border-left:3px solid var(--azul)}
-
-/* Atalhos rapidos */
-.dash-shortcuts{display:flex;gap:.5rem;padding:0 1rem .8rem;flex-wrap:wrap}
-.dash-shortcuts .btn{
-  flex:1;min-width:0;justify-content:center;font-size:.78rem;font-weight:600;
-  padding:.55rem .6rem;border-radius:var(--raio);white-space:nowrap
-}
-
-/* Secoes */
+.dash-card .dc-icon{font-size:1.3rem}
+.dash-card .dc-num{font-size:1.6rem;font-weight:800}
+.dash-card .dc-label{font-size:.72rem;color:var(--txt3);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.dash-card-alert{border-left:3px solid var(--vermelho)}
+.dash-card-ok{border-left:3px solid var(--verde)}
 .dash-section{padding:.6rem 1rem}
 .dash-section h3{font-size:.9rem;font-weight:700;margin-bottom:.5rem;display:flex;align-items:center;gap:.3rem}
-.dash-sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
-.dash-sec-header h3{font-size:.9rem;font-weight:700;display:flex;align-items:center;gap:.3rem;margin:0}
-.dash-sec-btn{font-size:.72rem;padding:.3rem .6rem;border-radius:var(--raio);background:var(--card2);color:var(--txt2);border:1px solid var(--borda);cursor:pointer;transition:var(--transition)}
-.dash-sec-btn:hover{background:var(--cor);color:#fff;border-color:var(--cor)}
-.dash-count{font-size:.75rem;font-weight:600;color:var(--txt3);margin-left:.3rem}
-.dash-count-red{color:var(--vermelho);font-weight:700}
-.dash-section-alert{border-left:3px solid var(--vermelho);background:rgba(231,76,60,.03);border-radius:0 var(--raio) var(--raio) 0}
-.dash-empty{padding:.6rem .8rem;font-size:.8rem;color:var(--txt3);font-style:italic;text-align:center}
-
-/* Tarefa item (novo formato) */
 .dash-tarefa-item{
   display:flex;align-items:center;gap:.6rem;padding:.55rem .7rem;
   border-bottom:1px solid var(--borda);font-size:.85rem;transition:background .15s
@@ -210,13 +181,9 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
   display:flex;align-items:center;justify-content:center;font-size:.65rem
 }
 .dash-tarefa-item .dt-check.feito{background:var(--verde);border-color:var(--verde);color:#fff}
-.dash-tarefa-item .dt-body{flex:1;min-width:0}
-.dash-tarefa-item .dt-texto{font-size:.85rem}
+.dash-tarefa-item .dt-texto{flex:1}
 .dash-tarefa-item .dt-texto.riscado{text-decoration:line-through;opacity:.45}
-.dash-tarefa-item .dt-meta{font-size:.7rem;color:var(--txt3);display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.1rem}
-.dash-tarefa-item .dt-meta-alert{color:var(--vermelho);font-weight:600}
-
-/* Habito item (novo formato) */
+.dash-tarefa-item .dt-meta{font-size:.7rem;color:var(--txt3)}
 .dash-habito-item{
   display:flex;align-items:center;gap:.5rem;padding:.4rem .6rem;
   font-size:.82rem
@@ -226,53 +193,15 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
   cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;font-size:.55rem
 }
 .dash-habito-item .dh-check.marcado{background:var(--verde);border-color:var(--verde);color:#fff}
-.dash-habito-item .dh-body{flex:1;min-width:0}
-.dash-habito-item .dh-texto{font-size:.82rem}
-
-/* Proxima prova / trabalho grid */
-.dash-upcoming-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;padding:0 1rem .7rem}
-.dash-upcoming-card{
-  background:var(--card);border-radius:var(--raio2);padding:.75rem .9rem;border:1px solid var(--borda);
-  transition:var(--transition)
+.dash-quick-add{
+  display:flex;gap:.4rem;padding:0 1rem .8rem
 }
-.dash-upcoming-card:hover{box-shadow:var(--sombra1)}
-.duc-header{display:flex;align-items:center;gap:.4rem;margin-bottom:.45rem}
-.duc-header span:first-child{font-size:1.1rem}
-.duc-header span:last-child{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txt3)}
-.duc-body{font-size:.85rem}
-.duce-nome{font-weight:600;display:block;margin-bottom:.15rem}
-.duce-data{font-size:.75rem;color:var(--txt3)}
-.duce-data-alert{color:var(--vermelho);font-weight:600}
-.duc-evento{font-size:.82rem;display:flex;align-items:center;gap:.4rem;padding:.35rem 0;border-bottom:1px solid var(--borda)}
-.duc-evento:last-child{border:none}
-.duc-empty{font-size:.78rem;color:var(--txt3);font-style:italic;padding:.3rem 0}
-.duc-mais{font-size:.72rem;color:var(--cor);cursor:pointer;padding:.3rem 0;font-weight:600}
-.duc-mais:hover{text-decoration:underline}
-.duc-urgente{border-left:3px solid var(--vermelho);background:rgba(231,76,60,.03)}
-
-/* Proximo compromisso */
-.dash-comp-item{
-  display:flex;align-items:flex-start;gap:.6rem;padding:.55rem .7rem;
-  border-bottom:1px solid var(--borda);font-size:.85rem;transition:background .15s
+.dash-quick-add input{
+  flex:1;padding:.55rem .8rem;border:2px solid var(--borda);border-radius:var(--raio);
+  font-size:.88rem;background:var(--card);color:var(--txt);font-family:inherit;outline:none;transition:border .2s
 }
-.dash-comp-item:last-child{border:none}
-.dash-comp-item:hover{background:var(--card2)}
-.dci-icon{font-size:1.1rem;flex-shrink:0;margin-top:.1rem}
-.dci-body{flex:1;min-width:0}
-.dci-texto{font-weight:600;display:block}
-.dci-meta{font-size:.72rem;color:var(--txt3)}
-
-/* Progresso da semana */
-.dash-progress-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:0 1rem .8rem}
-.dp-item{background:var(--card);border-radius:var(--raio);padding:.6rem .8rem;border:1px solid var(--borda)}
-.dp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
-.dp-label{font-size:.78rem;font-weight:600;color:var(--txt2)}
-.dp-val{font-size:.85rem;font-weight:800;color:var(--cor)}
-.dp-bar{height:6px;background:var(--card2);border-radius:3px;overflow:hidden}
-.dp-fill{height:100%;background:linear-gradient(90deg,var(--cor),var(--cor2));border-radius:3px;transition:width .5s}
-.dp-fill-alt{background:linear-gradient(90deg,var(--verde),#55efc4)}
-.dp-fill-agua{background:linear-gradient(90deg,var(--azul),#74b9ff)}
-.dp-fill-pomo{background:linear-gradient(90deg,var(--amarelo),#ffeaa7)}
+.dash-quick-add input:focus{border-color:var(--cor)}
+.dash-quick-add .btn{flex-shrink:0}
 
 /* ---- TAREFAS ---- */
 .tarefas-form{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem}
@@ -725,7 +654,16 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
 .csd-evt{font-size:.65rem;padding:.15rem .3rem;border-radius:4px;margin-bottom:.1rem}
 .csd-evt-empty{font-size:.65rem;color:var(--txt3);font-style:italic}
 
-
+/* Dashboard componentes */
+.dash-comp{display:flex;align-items:center;gap:.5rem;padding:.4rem 0;font-size:.85rem}
+.dash-habito{display:flex;align-items:center;gap:.5rem;padding:.3rem .5rem;font-size:.82rem}
+.dash-tarefa{display:flex;align-items:center;gap:.5rem;padding:.4rem 0;font-size:.85rem}
+.dash-resumo-item{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;font-size:.82rem}
+.dash-resumo-label{flex:1;font-size:.8rem;color:var(--txt2)}
+.dash-resumo-val{font-weight:700;font-size:.9rem;color:var(--cor)}
+.dash-resumo-pct{font-size:.75rem;color:var(--txt3)}
+.dash-resumo-bar{height:6px;background:var(--card2);border-radius:3px;overflow:hidden;flex:1;max-width:120px}
+.dash-resumo-fill{height:100%;background:linear-gradient(90deg,var(--cor),var(--cor2));border-radius:3px;transition:width .5s}
 
 /* Despesas */
 .despesa-item{display:flex;align-items:center;gap:.5rem;padding:.5rem .7rem;border-bottom:1px solid var(--borda);font-size:.85rem}
@@ -877,10 +815,6 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
   .habitos-grid{grid-template-columns:1fr}
   .estudos-materias{grid-template-columns:1fr}
   .dash-cards{grid-template-columns:repeat(2,1fr)}
-  .dash-upcoming-grid{grid-template-columns:1fr}
-  .dash-progress-grid{grid-template-columns:1fr}
-  .dash-shortcuts{gap:.4rem}
-  .dash-shortcuts .btn{font-size:.72rem;padding:.45rem .5rem}
   .cal-semana{grid-template-columns:repeat(3,1fr)}
   .topbar-title{font-size:.9rem}
 }

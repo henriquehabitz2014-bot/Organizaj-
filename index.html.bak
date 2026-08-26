@@ -122,91 +122,39 @@
 <!-- ======== PAGE: INICIO/DASHBOARD ======== -->
 <div class="page ativo" id="page-inicio">
   <div class="content-wrap">
+    <div class="dash-greeting" id="dashGreeting">Bom dia! 👋</div>
+    <div class="dash-greeting-sub" id="dashDate"></div>
 
-    <!-- HERO: Saudação + Data -->
-    <div class="dash-hero">
-      <div class="dash-hero-text">
-        <div class="dash-greeting" id="dashGreeting">Bom dia! 👋</div>
-        <div class="dash-date" id="dashDate"></div>
-      </div>
-      <div class="dash-hero-status" id="dashHeroStatus"></div>
-    </div>
-
-    <!-- CARDS: Resumo rápido -->
     <div class="dash-cards" id="dashCards"></div>
 
-    <!-- ATALHOS RÁPIDOS -->
-    <div class="dash-shortcuts" id="dashShortcuts">
-      <button class="dash-shortcut" onclick="dashQuickProva()">
-        <span class="ds-icon">📝</span>
-        <span class="ds-label">Prova</span>
-      </button>
-      <button class="dash-shortcut" onclick="dashQuickTrabalho()">
-        <span class="ds-icon">📄</span>
-        <span class="ds-label">Trabalho</span>
-      </button>
-      <button class="dash-shortcut" onclick="dashQuickTarefa()">
-        <span class="ds-icon">✅</span>
-        <span class="ds-label">Tarefa</span>
-      </button>
-      <button class="dash-shortcut" onclick="dashQuickEvento()">
-        <span class="ds-icon">🔔</span>
-        <span class="ds-label">Evento</span>
-      </button>
+    <div class="dash-quick-add">
+      <input type="text" id="quickTaskInput" placeholder="Adicionar tarefa rápida..." onkeydown="if(event.key==='Enter')addQuickTask()">
+      <button class="btn btn-p" onclick="addQuickTask()">+ Tarefa</button>
     </div>
 
-    <!-- TAREFAS DE HOJE -->
     <div class="dash-section">
-      <div class="dash-sec-header">
-        <h3>📋 Tarefas de Hoje <span class="dash-count" id="dashTarefasCount"></span></h3>
-        <button class="dash-sec-btn" onclick="navegarPara('tarefas')">Ver todas →</button>
-      </div>
+      <h3>📋 Tarefas de Hoje <span id="dashTarefasCount" style="color:var(--txt3);font-weight:400"></span></h3>
       <div id="dashTarefasHoje"></div>
     </div>
 
-    <!-- ATRASADAS -->
-    <div class="dash-section dash-section-alert" id="dashAtrasadasSection" style="display:none">
-      <div class="dash-sec-header">
-        <h3>🚨 Atrasadas <span class="dash-count dash-count-red" id="dashAtrasadasCount"></span></h3>
-      </div>
+    <div class="dash-section">
+      <h3>🚨 Atrasadas <span id="dashAtrasadasCount" style="color:var(--vermelho);font-weight:400"></span></h3>
       <div id="dashAtrasadas"></div>
     </div>
 
-    <!-- PRÓXIMA PROVA + TRABALHO -->
-    <div class="dash-upcoming-grid">
-      <div class="dash-upcoming-card" id="dashProximaProva">
-        <div class="duc-header">📝 Próxima Prova</div>
-        <div class="duc-body" id="dashProximaProvaBody"></div>
-      </div>
-      <div class="dash-upcoming-card" id="dashProximoTrabalho">
-        <div class="duc-header">📄 Próximo Trabalho</div>
-        <div class="duc-body" id="dashProximoTrabalhoBody"></div>
-      </div>
-    </div>
-
-    <!-- PRÓXIMO COMPROMISSO -->
     <div class="dash-section">
-      <div class="dash-sec-header">
-        <h3>📅 Próximo Compromisso</h3>
-      </div>
-      <div id="dashProximoCompromisso"></div>
-    </div>
-
-    <!-- HÁBITOS DE HOJE -->
-    <div class="dash-section">
-      <div class="dash-sec-header">
-        <h3>🔥 Hábitos de Hoje</h3>
-        <button class="dash-sec-btn" onclick="navegarPara('habitos')">Ver todos →</button>
-      </div>
+      <h3>🔥 Hábitos de Hoje</h3>
       <div id="dashHabitosHoje"></div>
     </div>
 
-    <!-- PROGRESSO DA SEMANA -->
     <div class="dash-section">
-      <div class="dash-sec-header">
-        <h3>📊 Progresso da Semana</h3>
-      </div>
-      <div class="dash-progress-grid" id="dashProgressoSemana"></div>
+      <h3>📅 Próximos Compromissos</h3>
+      <div id="dashCompromissos"></div>
+    </div>
+
+    <div class="dash-section">
+      <h3>📊 Resumo da Semana</h3>
+      <div id="dashResumoSemana"></div>
     </div>
 
     <!-- Dicas Rodape -->

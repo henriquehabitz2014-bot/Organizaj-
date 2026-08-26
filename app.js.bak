@@ -516,242 +516,104 @@ function progressoSemanaHabito(habito) {
 
 // ---- DASHBOARD ----
 function renderDashboard() {
-  // === SAUDAÇÃO ===
+  // Greeting
   var h = new Date().getHours();
   var greet = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
   document.getElementById('dashGreeting').textContent = greet + '! 👋';
 
-  // === DATA ===
+  // Date
   var dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-  var meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  var meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   var d = new Date();
   document.getElementById('dashDate').textContent = dias[d.getDay()] + ', ' + d.getDate() + ' de ' + meses[d.getMonth()];
 
-  // === STATUS HERO ===
+  // Cards
   var hoje = hojeStr();
-  var tarefasHoje = estado.tarefas.filter(function(t){return !t.feito && t.data === hoje});
-  var atrasadas = estado.tarefas.filter(eAtrasada);
+  var tarefasHoje = estado.tarefas.filter(function(t){return !t.feito && t.data === hoje}).length;
+  var atrasadas = estado.tarefas.filter(eAtrasada).length;
+  var feitasHoje = estado.tarefas.filter(function(t){return t.feito && t.data === hoje}).length;
   var pomos = (estado.pomodorosData === hoje) ? estado.pomodorosHoje : 0;
   var agua = (estado.aguaData === hoje) ? estado.aguaHoje : 0;
 
-  var statusText = '';
-  if (atrasadas.length > 0) {
-    statusText = '<span class="dhs-alert">' + atrasadas.length + ' atrasada' + (atrasadas.length > 1 ? 's' : '') + '</span>';
-  } else if (tarefasHoje.length === 0) {
-    statusText = '<span class="dhs-ok">Tudo em dia ✨</span>';
-  } else {
-    statusText = '<span class="dhs-normal">' + tarefasHoje.length + ' tarefa' + (tarefasHoje.length > 1 ? 's' : '') + ' hoje</span>';
-  }
-  document.getElementById('dashHeroStatus').innerHTML = statusText;
-
-  // === CARDS ===
-  var feitasHoje = estado.tarefas.filter(function(t){return t.feito && t.data === hoje}).length;
   var cards = '';
-  cards += '<div class="dash-card dc-tarefas"><span class="dc-num">' + tarefasHoje.length + '</span><span class="dc-label">Tarefas hoje</span></div>';
-  if (atrasadas.length > 0) {
-    cards += '<div class="dash-card dc-atrasadas"><span class="dc-num">' + atrasadas.length + '</span><span class="dc-label">Atrasadas</span></div>';
+  cards += '<div class="dash-card dc-tarefas"><div class="dc-num">' + tarefasHoje + '</div><div class="dc-label">Tarefas hoje</div></div>';
+  if (atrasadas > 0) {
+    cards += '<div class="dash-card dc-atrasadas"><div class="dc-num">' + atrasadas + '</div><div class="dc-label">Atrasadas 🚨</div></div>';
   }
-  cards += '<div class="dash-card dc-feitas"><span class="dc-num">' + feitasHoje + '</span><span class="dc-label">Concluídas</span></div>';
-  cards += '<div class="dash-card dc-pomo"><span class="dc-num">' + pomos + '</span><span class="dc-label">Pomodoros</span></div>';
-  cards += '<div class="dash-card dc-agua"><span class="dc-num">' + agua + '/8</span><span class="dc-label">Copos de água</span></div>';
+  cards += '<div class="dash-card dc-feitas"><div class="dc-num">' + feitasHoje + '</div><div class="dc-label">Concluídas</div></div>';
+  cards += '<div class="dash-card dc-pomo"><div class="dc-num">' + pomos + '</div><div class="dc-label">Pomodoros</div></div>';
+  cards += '<div class="dash-card dc-agua"><div class="dc-num">' + agua + '/8</div><div class="dc-label">Copos de água</div></div>';
   document.getElementById('dashCards').innerHTML = cards;
 
-  // === TAREFAS DE HOJE ===
-  document.getElementById('dashTarefasCount').textContent = tarefasHoje.length ? '(' + tarefasHoje.length + ')' : '';
+  // Tarefas de hoje
+  var th = estado.tarefas.filter(function(t){return !t.feito && t.data === hoje});
+  document.getElementById('dashTarefasCount').textContent = th.length ? '(' + th.length + ')' : '';
   var htmlTh = '';
-  tarefasHoje.forEach(function(t) {
+  th.forEach(function(t) {
     var catE = catEmojis[t.categoria] || '';
     var prioC = t.prio === 'alta' ? 'prio-alta' : t.prio === 'baixa' ? 'prio-baixa' : '';
-    htmlTh += '<div class="dash-tarefa-item ' + prioC + '">';
-    htmlTh += '<div class="dt-check" onclick="dashToggleTarefa(\''+t.id+'\')">' + (t.feito ? '✅' : '⬜') + '</div>';
-    htmlTh += '<div class="dt-body">';
-    htmlTh += '<div class="dt-texto">' + catE + ' ' + esc(t.texto) + '</div>';
-    if (t.hora) htmlTh += '<div class="dt-meta">' + t.hora + '</div>';
-    htmlTh += '</div>';
-    htmlTh += '</div>';
+    htmlTh += '<div class="dash-tarefa ' + prioC + '"><span>' + catE + '</span> ' + esc(t.texto) + (t.hora ? ' <small style="color:var(--txt3)">' + t.hora + '</small>' : '') + '</div>';
   });
-  if (!htmlTh) htmlTh = '<div class="dash-empty">Nenhuma tarefa para hoje 🎉</div>';
+  if (!htmlTh) htmlTh = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma tarefa para hoje. Adicione uma! 🎉</div>';
   document.getElementById('dashTarefasHoje').innerHTML = htmlTh;
 
-  // === ATRASADAS ===
-  var atrArr = estado.tarefas.filter(eAtrasada);
-  document.getElementById('dashAtrasadasCount').textContent = atrArr.length ? '(' + atrArr.length + ')' : '';
+  // Atrasadas
+  var atr = estado.tarefas.filter(eAtrasada);
+  document.getElementById('dashAtrasadasCount').textContent = atr.length ? '(' + atr.length + ')' : '';
   var htmlAtr = '';
-  atrArr.forEach(function(t) {
-    htmlAtr += '<div class="dash-tarefa-item prio-alta">';
-    htmlAtr += '<div class="dt-check" onclick="dashToggleTarefa(\''+t.id+'\')">⬜</div>';
-    htmlAtr += '<div class="dt-body">';
-    htmlAtr += '<div class="dt-texto">🚨 ' + esc(t.texto) + '</div>';
-    htmlAtr += '<div class="dt-meta dt-meta-alert">venceu ' + dataLocal(t.data) + '</div>';
-    htmlAtr += '</div>';
-    htmlAtr += '</div>';
+  atr.forEach(function(t) {
+    htmlAtr += '<div class="dash-tarefa prio-alta"><span>🚨</span> ' + esc(t.texto) + ' <small style="color:var(--vermelho)">venceu ' + dataLocal(t.data) + '</small></div>';
   });
-  if (!htmlAtr) {
-    document.getElementById('dashAtrasadasSection').style.display = 'none';
-  } else {
-    document.getElementById('dashAtrasadasSection').style.display = '';
-    document.getElementById('dashAtrasadas').innerHTML = htmlAtr;
-  }
+  if (!htmlAtr) htmlAtr = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma tarefa atrasada! 🎊</div>';
+  document.getElementById('dashAtrasadas').innerHTML = htmlAtr;
 
-  // === PRÓXIMA PROVA ===
-  var provasFuturas = (estado.estudos && estado.estudos.provas) ? estado.estudos.provas.filter(function(p){return p.data && p.data >= hoje}).sort(function(a,b){return a.data.localeCompare(b.data)}) : [];
-  var htmlProva = '';
-  if (provasFuturas.length > 0) {
-    var p = provasFuturas[0];
-    var diasRest = Math.ceil((new Date(p.data) - new Date()) / 86400000);
-    var corMat = (estado.estudos.materias.find(function(m){return m.nome===p.materia})||{}).cor || 'var(--cor2)';
-    var urgente = diasRest <= 3;
-    htmlProva += '<div class="duc-evento' + (urgente ? ' duc-urgente' : '') + '" style="border-left:3px solid ' + corMat + '">';
-    htmlProva += '<div class="duce-nome">' + esc(p.texto) + (p.materia ? ' <small>(' + esc(p.materia) + ')</small>' : '') + '</div>';
-    htmlProva += '<div class="duce-data' + (urgente ? ' duce-data-alert' : '') + '">em ' + diasRest + ' dia' + (diasRest !== 1 ? 's' : '') + ' · ' + dataLocal(p.data) + '</div>';
-    htmlProva += '</div>';
-    if (provasFuturas.length > 1) {
-      htmlProva += '<div class="duc-mais">+' + (provasFuturas.length - 1) + ' mais</div>';
-    }
-  } else {
-    htmlProva = '<div class="duc-empty">Nenhuma prova registrada</div>';
-  }
-  document.getElementById('dashProximaProvaBody').innerHTML = htmlProva;
-
-  // === PRÓXIMO TRABALHO ===
-  var trabsFuturos = (estado.estudos && estado.estudos.trabalhos) ? estado.estudos.trabalhos.filter(function(tr){return tr.data && tr.data >= hoje}).sort(function(a,b){return a.data.localeCompare(b.data)}) : [];
-  var htmlTrab = '';
-  if (trabsFuturos.length > 0) {
-    var tr = trabsFuturos[0];
-    var diasTr = Math.ceil((new Date(tr.data) - new Date()) / 86400000);
-    var urgTr = diasTr <= 3;
-    htmlTrab += '<div class="duc-evento' + (urgTr ? ' duc-urgente' : '') + '" style="border-left:3px solid var(--cor3)">';
-    htmlTrab += '<div class="duce-nome">' + esc(tr.texto) + (tr.materia ? ' <small>(' + esc(tr.materia) + ')</small>' : '') + '</div>';
-    htmlTrab += '<div class="duce-data' + (urgTr ? ' duce-data-alert' : '') + '">em ' + diasTr + ' dia' + (diasTr !== 1 ? 's' : '') + ' · ' + dataLocal(tr.data) + '</div>';
-    htmlTrab += '</div>';
-    if (trabsFuturos.length > 1) {
-      htmlTrab += '<div class="duc-mais">+' + (trabsFuturos.length - 1) + ' mais</div>';
-    }
-  } else {
-    htmlTrab = '<div class="duc-empty">Nenhum trabalho registrado</div>';
-  }
-  document.getElementById('dashProximoTrabalhoBody').innerHTML = htmlTrab;
-
-  // === PRÓXIMO COMPROMISSO ===
-  var compromissos = [];
-  estado.tarefas.filter(function(t){return !t.feito && t.data && t.data >= hoje}).forEach(function(t){
-    compromissos.push({texto:t.texto, data:t.data, hora:t.hora, icon:catEmojis[t.categoria]||'📌', tipo:'tarefa'});
-  });
-  estado.lembretes.filter(function(l){return l.ativo && l.data && l.data >= hoje}).forEach(function(l){
-    compromissos.push({texto:l.texto, data:l.data, hora:l.hora, icon:'🔔', tipo:'lembrete'});
-  });
-  compromissos.sort(function(a,b){return (a.data+(a.hora||'')).localeCompare(b.data+(b.hora||''));});
-  var htmlComp = '';
-  if (compromissos.length > 0) {
-    var c = compromissos[0];
-    var diasC = Math.ceil((new Date(c.data) - new Date()) / 86400000);
-    var labelC = diasC === 0 ? 'Hoje' : diasC === 1 ? 'Amanhã' : 'em ' + diasC + ' dias';
-    htmlComp += '<div class="dash-comp-item">';
-    htmlComp += '<div class="dci-icon">' + c.icon + '</div>';
-    htmlComp += '<div class="dci-body">';
-    htmlComp += '<div class="dci-texto">' + esc(c.texto) + '</div>';
-    htmlComp += '<div class="dci-meta">' + labelC + (c.hora ? ' · ' + c.hora : '') + '</div>';
-    htmlComp += '</div>';
-    htmlComp += '</div>';
-    if (compromissos.length > 1) {
-      htmlComp += '<div class="duc-mais" onclick="navegarPara(\'calendario\')">+' + (compromissos.length - 1) + ' mais →</div>';
-    }
-  } else {
-    htmlComp = '<div class="dash-empty">Nenhum compromisso próximo</div>';
-  }
-  document.getElementById('dashProximoCompromisso').innerHTML = htmlComp;
-
-  // === HÁBITOS DE HOJE ===
+  // Hábitos hoje
   var diaIdx = getDiaSemana();
   var sk = getSemanaKey();
   var htmlHab = '';
   estado.habitos.forEach(function(h) {
     var arr = h.semanas[sk] || [false,false,false,false,false,false,false];
     var feito = arr[diaIdx];
-    htmlHab += '<div class="dash-habito-item ' + (feito ? 'feito' : '') + '" onclick="toggleHabitoDash(\''+h.id+'\')">';
-    htmlHab += '<div class="dh-check">' + (feito ? '✅' : '⬜') + '</div>';
-    htmlHab += '<div class="dh-body">';
-    htmlHab += '<div class="dh-texto">' + (h.emoji||'✨') + ' ' + esc(h.nome) + '</div>';
-    htmlHab += '</div>';
-    htmlHab += '</div>';
+    htmlHab += '<div class="dash-habito ' + (feito ? 'feito' : '') + '" onclick="toggleHabitoDash(\''+h.id+'\')"><span>' + (h.emoji||'✨') + '</span> ' + esc(h.nome) + (feito ? ' ✅' : '') + '</div>';
   });
-  if (!htmlHab) htmlHab = '<div class="dash-empty">Nenhum hábito criado ainda</div>';
+  if (!htmlHab) htmlHab = '<div style="color:var(--txt3);font-size:.82rem">Nenhum hábito criado ainda.</div>';
   document.getElementById('dashHabitosHoje').innerHTML = htmlHab;
 
-  // === PROGRESSO DA SEMANA ===
-  var sk2 = getSemanaKey();
-  var semanaTotal = estado.tarefas.filter(function(t){return t.data}).length;
-  var semanaFeitas = estado.tarefas.filter(function(t){return t.feito && t.data}).length;
-  var semanaPct = semanaTotal ? Math.round(semanaFeitas / semanaTotal * 100) : 0;
+  // Próximos compromissos
+  var compromissos = [];
+  estado.tarefas.filter(function(t){return !t.feito && t.data}).forEach(function(t){compromissos.push({texto:t.texto,data:t.data,hora:t.hora,icon:catEmojis[t.categoria]||'📌'});});
+  estado.lembretes.filter(function(l){return l.ativo && l.data}).forEach(function(l){compromissos.push({texto:l.texto,data:l.data,hora:l.hora,icon:'🔔'});});
+  if (estado.estudos && estado.estudos.provas) {
+    estado.estudos.provas.forEach(function(p){compromissos.push({texto:'Prova: '+p.texto,data:p.data,hora:'',icon:'📝'});});
+  }
+  compromissos.sort(function(a,b){return (a.data+(a.hora||'')).localeCompare(b.data+(b.hora||''));});
+  var htmlComp = '';
+  compromissos.slice(0,5).forEach(function(c){
+    htmlComp += '<div class="dash-comp"><span>' + c.icon + '</span> ' + esc(c.texto) + ' <small>' + dataLocal(c.data) + (c.hora ? ' ' + c.hora : '') + '</small></div>';
+  });
+  if (!htmlComp) htmlComp = '<div style="color:var(--txt3);font-size:.82rem">Nenhum compromisso próximo.</div>';
+  document.getElementById('dashCompromissos').innerHTML = htmlComp;
+
+  // Resumo da semana
+  var totalTarefas = estado.tarefas.length;
+  var feitas = estado.tarefas.filter(function(t){return t.feito}).length;
+  var pct = totalTarefas ? Math.round(feitas/totalTarefas*100) : 0;
   var habitosFeitosSemana = 0;
   var habitosTotalSemana = estado.habitos.length * 7;
   estado.habitos.forEach(function(h){
-    var arr = h.semanas[sk2]||[];
+    var arr = h.semanas[sk]||[];
     arr.forEach(function(v){if(v)habitosFeitosSemana++;});
   });
-  var habPct = habitosTotalSemana ? Math.round(habitosFeitosSemana / habitosTotalSemana * 100) : 0;
-  var provasFeitas = (estado.estudos && estado.estudos.provas) ? estado.estudos.provas.filter(function(p){return p.data && p.data < hoje}).length : 0;
-  var provasTotal = (estado.estudos && estado.estudos.provas) ? estado.estudos.provas.length : 0;
-  var aguaSemana = 0;
-  var aguaDias = 0;
-  // Simple: just show today's water
-  var aguaPct = Math.round(agua / 8 * 100);
-
-  var htmlProg = '';
-  htmlProg += '<div class="dp-item">';
-  htmlProg += '<div class="dp-head"><span class="dp-label">Tarefas concluídas</span><span class="dp-val">' + semanaPct + '%</span></div>';
-  htmlProg += '<div class="dp-bar"><div class="dp-fill" style="width:' + semanaPct + '%"></div></div>';
-  htmlProg += '</div>';
-  htmlProg += '<div class="dp-item">';
-  htmlProg += '<div class="dp-head"><span class="dp-label">Hábitos da semana</span><span class="dp-val">' + habPct + '%</span></div>';
-  htmlProg += '<div class="dp-bar"><div class="dp-fill dp-fill-alt" style="width:' + habPct + '%"></div></div>';
-  htmlProg += '</div>';
-  htmlProg += '<div class="dp-item">';
-  htmlProg += '<div class="dp-head"><span class="dp-label">Água hoje</span><span class="dp-val">' + agua + '/8</span></div>';
-  htmlProg += '<div class="dp-bar"><div class="dp-fill dp-fill-agua" style="width:' + aguaPct + '%"></div></div>';
-  htmlProg += '</div>';
-  htmlProg += '<div class="dp-item">';
-  htmlProg += '<div class="dp-head"><span class="dp-label">Pomodoros hoje</span><span class="dp-val">' + pomos + '</span></div>';
-  htmlProg += '<div class="dp-bar"><div class="dp-fill dp-fill-pomo" style="width:' + Math.min(pomos * 20, 100) + '%"></div></div>';
-  htmlProg += '</div>';
-  document.getElementById('dashProgressoSemana').innerHTML = htmlProg;
+  var habPct = habitosTotalSemana ? Math.round(habitosFeitosSemana/habitosTotalSemana*100) : 0;
+  var htmlRes = '';
+  htmlRes += '<div class="dash-resumo-item"><div class="dash-resumo-label">Tarefas concluídas</div><div class="dash-resumo-bar"><div class="dash-resumo-fill" style="width:'+pct+'%"></div></div><div class="dash-resumo-pct">'+pct+'%</div></div>';
+  htmlRes += '<div class="dash-resumo-item"><div class="dash-resumo-label">Hábitos da semana</div><div class="dash-resumo-bar"><div class="dash-resumo-fill" style="width:'+habPct+'%;background:var(--cor2)"></div></div><div class="dash-resumo-pct">'+habPct+'%</div></div>';
+  htmlRes += '<div class="dash-resumo-item"><div class="dash-resumo-label">Pomodoros hoje</div><div class="dash-resumo-val">' + pomos + '</div></div>';
+  htmlRes += '<div class="dash-resumo-item"><div class="dash-resumo-label">Água hoje</div><div class="dash-resumo-val">' + agua + '/8</div></div>';
+  document.getElementById('dashResumoSemana').innerHTML = htmlRes;
 
   // Dicas
   novaDica(); novaMotivacao(); novoDesafio();
-}
-
-function dashToggleTarefa(id) {
-  var t = estado.tarefas.find(function(x){return x.id===id;});
-  if (t) { t.feito = !t.feito; salvarEstado(); renderDashboard(); }
-}
-
-function dashQuickProva() {
-  var txt = prompt('Nome da prova:');
-  if (!txt || !txt.trim()) return;
-  var mat = prompt('Matéria (opcional):') || '';
-  var data = prompt('Data (AAAA-MM-DD):') || '';
-  estado.estudos.provas.push({texto:txt.trim(), materia:mat.trim(), data:data.trim(), id:uid()});
-  salvarEstado(); renderDashboard();
-}
-
-function dashQuickTrabalho() {
-  var txt = prompt('Nome do trabalho:');
-  if (!txt || !txt.trim()) return;
-  var mat = prompt('Matéria (opcional):') || '';
-  var data = prompt('Data (AAAA-MM-DD):') || '';
-  estado.estudos.trabalhos.push({texto:txt.trim(), materia:mat.trim(), data:data.trim(), id:uid()});
-  salvarEstado(); renderDashboard();
-}
-
-function dashQuickTarefa() {
-  var txt = prompt('Nova tarefa:');
-  if (!txt || !txt.trim()) return;
-  estado.tarefas.push({texto:txt.trim(), prio:'media', feito:false, id:uid(), data:hojeStr(), hora:'', categoria:''});
-  salvarEstado(); renderDashboard();
-}
-
-function dashQuickEvento() {
-  navegarPara('lembretes');
 }
 
 function toggleHabitoDash(id) {
@@ -765,6 +627,15 @@ function toggleHabitoDash(id) {
   renderDashboard();
 }
 
+function addQuickTask() {
+  var inp = document.getElementById('quickTaskInput');
+  var txt = inp.value.trim();
+  if (!txt) return;
+  estado.tarefas.push({texto:txt, prio:'media', feito:false, id:uid(), data:hojeStr(), hora:'', categoria:''});
+  inp.value = '';
+  salvarEstado();
+  renderDashboard();
+}
 
 function novaDica() { document.getElementById('dicaTexto').textContent = dicas[Math.floor(Math.random()*dicas.length)]; }
 function novaMotivacao() { document.getElementById('motivacaoTexto').textContent = motivacoes[Math.floor(Math.random()*motivacoes.length)]; }
