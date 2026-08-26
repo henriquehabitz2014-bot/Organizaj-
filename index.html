@@ -2,825 +2,896 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
-<title>OrganizaJá - App Grátis para Organizar Toda a Sua Vida | 22 Ferramentas</title>
-<meta name="description" content="OrganizaJá: app gratuito de organização pessoal e produtividade com 22 ferramentas. Gerencie tarefas, hábitos, metas, orçamento, água, refeições e muito mais. Sem cadastro, funciona offline.">
-<meta name="keywords" content="organizacao pessoal, produtividade, app gratis, tarefas, habitos, metas, pomodoro, orcamento, lista de compras, agua, refeicoes, gratidao, humor, leitura, exercicios, senhas, calculadora, lembretes, organizacao, planejamento semanal, app de organizacao brasileiro">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OrganizaJá — Organize sua vida de graça</title>
+<meta name="description" content="OrganizaJá: app grátis de organização pessoal com 22 ferramentas. Lista de tarefas, hábitos, Pomodoro, orçamento, calendário, estudos e mais. Funciona offline, sem cadastro.">
+<meta name="keywords" content="organização pessoal, lista de tarefas, rastreador de hábitos, timer pomodoro, controle financeiro, app grátis, organização para estudantes">
 <meta name="author" content="OrganizaJá">
 <meta name="robots" content="index, follow">
-<meta name="theme-color" content="#6c5ce7">
-<meta property="og:title" content="OrganizaJá - App Grátis para Organizar Toda a Sua Vida">
-<meta property="og:description" content="Aplicativo gratuito de organização pessoal com 22 ferramentas: tarefas, hábitos, metas, orçamento, pomodoro e muito mais. Sem cadastro, funciona offline!">
+<meta property="og:title" content="OrganizaJá — Organize sua vida de graça">
+<meta property="og:description" content="App grátis com 22 ferramentas de organização pessoal. Tarefas, hábitos, Pomodoro, orçamento e mais.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://henriquehabitz2014-bot.github.io/Organizaj-/">
 <meta property="og:locale" content="pt_BR">
-<meta property="og:site_name" content="OrganizaJá">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="OrganizaJá - App Grátis para Organizar Toda a Sua Vida">
-<meta name="twitter:description" content="22 ferramentas grátis de organização pessoal. Tarefas, hábitos, metas, orçamento e muito mais. Sem cadastro!">
-<meta property="og:image" content="https://henriquehabitz2014-bot.github.io/Organizaj-/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="OrganizaJá - 22 ferramentas para organizar sua vida">
-<meta name="twitter:image" content="https://henriquehabitz2014-bot.github.io/Organizaj-/og-image.png">
-<meta name="twitter:image:alt" content="OrganizaJá - 22 ferramentas para organizar sua vida">
-<link rel="canonical" href="https://henriquehabitz2014-bot.github.io/Organizaj-/">
-<link rel="icon" type="image/svg+xml" href="/Organizaj-/favicon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="/Organizaj-/favicon-32.png">
-<link rel="icon" type="image/x-icon" href="/Organizaj-/favicon.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="/Organizaj-/apple-touch-icon.png">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#6c5ce7">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="icon" type="image/svg+xml" href="/Organizaj-/favicon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="/Organizaj-/favicon-32.png">
-<link rel="icon" type="image/x-icon" href="/Organizaj-/favicon.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="/Organizaj-/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="dns-prefetch" href="https://fonts.googleapis.com">
-<link rel="dns-prefetch" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
-<style>:root{--cor:#6c5ce7;--cor2:#a29bfe;--cor3:#5b4cdb;--verde:#00b894;--vermelho:#e74c3c;--amarelo:#fdcb6e;--azul:#0984e3;--bg:#f0f2f8;--card:#fff;--card2:#f6f7fb;--txt:#2d3436;--txt2:#636e72;--txt3:#b2bec3;--borda:#dfe6e9;--raio:12px;--raio2:16px;--sombra1:0 2px 8px rgba(108,92,231,.08);--sombra2:0 4px 16px rgba(108,92,231,.12);--sombra3:0 8px 32px rgba(108,92,231,.18);--cat-prod:#6c5ce7;--cat-saude:#00b894;--cat-fin:#e17055;--cat-plan:#0984e3;--cat-util:#fdcb6e}
-.escuro{--bg:#16162a;--card:#1e1e36;--card2:#252542;--txt:#eee;--txt2:#aaa;--txt3:#666;--borda:#333358}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Inter,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s}
-.campo{padding:.5rem .7rem;border:2px solid var(--borda);border-radius:var(--raio);font-size:.88rem;background:var(--card);color:var(--txt);font-family:inherit;transition:border .2s,box-shadow .2s;outline:none}
-.campo:focus{border-color:var(--cor);box-shadow:0 0 0 3px rgba(108,92,231,.15)}
-.select{padding:.5rem .7rem;border:2px solid var(--borda);border-radius:var(--raio);font-size:.88rem;background:var(--card);color:var(--txt);font-family:inherit}
-.btn{padding:.55rem 1.2rem;border:none;border-radius:var(--raio);font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;display:inline-flex;align-items:center;gap:.3rem}
-.btn:hover{transform:translateY(-1px);box-shadow:var(--sombra2)}
-.btn:active{transform:translateY(0)}
-.btn-p{background:var(--cor);color:#fff}
-.btn-p:hover{background:var(--cor3)}
-.btn-s{background:var(--card2);color:var(--txt2);border:1px solid var(--borda)}
-.btn-d{background:var(--vermelho);color:#fff}
-.btn-v{background:var(--verde);color:#fff}
-.btn-a{background:var(--amarelo);color:#fff}
-.btn-az{background:var(--azul);color:#fff}
-.linha{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.6rem;align-items:center}
-.secao{padding:1rem;max-width:800px;margin:0 auto}
-.secao-titulo{font-size:1.15rem;font-weight:700;display:flex;align-items:center;gap:.5rem;padding-bottom:.8rem;margin-bottom:1rem;position:relative}
-.secao-titulo::after{content:"";position:absolute;bottom:0;left:0;width:50px;height:3px;background:linear-gradient(90deg,var(--cor),var(--cor2));border-radius:2px}
-.topo{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,.06);padding:.55rem 1rem;display:flex;align-items:center;justify-content:space-between;transition:background .4s}
-.escuro .topo{background:rgba(22,22,42,.8);border-bottom-color:rgba(255,255,255,.06)}
-.topo-logo{font-weight:800;font-size:1.05rem;display:flex;align-items:center;gap:.35rem;background:linear-gradient(135deg,var(--cor),var(--cor2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.topo-logo span{font-size:1.3rem;-webkit-text-fill-color:initial;background:none}
-.topo-botoes{display:flex;gap:.25rem}
-.topo-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--borda);background:var(--card2);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.topo-btn:hover{background:var(--cor);color:#fff;border-color:var(--cor);transform:scale(1.05)}
-.instalar-banner{background:linear-gradient(135deg,var(--cor),var(--cor2));color:#fff;padding:.55rem 1rem;display:none;align-items:center;justify-content:space-between;position:sticky;top:50px;z-index:99;font-size:.85rem}
-.instalar-banner.visivel{display:flex}
-.instalar-btn{background:#fff;color:var(--cor);padding:.3rem .7rem;border-radius:var(--raio);font-weight:600;font-size:.8rem;border:none;cursor:pointer;font-family:inherit}
-.busca-wrap{padding:.6rem 1rem;background:var(--card2);border-bottom:1px solid var(--borda);display:none}
-.busca-wrap.visivel{display:flex;gap:.4rem;align-items:center}
-.busca-input{flex:1;padding:.5rem .8rem;border:2px solid var(--borda);border-radius:var(--raio);font-size:.88rem;background:var(--card);color:var(--txt);font-family:inherit;outline:none}
-.busca-input:focus{border-color:var(--cor)}
-.busca-resultados{background:var(--card);border:1px solid var(--borda);border-radius:var(--raio);margin:.4rem 1rem;max-height:250px;overflow-y:auto;display:none}
-.busca-resultados.visivel{display:block}
-.busca-item{padding:.6rem .8rem;border-bottom:1px solid var(--borda);cursor:pointer;font-size:.85rem;transition:background .15s}
-.busca-item:hover{background:var(--card2)}
-.busca-item small{color:var(--txt3);margin-left:.4rem;font-size:.72rem}
-@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-@keyframes float2{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-12px) scale(1.1)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
-@keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
-.hero{background:linear-gradient(-45deg,#6c5ce7,#a29bfe,#fd79a8,#e17055,#fdcb6e,#00b894,#0984e3);background-size:500% 500%;animation:gradientShift 20s ease infinite;padding:2.8rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden}
-.hero-shapes{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;overflow:hidden}
-.hero-shape{position:absolute;border-radius:50%;background:rgba(255,255,255,.08);animation:float2 8s ease-in-out infinite}
-.hero-shape:nth-child(1){width:100px;height:100px;top:5%;left:3%;animation-delay:0s}
-.hero-shape:nth-child(2){width:60px;height:60px;top:50%;right:8%;animation-delay:2.5s}
-.hero-shape:nth-child(3){width:140px;height:140px;bottom:5%;left:25%;animation-delay:1.2s;opacity:.4}
-.hero-shape:nth-child(4){width:45px;height:45px;top:15%;right:25%;animation-delay:3.5s;background:rgba(255,255,255,.12)}
-.hero-shape:nth-child(5){width:80px;height:80px;bottom:25%;right:3%;animation-delay:4.5s;opacity:.5}
-.hero-shape:nth-child(6){width:30px;height:30px;top:35%;left:15%;animation-delay:1.8s;background:rgba(255,255,255,.15)}
-.hero-shape:nth-child(7){width:55px;height:55px;top:70%;left:60%;animation-delay:5s;opacity:.3}
-.hero h1{font-size:1.8rem;font-weight:800;color:#fff;text-shadow:0 2px 15px rgba(0,0,0,.2);line-height:1.2;animation:fadeUp .8s ease;position:relative;z-index:1}
-.hero p{color:rgba(255,255,255,.92);font-size:.88rem;line-height:1.6;margin:.8rem auto 1rem;max-width:600px;position:relative;z-index:1;animation:fadeUp .8s ease .2s both}
-.hero-badges{display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;animation:fadeUp .8s ease .4s both}
-.hero-badge{display:inline-flex;align-items:center;gap:.2rem;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;padding:.35rem .85rem;border-radius:25px;font-size:.76rem;font-weight:600;border:1px solid rgba(255,255,255,.25);transition:all .3s}
-.hero-badge:hover{background:rgba(255,255,255,.35);transform:translateY(-2px)}
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;padding:.8rem 1rem;max-width:800px;margin:0 auto}
-.stat{padding:.7rem .5rem;border-radius:var(--raio2);text-align:center;position:relative;overflow:hidden;animation:scaleIn .5s ease both;transition:transform .2s,box-shadow .2s}
-.stat:hover{transform:translateY(-2px);box-shadow:var(--sombra2)}
-.stat:nth-child(1){background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;animation-delay:.1s}
-.stat:nth-child(2){background:linear-gradient(135deg,#00b894,#55efc4);color:#fff;animation-delay:.2s}
-.stat:nth-child(3){background:linear-gradient(135deg,#fd79a8,#e84393);color:#fff;animation-delay:.3s}
-.stat:nth-child(4){background:linear-gradient(135deg,#e17055,#fab1a0);color:#fff;animation-delay:.4s}
-.stat:nth-child(5){background:linear-gradient(135deg,#0984e3,#74b9ff);color:#fff;animation-delay:.5s}
-.stat-icon{font-size:1.1rem;margin-bottom:.15rem}
-.stat-num{font-size:1.4rem;font-weight:800;letter-spacing:1px}
-.stat-lbl{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;opacity:.85}
-.ferramentas-section{padding:1rem;max-width:800px;margin:0 auto}
-.ferramentas-section>h2{font-size:1rem;font-weight:700;text-align:center;color:var(--txt2);margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:.4rem}
-.ferramentas-section>h2::before,.ferramentas-section>h2::after{content:"";width:30px;height:2px;background:var(--borda)}
-.categoria-bloco{margin-bottom:1.2rem}
-.cat-header{display:flex;align-items:center;gap:.5rem;padding:.4rem 0;margin-bottom:.5rem;cursor:pointer;transition:all .2s}
-.cat-header:hover{opacity:.8}
-.cat-emoji{font-size:1.2rem}
-.cat-nome{font-size:.85rem;font-weight:700;flex:1}
-.cat-nome.cat-prod{color:#6c5ce7}
-.cat-nome.cat-saude{color:#00b894}
-.cat-nome.cat-fin{color:#e17055}
-.cat-nome.cat-plan{color:#0984e3}
-.cat-nome.cat-util{color:#d4a017}
-.cat-nome.cat-dest{color:#e84393;background:linear-gradient(90deg,#e84393,#fd79a8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800}
-.cat-count{font-size:.65rem;font-weight:600;background:var(--card2);color:var(--txt3);padding:.1rem .5rem;border-radius:10px;border:1px solid var(--borda)}
-.cat-line{height:2px;border-radius:1px;margin-bottom:.6rem}
-.cat-line.cat-prod{background:linear-gradient(90deg,#6c5ce7,#a29bfe,transparent)}
-.cat-line.cat-saude{background:linear-gradient(90deg,#00b894,#55efc4,transparent)}
-.cat-line.cat-fin{background:linear-gradient(90deg,#e17055,#fab1a0,transparent)}
-.cat-line.cat-plan{background:linear-gradient(90deg,#0984e3,#74b9ff,transparent)}
-.cat-line.cat-util{background:linear-gradient(90deg,#fdcb6e,#ffeaa7,transparent)}
-.ferramentas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}
-.tool-card{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.8rem .4rem;border-radius:var(--raio2);background:var(--card);border:2px solid var(--borda);cursor:pointer;transition:all .3s cubic-bezier(.25,.8,.25,1);position:relative;overflow:hidden;animation:scaleIn .4s ease both}
-.tool-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;border-radius:2px 2px 0 0;opacity:0;transition:opacity .3s}
-.tool-card:hover::before,.tool-card.ativa::before{opacity:1}
-.tool-card.cat-prod::before{background:linear-gradient(90deg,#6c5ce7,#a29bfe)}
-.tool-card.cat-saude::before{background:linear-gradient(90deg,#00b894,#55efc4)}
-.tool-card.cat-fin::before{background:linear-gradient(90deg,#e17055,#fab1a0)}
-.tool-card.cat-plan::before{background:linear-gradient(90deg,#0984e3,#74b9ff)}
-.tool-card.cat-util::before{background:linear-gradient(90deg,#fdcb6e,#ffeaa7)}
-.tool-card:hover{transform:translateY(-3px) scale(1.02);box-shadow:var(--sombra2);border-color:transparent}
-.tool-card.cat-prod:hover{border-color:#6c5ce7;box-shadow:0 6px 20px rgba(108,92,231,.2)}
-.tool-card.cat-saude:hover{border-color:#00b894;box-shadow:0 6px 20px rgba(0,184,148,.2)}
-.tool-card.cat-fin:hover{border-color:#e17055;box-shadow:0 6px 20px rgba(225,112,85,.2)}
-.tool-card.cat-plan:hover{border-color:#0984e3;box-shadow:0 6px 20px rgba(9,132,227,.2)}
-.tool-card.cat-util:hover{border-color:#fdcb6e;box-shadow:0 6px 20px rgba(253,203,110,.2)}
-.tool-card.ativa{border-color:var(--cor);box-shadow:0 0 0 3px rgba(108,92,231,.2),var(--sombra2)}
-.tool-card.cat-prod.ativa{border-color:#6c5ce7;box-shadow:0 0 0 3px rgba(108,92,231,.25),0 6px 20px rgba(108,92,231,.15)}
-.tool-card.cat-saude.ativa{border-color:#00b894;box-shadow:0 0 0 3px rgba(0,184,148,.25),0 6px 20px rgba(0,184,148,.15)}
-.tool-card.cat-fin.ativa{border-color:#e17055;box-shadow:0 0 0 3px rgba(225,112,85,.25),0 6px 20px rgba(225,112,85,.15)}
-.tool-card.cat-plan.ativa{border-color:#0984e3;box-shadow:0 0 0 3px rgba(9,132,227,.25),0 6px 20px rgba(9,132,227,.15)}
-.tool-card.cat-util.ativa{border-color:#fdcb6e;box-shadow:0 0 0 3px rgba(253,203,110,.25),0 6px 20px rgba(253,203,110,.15)}
-.tool-card.ativa::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:20px;height:3px;background:var(--cor);border-radius:2px}
-.tool-emoji{font-size:1.6rem;margin-bottom:.25rem;transition:transform .3s}
-.tool-card:hover .tool-emoji{transform:scale(1.2)}
-.tool-nome{font-size:.72rem;font-weight:600;color:var(--txt2);text-align:center;line-height:1.2;transition:color .2s}
-.tool-card:hover .tool-nome{color:var(--txt)}
-.tool-card.ativa .tool-nome{color:var(--txt);font-weight:700}
-.conteudo{padding:.5rem 0}
-.painel{display:none;opacity:0}
-.painel.ativo{display:block;animation:fadeUp .35s ease forwards}
-.lista{list-style:none}
-.lista li{display:flex;align-items:center;gap:.5rem;padding:.6rem .8rem;border-bottom:1px solid var(--borda);transition:background .15s;font-size:.88rem}
-.lista li:last-child{border:none}
-.lista li:hover{background:var(--card2)}
-.lista .check{width:20px;height:20px;border-radius:50%;border:2px solid var(--borda);cursor:pointer;transition:all .2s;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.65rem}
-.lista .check.feito{background:var(--verde);border-color:var(--verde);color:#fff;box-shadow:0 2px 8px rgba(0,184,148,.3)}
-.lista .texto{flex:1;word-break:break-word}
-.lista .texto.riscado{text-decoration:line-through;opacity:.45}
-.lista .tag{font-size:.7rem;padding:.15rem .4rem;border-radius:8px;font-weight:500;white-space:nowrap}
-.tag-alta{background:#fde8e8;color:var(--vermelho)}
-.tag-media{background:#fef3cd;color:var(--amarelo)}
-.tag-baixa{background:#d4edda;color:var(--verde)}
-.lista .acoes{display:flex;gap:.25rem}
-.icone-btn{background:none;border:none;cursor:pointer;font-size:1rem;padding:.15rem;border-radius:6px;transition:all .15s}
-.icone-btn:hover{background:var(--card2);transform:scale(1.15)}
-.pomodoro-tela{text-align:center;padding:1.5rem 0}
-.pomodoro-label{font-size:.9rem;color:var(--txt3);margin-bottom:.3rem}
-.pomodoro-tempo{font-family:JetBrains Mono,monospace;font-size:3.2rem;font-weight:700;color:var(--cor);letter-spacing:3px;text-shadow:0 0 20px rgba(108,92,231,.2)}
-.pomodoro-controles{display:flex;gap:.5rem;justify-content:center;margin-top:1rem;flex-wrap:wrap}
-.pomodoro-ciclos{display:flex;gap:.4rem;justify-content:center;margin-top:.8rem}
-.pomodoro-ponto{width:12px;height:12px;border-radius:50%;border:2px solid var(--cor);transition:all .3s}
-.pomodoro-ponto.preenchido{background:var(--cor);box-shadow:0 0 8px rgba(108,92,231,.4)}
-.habitos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.6rem}
-.habito-card{background:var(--card2);border-radius:var(--raio);padding:.8rem;display:flex;align-items:center;gap:.6rem;border:1px solid var(--borda);transition:all .2s}
-.habito-card:hover{box-shadow:var(--sombra1)}
-.habito-emoji{font-size:1.4rem}
-.habito-info{flex:1}
-.habito-nome{font-weight:500;font-size:.88rem}
-.habito-semana{display:flex;gap:.2rem;margin-top:.3rem}
-.habito-dia{width:22px;height:22px;border-radius:6px;border:1px solid var(--borda);cursor:pointer;font-size:.55rem;display:flex;align-items:center;justify-content:center;transition:all .2s;background:var(--card);color:var(--txt3)}
-.habito-dia.marcado{background:var(--verde);border-color:var(--verde);color:#fff;box-shadow:0 2px 6px rgba(0,184,148,.3)}
-.habito-dia.hoje{border-color:var(--cor);border-width:2px}
-.meta-card{background:var(--card2);border-radius:var(--raio);padding:.8rem;margin-bottom:.6rem;border:1px solid var(--borda);transition:all .2s}
-.meta-card:hover{box-shadow:var(--sombra1)}
-.meta-nome{font-weight:600;font-size:.9rem}
-.meta-barra{height:8px;background:var(--borda);border-radius:4px;margin:.5rem 0;overflow:hidden}
-.meta-progresso{height:100%;background:linear-gradient(90deg,var(--cor),var(--cor2));border-radius:4px;transition:width .5s;box-shadow:0 0 8px rgba(108,92,231,.2)}
-.meta-info{display:flex;justify-content:space-between;font-size:.9rem;color:var(--txt2)}
-.notas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem}
-.nota-card{background:var(--card2);border-radius:var(--raio);padding:.8rem;border:1px solid var(--borda);position:relative;transition:all .2s}
-.nota-card:hover{box-shadow:var(--sombra1);transform:translateY(-1px)}
-.nota-card h4{font-size:.9rem;margin-bottom:.3rem;color:var(--txt)}
-.nota-card p{font-size:.8rem;color:var(--txt2);line-height:1.4;max-height:60px;overflow:hidden}
-.nota-card .nota-acoes{position:absolute;top:.5rem;right:.5rem;display:flex;gap:.2rem}
-.orc-resumo{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:1rem}
-.orc-card{text-align:center;padding:.7rem .5rem;border-radius:var(--raio2);border:1px solid var(--borda);transition:all .2s}
-.orc-card:hover{transform:translateY(-2px);box-shadow:var(--sombra1)}
-.orc-card:nth-child(1){background:linear-gradient(135deg,rgba(0,184,148,.1),rgba(85,239,196,.1))}
-.orc-card:nth-child(2){background:linear-gradient(135deg,rgba(231,76,60,.1),rgba(255,118,117,.1))}
-.orc-card:nth-child(3){background:linear-gradient(135deg,rgba(9,132,227,.1),rgba(116,185,255,.1))}
-.orc-label{font-size:.72rem;color:var(--txt3)}
-.orc-valor{font-size:1.1rem;font-weight:700;margin-top:.15rem}
-.orc-valor.receita{color:var(--verde)}
-.orc-valor.despesa{color:var(--vermelho)}
-.orc-valor.saldo{color:var(--azul)}
-.agua-grid{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;padding:1rem 0}
-.agua-copo{width:52px;height:68px;border-radius:0 0 14px 14px;border:2px solid var(--azul);cursor:pointer;transition:all .3s;position:relative;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:var(--card)}
-.agua-copo:hover{transform:scale(1.08)}
-.agua-copo.cheio{background:rgba(52,152,219,.15);box-shadow:0 2px 10px rgba(52,152,219,.2)}
-.agua-copo.cheio::after{content:"";position:absolute;bottom:2px;left:2px;right:2px;height:60%;background:var(--azul);border-radius:0 0 12px 12px;opacity:.5;animation:fadeUp .3s ease}
-.agua-info{text-align:center;color:var(--txt2);font-size:.85rem;margin-top:.5rem}
-.agua-info strong{color:var(--azul)}
-.refeicoes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.5rem}
-.refeicao-card{background:var(--card2);border-radius:var(--raio);padding:.7rem;border:1px solid var(--borda);transition:all .2s}
-.refeicao-card:hover{box-shadow:var(--sombra1)}
-.refeicao-dia{font-weight:600;font-size:.82rem;color:var(--cor);margin-bottom:.4rem}
-.refeicao-linha{display:flex;align-items:center;gap:.3rem;margin-bottom:.25rem;font-size:.78rem}
-.refeicao-linha span{color:var(--txt3);min-width:55px}
-.refeicao-linha input{flex:1;padding:.25rem .4rem;border:1px solid var(--borda);border-radius:6px;font-size:.78rem;background:var(--card);color:var(--txt);font-family:inherit}
-.planej-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.5rem}
-.planej-dia{background:var(--card2);border-radius:var(--raio);padding:.6rem;border:1px solid var(--borda);transition:all .2s}
-.planej-dia:hover{box-shadow:var(--sombra1)}
-.planej-dia h4{font-size:.8rem;color:var(--cor);margin-bottom:.3rem}
-.planej-dia textarea{width:100%;min-height:50px;border:1px solid var(--borda);border-radius:6px;font-size:.75rem;padding:.3rem;background:var(--card);color:var(--txt);font-family:inherit;resize:vertical}
-.gratidao-lista{list-style:none}
-.gratidao-lista li{padding:.5rem .7rem;border-bottom:1px solid var(--borda);font-size:.85rem;display:flex;justify-content:space-between;align-items:center;transition:background .15s}
-.gratidao-lista li:hover{background:var(--card2)}
-.gratidao-lista li:last-child{border:none}
-.humor-opcoes{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:.8rem 0}
-.humor-btn{width:54px;height:54px;border-radius:50%;border:2px solid var(--borda);background:var(--card);cursor:pointer;font-size:1.5rem;transition:all .25s;display:flex;align-items:center;justify-content:center}
-.humor-btn:hover{border-color:var(--cor);transform:scale(1.15);box-shadow:var(--sombra2)}
-.humor-btn.selecionado{border-color:var(--cor);background:var(--card2);box-shadow:0 0 0 3px rgba(108,92,231,.2),var(--sombra2)}
-.humor-registro{font-size:.8rem;color:var(--txt3);text-align:center;margin-top:.5rem}
-.leitura-card{background:var(--card2);border-radius:var(--raio);padding:.7rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.6rem;border:1px solid var(--borda);transition:all .2s}
-.leitura-card:hover{box-shadow:var(--sombra1)}
-.leitura-emoji{font-size:1.5rem;flex-shrink:0}
-.leitura-info{flex:1}
-.leitura-info h4{font-size:.85rem}
-.leitura-info p{font-size:.72rem;color:var(--txt3)}
-.exercicio-card{background:var(--card2);border-radius:var(--raio);padding:.6rem .8rem;margin-bottom:.4rem;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--borda);font-size:.85rem;transition:all .2s}
-.exercicio-card:hover{box-shadow:var(--sombra1)}
-.regressiva-item{background:var(--card2);border-radius:var(--raio);padding:.7rem;margin-bottom:.5rem;border:1px solid var(--borda);transition:all .2s}
-.regressiva-item:hover{box-shadow:var(--sombra1)}
-.regressiva-item h4{font-size:.88rem;margin-bottom:.15rem}
-.regressiva-item .tempo{font-family:JetBrains Mono,monospace;font-size:1.3rem;font-weight:700;color:var(--cor)}
-.regressiva-item .detalhes{font-size:.72rem;color:var(--txt3);margin-top:.2rem}
-.lembrete-card{background:var(--card2);border-radius:var(--raio);padding:.6rem .8rem;margin-bottom:.4rem;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--borda)}
-.lembrete-texto{font-size:.85rem;flex:1}
-.lembrete-hora{font-size:.75rem;color:var(--txt3)}
-.decisor-resultado{text-align:center;padding:1.5rem;font-size:1.2rem;color:var(--cor);font-weight:600;min-height:60px}
-.senha-display{background:var(--card2);border-radius:var(--raio);padding:.8rem;text-align:center;font-family:JetBrains Mono,monospace;font-size:1.1rem;letter-spacing:2px;margin-bottom:.8rem;border:1px solid var(--borda);word-break:break-all;color:var(--txt)}
-.senha-opcoes{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem}
-.senha-opcoes label{font-size:.78rem;color:var(--txt2);display:flex;align-items:center;gap:.2rem}
-.senha-opcoes input[type=range]{width:80px;accent-color:var(--cor)}
-.senha-opcoes input[type=checkbox]{accent-color:var(--cor)}
-.calc-tela{background:var(--card2);border-radius:var(--raio);padding:.6rem .8rem;text-align:right;font-family:JetBrains Mono,monospace;font-size:1.6rem;font-weight:500;margin-bottom:.6rem;min-height:50px;border:1px solid var(--borda);color:var(--txt);overflow:hidden}
-.calc-botoes{display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem}
-.calc-btn{padding:.55rem;border:none;border-radius:var(--raio);font-size:1rem;font-weight:500;cursor:pointer;font-family:inherit;transition:all .2s;background:var(--card);color:var(--txt);border:1px solid var(--borda)}
-.calc-btn:hover{background:var(--card2);transform:scale(1.03)}
-.calc-btn.op{background:var(--cor);color:#fff;border-color:var(--cor)}
-.calc-btn.op:hover{background:var(--cor3)}
-.calc-btn.igual{background:var(--verde);color:#fff;border-color:var(--verde);grid-row:span 2;box-shadow:0 2px 8px rgba(0,184,148,.3)}
-.calc-btn.limpar{background:var(--vermelho);color:#fff;border-color:var(--vermelho)}
-.frase-box{text-align:center;padding:1.5rem;font-family:Playfair Display,serif;font-size:1.1rem;font-style:italic;color:var(--txt2);line-height:1.5}
-.frase-autor{font-size:.8rem;color:var(--txt3);margin-top:.5rem;font-family:Inter,sans-serif;font-style:normal}
-.revisao-blocos{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.5rem}
-.revisao-bloco{background:var(--card2);border-radius:var(--raio);padding:.7rem;border:1px solid var(--borda);transition:all .2s}
-.revisao-bloco:hover{box-shadow:var(--sombra1)}
-.revisao-bloco h4{font-size:.85rem;color:var(--cor);margin-bottom:.3rem;display:flex;align-items:center;gap:.3rem}
-.revisao-bloco p{font-size:.78rem;color:var(--txt2);line-height:1.4}
-.dica-card{background:var(--card);border-radius:var(--raio2);padding:1.1rem 1.2rem;display:flex;gap:1rem;align-items:flex-start;box-shadow:var(--sombra1);border:1px solid var(--borda);transition:transform .2s,box-shadow .2s}
-.dica-card:hover{transform:translateY(-2px);box-shadow:var(--sombra2)}
-.dica-icone{font-size:1.8rem;flex-shrink:0;margin-top:2px}
-.dica-conteudo{flex:1;min-width:0}
-.dica-titulo{font-size:.88rem;font-weight:700;color:var(--txt);margin:0 0 .3rem 0}
-.dica-texto{font-size:.84rem;color:var(--txt2);margin:0 0 .6rem 0;line-height:1.45}
-.dica-btn{font-size:.72rem;padding:.3rem .7rem;border:1px solid var(--borda);border-radius:8px;background:var(--bg);color:var(--txt3);cursor:pointer;transition:all .2s}
-.dica-btn:hover{background:var(--cor);color:#fff;border-color:var(--cor)}
-.dica-guia{background:linear-gradient(135deg,var(--cor2),var(--cor));border:none}
-.dica-guia .dica-titulo,.dica-guia .dica-texto{color:#fff}
-.dica-guia .dica-btn{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.3)}
-.dica-guia .dica-btn:hover{background:rgba(255,255,255,.3)}
-.guia-grid{display:grid;gap:.5rem;margin-top:.5rem}
-.guia-item{display:flex;gap:.5rem;align-items:center;font-size:.8rem;color:rgba(255,255,255,.9);cursor:pointer;padding:.3rem .5rem;border-radius:8px;transition:background .2s}
-.guia-item:hover{background:rgba(255,255,255,.15)}
-.guia-item span:first-child{font-size:1.1rem;flex-shrink:0}
-.dicas-rodape{display:grid;gap:1rem;margin-top:1.5rem;padding:0 1rem 1rem;max-width:800px;margin-left:auto;margin-right:auto}
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:999;display:none;align-items:center;justify-content:center;padding:1rem}
-.modal-overlay.visivel{display:flex}
-.modal-box{background:var(--card);border-radius:var(--raio2);padding:1.5rem;max-width:340px;width:100%;box-shadow:var(--sombra3);text-align:center;animation:scaleIn .3s ease}
-.modal-box h3{font-size:1rem;margin-bottom:.5rem;color:var(--txt)}
-.modal-box p{font-size:.85rem;color:var(--txt2);margin-bottom:1rem}
-.modal-botoes{display:flex;gap:.5rem;justify-content:center}
-.scroll-top{position:fixed;bottom:1.2rem;right:1.2rem;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--cor),var(--cor2));color:#fff;border:none;font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:98;box-shadow:var(--sombra2);transition:all .3s}
-.scroll-top.visivel{display:flex}
-.scroll-top:hover{transform:scale(1.1);box-shadow:var(--sombra3)}
-.notificacao{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--cor),var(--cor2));color:#fff;padding:.65rem 1.3rem;border-radius:var(--raio);font-size:.85rem;z-index:1000;box-shadow:var(--sombra3);animation:fadeUp .3s ease;font-weight:500}
-.rodape{background:var(--card);border-top:1px solid var(--borda);padding:1.2rem;text-align:center;margin-top:1rem}
-.rodape p{font-size:.8rem;color:var(--txt3);margin-bottom:.2rem}
-.rodape-links{display:flex;gap:.8rem;justify-content:center;margin-top:.5rem}
-.rodape-links a{font-size:.75rem;color:var(--txt3);transition:color .2s}
-.rodape-links a:hover{color:var(--cor)}
-@media(max-width:600px){.hero h1{font-size:1.3rem}.hero p{font-size:.8rem}.stats{grid-template-columns:repeat(3,1fr);gap:.4rem}.stat:nth-child(4),.stat:nth-child(5){grid-column:span 1}.ferramentas-grid{grid-template-columns:repeat(3,1fr);gap:.4rem}.tool-emoji{font-size:1.3rem}.tool-nome{font-size:.65rem}.orc-resumo{grid-template-columns:1fr}.pomodoro-tempo{font-size:2.5rem}.refeicoes-grid{grid-template-columns:1fr}.notas-grid{grid-template-columns:1fr}.habitos-grid{grid-template-columns:1fr}.topo-logo{font-size:.95rem}}
-@media(min-width:601px) and (max-width:900px){.stats{grid-template-columns:repeat(5,1fr)}.ferramentas-grid{grid-template-columns:repeat(4,1fr)}}
-
-/* === PAINEL DA VIDA === */
-.vida-container{text-align:center;padding:1rem 0}
-.vida-score-wrap{position:relative;width:180px;height:180px;margin:1rem auto}
-.vida-score-wrap svg{width:180px;height:180px;transform:rotate(-90deg)}
-.vida-score-bg{fill:none;stroke:var(--card2);stroke-width:12}
-.vida-score-bar{fill:none;stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 1.2s ease,stroke 0.6s ease}
-.vida-score-num{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:2.8rem;font-weight:800;line-height:1}
-.vida-score-label{font-size:.75rem;color:var(--txt3);margin-top:.15rem}
-.vida-nivel{font-size:.9rem;font-weight:600;margin:.6rem 0;padding:.25rem .8rem;border-radius:20px;display:inline-block}
-.vida-nivel.n4{background:linear-gradient(135deg,#00b894,#55efc4);color:#fff}
-.vida-nivel.n3{background:linear-gradient(135deg,#0984e3,#74b9ff);color:#fff}
-.vida-nivel.n2{background:linear-gradient(135deg,#fdcb6e,#ffeaa7);color:#2d3436}
-.vida-nivel.n1{background:linear-gradient(135deg,#e17055,#fab1a0);color:#fff}
-.vida-nivel.n0{background:linear-gradient(135deg,#636e72,#b2bec3);color:#fff}
-.vida-cats{display:grid;gap:.65rem;margin:1.2rem 0}
-.vida-cat{background:var(--card);border-radius:var(--raio2);padding:.75rem 1rem;display:flex;align-items:center;gap:.65rem;border:1px solid var(--borda);transition:transform .2s}
-.vida-cat:hover{transform:translateX(4px)}
-.vida-cat-icon{font-size:1.3rem;flex-shrink:0}
-.vida-cat-info{flex:1;min-width:0}
-.vida-cat-nome{font-size:.82rem;font-weight:600;color:var(--txt);margin-bottom:.25rem}
-.vida-cat-barra{height:8px;background:var(--card2);border-radius:4px;overflow:hidden}
-.vida-cat-fill{height:100%;border-radius:4px;transition:width 1s ease,background .5s ease}
-.vida-cat-score{font-size:.78rem;font-weight:700;flex-shrink:0;width:2.2rem;text-align:right}
-.vida-dica{background:var(--card);border-radius:var(--raio2);padding:.85rem 1rem;margin:.7rem 0;border:1px solid var(--borda);text-align:left;font-size:.82rem;color:var(--txt2);line-height:1.45;display:flex;align-items:flex-start;gap:.5rem}
-.vida-dica-icon{font-size:1.1rem;flex-shrink:0}
-.vida-streak{display:flex;align-items:center;gap:.4rem;justify-content:center;margin:.8rem 0;font-size:.85rem;color:var(--txt3)}
-.vida-streak strong{color:var(--cor);font-size:1.1rem}
-.vida-hist{display:flex;gap:3px;justify-content:center;margin:.8rem 0;flex-wrap:wrap}
-.vida-hist-dot{width:10px;height:10px;border-radius:3px;transition:background .3s}
-.vida-empty{text-align:center;padding:2rem 1rem;color:var(--txt3);font-size:.88rem}
-.vida-refresh{font-size:.75rem;color:var(--txt3);margin-top:.5rem;cursor:pointer;text-align:center}
-.vida-refresh:hover{color:var(--cor)}
-.vida-comp{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0}
-.vida-comp-item{background:var(--card);border-radius:var(--raio2);padding:.6rem .8rem;border:1px solid var(--borda);text-align:center}
-.vida-comp-item .num{font-size:1.3rem;font-weight:700;color:var(--cor)}
-.vida-comp-item .lbl{font-size:.7rem;color:var(--txt3);margin-top:.1rem}
-
-/* Apoie / Pix */
-.topo-btn.apoie-btn{background:linear-gradient(135deg,#e84393,#fd79a8);color:#fff;border-color:transparent;animation:apoie-pulse 2s ease-in-out infinite;font-size:1.1rem}
-@keyframes apoie-pulse{0%,100%{box-shadow:0 0 0 0 rgba(232,67,147,.3)}50%{box-shadow:0 0 0 6px rgba(232,67,147,0)}}
-.pix-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
-.pix-modal-bg.ativo{opacity:1;pointer-events:auto}
-.pix-modal{background:var(--card);border-radius:20px;padding:2rem 1.5rem;max-width:380px;width:92%;text-align:center;box-shadow:0 12px 48px rgba(0,0,0,.25);transform:translateY(20px) scale(.95);transition:transform .35s cubic-bezier(.4,0,.2,1)}
-.pix-modal-bg.ativo .pix-modal{transform:translateY(0) scale(1)}
-.pix-modal h3{font-size:1.3rem;font-weight:800;margin-bottom:.4rem;background:linear-gradient(135deg,#e84393,#fd79a8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.pix-modal p{color:var(--txt2);font-size:.88rem;line-height:1.5;margin-bottom:1.2rem}
-.pix-chave-box{background:var(--card2);border:2px dashed rgba(232,67,147,.35);border-radius:14px;padding:1rem;margin-bottom:1rem;display:flex;align-items:center;gap:.8rem;justify-content:center}
-.pix-chave-box .pix-icon{font-size:2rem}
-.pix-chave-box .pix-email{font-weight:700;font-size:.95rem;color:var(--txt);word-break:break-all}
-.pix-copiar{background:linear-gradient(135deg,#e84393,#fd79a8);color:#fff;border:none;border-radius:12px;padding:.7rem 1.5rem;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;width:100%}
-.pix-copiar:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(232,67,147,.3)}
-.pix-copiar:active{transform:translateY(0)}
-.pix-fechar{position:absolute;top:.8rem;right:.8rem;width:32px;height:32px;border-radius:50%;border:1px solid var(--borda);background:var(--card2);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.pix-fechar:hover{background:var(--vermelho);color:#fff;border-color:var(--vermelho)}
-.pix-coracao{display:flex;justify-content:center;gap:.15rem;margin-bottom:.6rem;font-size:1.3rem;animation:heart-beat 1.5s ease-in-out infinite}
-@keyframes heart-beat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.1)}60%{transform:scale(1)}}
-.pix-modal .pix-relative{position:relative}
-
-/* Banner Apoie */
-.apoie-banner{background:linear-gradient(135deg,#e84393 0%,#fd79a8 40%,#fab1a0 70%,#ffeaa7 100%);color:#fff;padding:.7rem 1rem;display:flex;align-items:center;justify-content:center;gap:.6rem;flex-wrap:wrap;font-size:.88rem;font-weight:600;position:relative;overflow:hidden;animation:banner-shimmer 3s ease-in-out infinite}
-@keyframes banner-shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.apoie-banner{background-size:200% 200%}
-.apoie-banner-text{display:flex;align-items:center;gap:.4rem;text-shadow:0 1px 2px rgba(0,0,0,.15)}
-.apoie-banner-text .emoji-pulse{animation:emoji-bounce 1.5s ease-in-out infinite;font-size:1.1rem}
-@keyframes emoji-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-.apoie-banner-btn{background:rgba(255,255,255,.25);color:#fff;border:2px solid rgba(255,255,255,.5);border-radius:20px;padding:.35rem 1rem;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;backdrop-filter:blur(4px)}
-.apoie-banner-btn:hover{background:#fff;color:#e84393;border-color:#fff;transform:scale(1.05)}
-.apoie-banner-close{position:absolute;right:.6rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.2);border:none;color:#fff;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:.7rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.apoie-banner-close:hover{background:rgba(255,255,255,.5)}
-.apoie-banner.hide{display:none}
-
-/* Contador de visitantes */
-.visit-counter{display:inline-flex;align-items:center;gap:.35rem;background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid var(--borda);border-radius:16px;padding:.3rem .75rem;font-size:.75rem;color:var(--txt3);margin-top:.5rem}
-.visit-counter .vc-icon{font-size:.9rem}
-.visit-counter .vc-num{font-weight:700;color:var(--cor);font-variant-numeric:tabular-nums}
-</style>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://henriquehabitz2014-bot.github.io/Organizaj-/#app","name":"OrganizaJá","alternateName":"Organiza Já","url":"https://henriquehabitz2014-bot.github.io/Organizaj-/","description":"App gratuito e completo para organizar tarefas, hábitos, metas, finanças, leitura, exercícios e muito mais. 22 ferramentas em um só lugar, incluindo o exclusivo Painel da Vida.","applicationCategory":"Productivity","operatingSystem":"Web Browser","browserRequirements":"Requires JavaScript","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL","availability":"https://schema.org/InStock"},"featureList":"Painel da Vida, Tarefas, Lista de Compras, Pomodoro, Hábitos, Metas, Notas, Orçamento, Rastreador de Água, Planejamento de Refeições, Planejamento Semanal, Gratidão, Tracker de Humor, Lista de Leitura, Exercícios, Contagem Regressiva, Gerenciador de Senhas, Calculadora, Lembretes, Decisor, Revisão Semanal, Frases Motivacionais","author":{"@type":"Organization","name":"OrganizaJá"},"inLanguage":"pt-BR"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"OrganizaJá","item":"https://henriquehabitz2014-bot.github.io/Organizaj-/"}]},{"@type":"WebSite","@id":"https://henriquehabitz2014-bot.github.io/Organizaj-/#site","url":"https://henriquehabitz2014-bot.github.io/Organizaj-/","name":"OrganizaJá","inLanguage":"pt-BR","potentialAction":{"@type":"SearchAction","target":"https://henriquehabitz2014-bot.github.io/Organizaj-/?q={search_term_string}","query-input":"required name=search_term_string"}}]}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"O que é o OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"O OrganizaJá é um aplicativo gratuito de organização pessoal e produtividade que funciona direto no navegador. Tem 22 ferramentas integradas: gerenciador de tarefas, rastreador de hábitos, timer Pomodoro, controle de orçamento, lista de compras, rastreador de água, planejamento de refeições, diário de gratidão, tracker de humor, lista de leitura, registro de exercícios, contagem regressiva, gerador de senhas, calculadora, lembretes, decisor, revisão semanal e frases motivacionais. Não precisa de cadastro nem instalação."}},{"@type":"Question","name":"O OrganizaJá é gratuito?","acceptedAnswer":{"@type":"Answer","text":"Sim, o OrganizaJá é 100% gratuito. Não tem assinatura, não tem versão premium e não cobra nada. Todas as 22 ferramentas estão disponíveis sem pagar um centavo."}},{"@type":"Question","name":"Preciso instalar o OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"Não precisa instalar. O OrganizaJá funciona direto no navegador do celular, tablet ou computador. Se quiser, pode instalar como app no celular usando a opção do navegador."}},{"@type":"Question","name":"Meus dados ficam seguros no OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"Sim. Todos os dados ficam salvos no seu próprio dispositivo usando o localStorage do navegador. Nada é enviado para servidores externos. Suas informações são totalmente privadas."}},{"@type":"Question","name":"Quais ferramentas o OrganizaJá tem?","acceptedAnswer":{"@type":"Answer","text":"O OrganizaJá tem 22 ferramentas: Painel da Vida (score de organização), gerenciador de tarefas com prioridades, lista de compras por categorias, timer Pomodoro personalizável, rastreador de hábitos semanal, planejador de metas com barra de progresso, bloco de notas, controle de orçamento e finanças, rastreador de água (8 copos por dia), planejamento de refeições, agenda semanal, diário de gratidão, tracker de humor, lista de leitura, registro de exercícios, contagem regressiva para eventos, gerador de senhas seguras, calculadora, lembretes com horário, decisor de escolhas, revisão semanal e frases motivacionais."}},{"@type":"Question","name":"O OrganizaJá funciona no celular?","acceptedAnswer":{"@type":"Answer","text":"Sim, o OrganizaJá funciona em qualquer dispositivo com navegador: celular, tablet e computador. É responsivo e se adapta ao tamanho da tela automaticamente."}},{"@type":"Question","name":"Como faço backup dos meus dados no OrganizaJá?","acceptedAnswer":{"@type":"Answer","text":"O OrganizaJá tem sistema de exportação e importação de dados. Clique no botão de exportar para baixar um arquivo JSON com todos os seus dados. Para restaurar, use o botão de importar e selecione o arquivo."}},{"@type":"Question","name":"O OrganizaJá tem modo escuro?","acceptedAnswer":{"@type":"Answer","text":"Sim, o OrganizaJá tem modo escuro integrado. Clique no ícone de lua na barra superior para alternar entre modo claro e modo escuro."}}]}</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"OrganizaJá","applicationCategory":"Productivity","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL"},"description":"App gratuito de organização pessoal com 22 ferramentas.","inLanguage":"pt-BR"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"O OrganizaJá é grátis?","acceptedAnswer":{"@type":"Answer","text":"Sim! Todas as 22 ferramentas são 100% gratuitas."}},{"@type":"Question","name":"Preciso criar conta?","acceptedAnswer":{"@type":"Answer","text":"Não. O OrganizaJá funciona direto no navegador sem cadastro."}},{"@type":"Question","name":"Meus dados ficam salvos?","acceptedAnswer":{"@type":"Answer","text":"Sim. Todos os dados ficam salvos no seu dispositivo (localStorage). Nada é enviado para servidores."}},{"@type":"Question","name":"Funciona offline?","acceptedAnswer":{"@type":"Answer","text":"Sim. Depois de abrir, o app funciona sem internet."}},{"@type":"Question","name":"Quais ferramentas existem?","acceptedAnswer":{"@type":"Answer","text":"Tarefas, Calendário, Estudos, Hábitos, Pomodoro, Metas, Notas, Lembretes, Decisor, Água, Exercícios, Humor, Gratidão, Refeições, Orçamento, Compras, Planejamento Semanal, Contagem Regressiva, Calculadora, Senhas, Leitura, Revisão Semanal, Frases Motivacionais e Painel da Vida."}}]}
+</script>
 </head>
 <body>
-<noscript><div style="padding:2rem;font-family:sans-serif;max-width:800px;margin:auto"><h1>OrganizaJá – App Grátis de Organização Pessoal</h1><p>O OrganizaJá é um aplicativo gratuito de organização pessoal e produtividade com 22 ferramentas integradas que funciona direto no navegador, sem cadastro e sem instalação.</p><h2>Ferramentas disponíveis</h2><ul><li>Painel da Vida: score de organização pessoal 0-100</li>
-<li>Gerenciador de tarefas com prioridades (alta, média e baixa)</li><li>Lista de compras organizada por categorias (alimentos, bebidas, limpeza, higiene e mais)</li><li>Timer Pomodoro personalizável para foco e produtividade</li><li>Rastreador de hábitos diários com visualização semanal</li><li>Planejador de metas com barra de progresso</li><li>Bloco de notas rápido para anotações</li><li>Controle de orçamento familiar: receitas, despesas e saldo</li><li>Rastreador de água: marque os copos que você bebeu</li><li>Planejamento de refeições da semana</li><li>Agenda e planejamento semanal</li><li>Diário de gratidão diário</li><li>Tracker de humor e bem-estar emocional</li><li>Lista de leitura e acompanhamento de livros</li><li>Registro de exercícios físicos (cardio, força, flexibilidade)</li><li>Contagem regressiva para eventos importantes</li><li>Gerador de senhas seguras e aleatórias</li><li>Calculadora rápida</li><li>Sistema de lembretes com horário</li><li>Decisor de escolhas para tomar decisões</li><li>Revisão semanal de produtividade</li><li>Frases motivacionais diárias</li></ul><h2>Por que usar o OrganizaJá?</h2><p>Porque é gratuito, não precisa de cadastro, funciona no celular e no computador, seus dados ficam no seu dispositivo e tem tudo que você precisa para organizar sua vida em um só lugar.</p><p>Acesse: <a href="https://henriquehabitz2014-bot.github.io/Organizaj-/">OrganizaJá</a></p></div></noscript>
 
-<div class="instalar-banner" id="instalarBanner"><span>📲 Instale o OrganizaJá no dispositivo!</span><button class="instalar-btn" id="instalarBtn">Instalar</button><button class="icone-btn" onclick="fecharInstalar()" style="color:#fff;margin-left:.3rem;">✕</button></div>
-
-<header class="topo" role="banner">
-<div class="topo-logo"><span>📋</span> OrganizaJá</div>
-<div class="topo-botoes">
-<button class="topo-btn" onclick="toggleBusca()" title="Buscar">🔍</button>
-<button class="topo-btn" onclick="importarDados()" title="Importar dados">📥</button>
-<button class="topo-btn" onclick="exportarDados()" title="Exportar dados">📤</button>
-<button class="topo-btn apoie-btn" onclick="abrirPix()" title="Apoie o OrganizaJá">💝</button>
-<button class="topo-btn" id="temaBtn" onclick="toggleTema()" title="Tema">🌙</button>
-</div>
-</header>
-
+<!-- Apoie Banner -->
 <div class="apoie-banner" id="apoieBanner">
-<span class="apoie-banner-text"><span class="emoji-pulse">💜</span> Apoie jovens desenvolvedores brasileiros! Qualquer Pix ajuda a manter o OrganizaJá gratuito</span>
-<button class="apoie-banner-btn" onclick="abrirPix()">💝 Doar via Pix</button>
-<button class="apoie-banner-close" onclick="fecharBanner()" title="Fechar">✕</button>
+  <div class="apoie-banner-text"><span class="emoji-pulse">💖</span> Apoie o OrganizaJá!</div>
+  <button class="apoie-banner-btn" onclick="abrirPix()">Fazer um PIX</button>
+  <button class="apoie-banner-close" onclick="fecharBannerApoie()">✕</button>
 </div>
 
-<div class="busca-wrap" id="buscaWrap"><input type="text" class="busca-input" id="buscaInput" placeholder="Buscar em tudo..." oninput="buscar()"><button class="btn btn-s" onclick="toggleBusca()">✕</button></div>
-<div class="busca-resultados" id="buscaResultados"></div>
-<input type="file" id="importarArquivo" accept=".json" style="display:none" onchange="processarImportacao(event)">
-
-<main id="conteudo-principal">
-<div class="pix-modal-bg" id="pixModal" onclick="if(event.target===this)fecharPix()">
-<div class="pix-modal">
-<button class="pix-fechar" onclick="fecharPix()">✕</button>
-<div class="pix-coracao">❤️ 💛 💚</div>
-<h3>🚀 Apoie Jovens Desenvolvedores!</h3>
-<p>O OrganizaJá foi criado por um jovem desenvolvedor brasileiro. É 100% gratuito, sem anúncios e sem pegadinha. Qualquer valor via Pix ajuda a manter esse projeto vivo e incentiva mais jovens a criar tecnologia! 💜</p>
-<div class="pix-chave-box">
-<span class="pix-icon">💳</span>
-<span class="pix-email">henriquehabitz2014@gmail.com</span>
-</div>
-<button class="pix-copiar" onclick="copiarPix()">📋 Copiar chave Pix</button>
-</div>
+<!-- Install Banner -->
+<div class="instalar-banner" id="instalarBanner">
+  <span>📱 Instale o OrganizaJá no seu dispositivo</span>
+  <button class="instalar-btn" onclick="instalarApp()">Instalar</button>
 </div>
 
-<section class="hero">
-<div class="hero-shapes">
-<div class="hero-shape"></div><div class="hero-shape"></div><div class="hero-shape"></div><div class="hero-shape"></div><div class="hero-shape"></div><div class="hero-shape"></div><div class="hero-shape"></div>
+<!-- App Layout -->
+<div class="app-layout">
+
+<!-- Sidebar Desktop -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo"><span>🚀</span> OrganizaJá</div>
+  <div class="sidebar-section">Principal</div>
+  <div class="sidebar-item ativo" data-page="inicio" onclick="navegarPara('inicio',this)">
+    <div class="s-icon">🏠</div><span>Início</span>
+  </div>
+  <div class="sidebar-item" data-page="tarefas" onclick="navegarPara('tarefas',this)">
+    <div class="s-icon">✅</div><span>Tarefas</span>
+  </div>
+  <div class="sidebar-item" data-page="calendario" onclick="navegarPara('calendario',this)">
+    <div class="s-icon">📅</div><span>Calendário</span>
+  </div>
+  <div class="sidebar-item" data-page="estudos" onclick="navegarPara('estudos',this)">
+    <div class="s-icon">📚</div><span>Estudos</span>
+  </div>
+  <div class="sidebar-item" data-page="habitos" onclick="navegarPara('habitos',this)">
+    <div class="s-icon">🔥</div><span>Hábitos</span>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">Ferramentas</div>
+  <div class="sidebar-more-btn" onclick="toggleSidebarTools()">
+    <div class="s-icon">🧰</div><span>Mais ferramentas</span><small style="margin-left:auto;font-size:.7rem">▼</small>
+  </div>
+  <div class="sidebar-tools-panel" id="sidebarTools">
+    <div class="sidebar-tool-mini" onclick="navegarPara('pomodoro')">⏱️ Pomodoro</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('metas')">🎯 Metas</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('notas')">📝 Notas</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('lembretes')">🔔 Lembretes</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('decisor')">🗳️ Decisor</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('agua')">💧 Água</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('exercicios')">🏋️ Exercícios</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('humor')">😊 Humor</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('gratidao')">🙏 Gratidão</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('refeicoes')">🍽️ Refeições</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('orcamento')">💰 Orçamento</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('compras')">🛒 Compras</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('planejamento')">📅 Semanal</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('regressiva')">⏰ Regressiva</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('calculadora')">📐 Calculadora</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('senhas')">🔐 Senhas</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('leitura')">📖 Leitura</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('revisao')">📊 Revisão</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('frases')">💭 Frases</div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('vida')">🌟 Painel da Vida</div>
+  </div>
+</nav>
+
+<!-- Main Area -->
+<div class="main-area">
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <button class="topbar-btn" id="menuToggle" onclick="toggleSidebar()" style="display:none">☰</button>
+    <div class="topbar-title" id="topbarTitle">Início</div>
+  </div>
+  <div class="topbar-botoes">
+    <button class="topbar-btn" onclick="abrirBusca()" title="Buscar">🔍</button>
+    <button class="topbar-btn" onclick="toggleTema()" title="Tema" id="temaBtn">🌙</button>
+    <button class="topbar-btn apoie-btn" onclick="abrirPix()" title="Apoie">💖</button>
+  </div>
 </div>
-<h1>OrganizaJá - App Grátis para Organizar Toda a Sua Vida</h1>
-<p>Organize sua vida com 22 ferramentas gratuitas num só app: tarefas, hábitos, Pomodoro, orçamento, água e muito mais. Sem cadastro, funciona offline.</p>
-<div class="hero-badges">
-<a href="./ferramentas/" class="hero-badge" style="text-decoration:none;color:inherit">✨ 22 ferramentas gratis</a>
-<span class="hero-badge">📲 Instale no celular</span>
-<span class="hero-badge">💯 100% gratuito</span>
-<span class="hero-badge">🔒 Sem cadastro</span>
-<span class="hero-badge">📴 Funciona offline</span>
-<span class="hero-badge">📈 22 ferramentas gratuitas</span>
-<span class="hero-badge">🌐 Funciona no navegador</span>
-<span class="hero-badge">🇧🇷 Feito no Brasil</span>
+
+<!-- Search Overlay -->
+<div class="busca-overlay" id="buscaOverlay" onclick="fecharBusca(event)">
+  <div class="busca-box">
+    <div class="busca-input-wrap">
+      <span>🔍</span>
+      <input type="text" id="buscaInput" placeholder="Buscar ferramenta ou tarefa..." oninput="buscarTudo(this.value)">
+    </div>
+    <div class="busca-resultados" id="buscaResultados"></div>
+  </div>
 </div>
+
+<!-- ======== PAGE: INICIO/DASHBOARD ======== -->
+<div class="page ativo" id="page-inicio">
+  <div class="content-wrap">
+    <div class="dash-greeting" id="dashGreeting">Bom dia! 👋</div>
+    <div class="dash-greeting-sub" id="dashDate"></div>
+
+    <div class="dash-cards" id="dashCards"></div>
+
+    <div class="dash-quick-add">
+      <input type="text" id="quickTaskInput" placeholder="Adicionar tarefa rápida..." onkeydown="if(event.key==='Enter')addQuickTask()">
+      <button class="btn btn-p" onclick="addQuickTask()">+ Tarefa</button>
+    </div>
+
+    <div class="dash-section">
+      <h3>📋 Tarefas de Hoje <span id="dashTarefasCount" style="color:var(--txt3);font-weight:400"></span></h3>
+      <div id="dashTarefasHoje"></div>
+    </div>
+
+    <div class="dash-section">
+      <h3>🚨 Atrasadas <span id="dashAtrasadasCount" style="color:var(--vermelho);font-weight:400"></span></h3>
+      <div id="dashAtrasadas"></div>
+    </div>
+
+    <div class="dash-section">
+      <h3>🔥 Hábitos de Hoje</h3>
+      <div id="dashHabitosHoje"></div>
+    </div>
+
+    <div class="dash-section">
+      <h3>📅 Próximos Compromissos</h3>
+      <div id="dashCompromissos"></div>
+    </div>
+
+    <div class="dash-section">
+      <h3>📊 Resumo da Semana</h3>
+      <div id="dashResumoSemana"></div>
+    </div>
+
+    <!-- Dicas Rodape -->
+    <div class="dicas-rodape">
+      <div class="dica-card" id="dicaDoDia">
+        <div class="dica-icone">💡</div>
+        <div class="dica-conteudo">
+          <h3 class="dica-titulo">Dica do Dia</h3>
+          <p class="dica-texto" id="dicaTexto">Carregando dica...</p>
+          <button class="dica-btn" onclick="novaDica()">🔄 Outra dica</button>
+        </div>
+      </div>
+      <div class="dica-card">
+        <div class="dica-icone">🔥</div>
+        <div class="dica-conteudo">
+          <h3 class="dica-titulo">Motivação Rápida</h3>
+          <p class="dica-texto" id="motivacaoTexto">Carregando...</p>
+          <button class="dica-btn" onclick="novaMotivacao()">⚡ Nova motivação</button>
+        </div>
+      </div>
+      <div class="dica-card">
+        <div class="dica-icone">🎯</div>
+        <div class="dica-conteudo">
+          <h3 class="dica-titulo">Desafio do Dia</h3>
+          <p class="dica-texto" id="desafioTexto">Carregando...</p>
+          <button class="dica-btn" onclick="novoDesafio()">🏆 Novo desafio</button>
+        </div>
+      </div>
+      <div class="dica-card dica-guia">
+        <div class="dica-icone">📖</div>
+        <div class="dica-conteudo">
+          <h3 class="dica-titulo">Como Usar Este App</h3>
+          <div class="guia-grid">
+            <div class="guia-item" onclick="navegarPara('tarefas')"><span>✅</span> <span>Tarefas: liste e marque o que precisa fazer</span></div>
+            <div class="guia-item" onclick="navegarPara('pomodoro')"><span>🍅</span> <span>Pomodoro: foque 25 min, descanse 5</span></div>
+            <div class="guia-item" onclick="navegarPara('habitos')"><span>📅</span> <span>Hábitos: acompanhe sua rotina semanal</span></div>
+            <div class="guia-item" onclick="navegarPara('orcamento')"><span>💰</span> <span>Orçamento: controle receitas e despesas</span></div>
+            <div class="guia-item" onclick="navegarPara('agua')"><span>💧</span> <span>Água: marque os copos que você bebeu</span></div>
+            <div class="guia-item" onclick="navegarPara('gratidao')"><span>🙏</span> <span>Gratidão: anote o que te faz grato</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== PAGE: TAREFAS ======== -->
+<div class="page" id="page-tarefas">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">✅ Tarefas</h2>
+      <div class="tarefas-pesquisa">
+        <input type="text" id="tarefaPesquisa" placeholder="Pesquisar tarefas..." oninput="renderTarefas()">
+      </div>
+      <div class="tarefas-form">
+        <input class="campo" id="tarefaInput" placeholder="Nova tarefa...">
+        <input class="campo" id="tarefaData" type="date" style="width:130px">
+        <input class="campo" id="tarefaHora" type="time" style="width:90px">
+        <select class="select" id="tarefaPrio">
+          <option value="media">Média</option>
+          <option value="alta">Alta</option>
+          <option value="baixa">Baixa</option>
+        </select>
+        <select class="select" id="tarefaCat">
+          <option value="">Categoria</option>
+          <option value="estudo">📖 Estudo</option>
+          <option value="trabalho">💼 Trabalho</option>
+          <option value="pessoal">🏠 Pessoal</option>
+          <option value="saude">💚 Saúde</option>
+          <option value="financas">💰 Finanças</option>
+          <option value="outros">📦 Outros</option>
+        </select>
+        <button class="btn btn-p" onclick="addTarefa()">Adicionar</button>
+      </div>
+      <div class="tarefas-filtros">
+        <button class="btn btn-s" onclick="filtroTarefa('todas')">Todas</button>
+        <button class="btn btn-s" onclick="filtroTarefa('ativas')">Ativas</button>
+        <button class="btn btn-s" onclick="filtroTarefa('feitas')">Concluídas</button>
+        <button class="btn btn-s" onclick="filtroTarefa('atrasadas')" style="color:var(--vermelho)">🚨 Atrasadas</button>
+      </div>
+      <div style="display:flex;gap:.3rem;margin-bottom:.5rem;flex-wrap:wrap">
+        <button class="btn btn-s" onclick="ordenarTarefas('data')">📅 Data</button>
+        <button class="btn btn-s" onclick="ordenarTarefas('prio')">🔥 Prioridade</button>
+        <button class="btn btn-s" onclick="ordenarTarefas('cat')">🏷️ Categoria</button>
+      </div>
+      <ul class="lista" id="tarefasLista"></ul>
+      <div style="margin-top:.5rem"><button class="btn btn-d" style="font-size:.72rem" onclick="confirmar('Limpar tarefas concluídas?',limparTarefas)">Limpar concluídas</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== PAGE: CALENDARIO ======== -->
+<div class="page" id="page-calendario">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">📅 Calendário</h2>
+      <div class="cal-view-toggle">
+        <button class="ativo" onclick="setCalView('mes',this)">Mês</button>
+        <button onclick="setCalView('semana',this)">Semana</button>
+      </div>
+      <div class="cal-header">
+        <button onclick="calNav(-1)">◀</button>
+        <h3 id="calTitulo"></h3>
+        <button onclick="calNav(1)">▶</button>
+        <button class="btn btn-s" style="margin-left:.5rem;font-size:.72rem" onclick="calHoje()">Hoje</button>
+      </div>
+      <div id="calCorpo"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== PAGE: ESTUDOS ======== -->
+<div class="page" id="page-estudos">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">📚 Área de Estudos</h2>
+      <div class="linha">
+        <input class="campo" id="materiaInput" placeholder="Matéria...">
+        <input class="campo" id="materiaCor" type="color" value="#6c5ce7" style="width:40px;height:36px;padding:2px">
+        <button class="btn btn-p" onclick="addMateria()">Adicionar</button>
+      </div>
+      <div class="estudos-materias" id="materiasGrid"></div>
+    </div>
+    <div class="secao">
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:.5rem">📝 Provas</h3>
+      <div class="linha">
+        <input class="campo" id="provaInput" placeholder="Prova de...">
+        <input class="campo" id="provaMateria" placeholder="Matéria" style="width:100px">
+        <input class="campo" id="provaData" type="date" style="width:130px">
+        <button class="btn btn-p" onclick="addProva()">Adicionar</button>
+      </div>
+      <div class="estudos-provas" id="provasLista"></div>
+    </div>
+    <div class="secao">
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:.5rem">📄 Trabalhos</h3>
+      <div class="linha">
+        <input class="campo" id="trabInput" placeholder="Trabalho...">
+        <input class="campo" id="trabMateria" placeholder="Matéria" style="width:100px">
+        <input class="campo" id="trabData" type="date" style="width:130px">
+        <button class="btn btn-p" onclick="addTrabalho()">Adicionar</button>
+      </div>
+      <div class="estudos-trabalhos" id="trabalhosLista"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== PAGE: HABITOS ======== -->
+<div class="page" id="page-habitos">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">🔥 Hábitos</h2>
+      <div class="linha">
+        <input class="campo" id="habitoInput" placeholder="Novo hábito...">
+        <input class="campo" id="habitoEmoji" placeholder="😀" style="width:50px" maxlength="2">
+        <button class="btn btn-p" onclick="addHabito()">Adicionar</button>
+      </div>
+      <div class="habitos-grid" id="habitosGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== TOOLS PAGES (extra) ======== -->
+
+<!-- POMODORO -->
+<div class="page" id="page-pomodoro">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">⏱️ Pomodoro</h2>
+      <div class="pomodoro-tela">
+        <div class="pomodoro-label" id="pomoLabel">Foco</div>
+        <div class="pomodoro-tempo" id="pomoTempo">25:00</div>
+        <div class="pomodoro-ciclos" id="pomoCiclos"></div>
+        <div class="pomodoro-controles">
+          <button class="btn btn-p" id="pomoStart" onclick="pomoToggle()">▶ Iniciar</button>
+          <button class="btn btn-s" onclick="pomoReset()">↺ Zerar</button>
+          <button class="btn btn-s" onclick="pomoPausaCurta()">☕ 5min</button>
+          <button class="btn btn-s" onclick="pomoPausaLonga()">🌴 15min</button>
+        </div>
+      </div>
+      <div class="linha" style="margin-top:1rem">
+        <label style="font-size:.8rem;color:var(--txt2)">Foco (min):</label>
+        <input class="campo" id="pomoFocoMin" type="number" value="25" min="1" max="90" style="width:70px">
+        <label style="font-size:.8rem;color:var(--txt2)">Pausa (min):</label>
+        <input class="campo" id="pomoPausaMin" type="number" value="5" min="1" max="30" style="width:70px">
+        <button class="btn btn-s" onclick="pomoConfigurar()">Aplicar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- METAS -->
+<div class="page" id="page-metas">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">🎯 Metas</h2>
+      <div class="linha">
+        <input class="campo" id="metaInput" placeholder="Nova meta...">
+        <input class="campo" id="metaPrazo" type="date" style="width:140px">
+        <button class="btn btn-p" onclick="addMeta()">Adicionar</button>
+      </div>
+      <div id="metasLista"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTAS -->
+<div class="page" id="page-notas">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">📝 Notas</h2>
+      <div class="linha">
+        <input class="campo" id="notaTitulo" placeholder="Título...">
+        <button class="btn btn-p" onclick="addNota()">Salvar nota</button>
+      </div>
+      <textarea class="campo" id="notaTexto" placeholder="Escreva sua nota..." rows="3" style="margin-bottom:.6rem"></textarea>
+      <div class="notas-grid" id="notasGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LEMBRETES -->
+<div class="page" id="page-lembretes">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">🔔 Lembretes</h2>
+      <div class="linha">
+        <input class="campo" id="lembreteInput" placeholder="Lembrete...">
+        <input class="campo" id="lembreteHora" type="time" style="width:100px">
+        <input class="campo" id="lembreteData" type="date" style="width:130px">
+        <button class="btn btn-p" onclick="addLembrete()">Salvar</button>
+      </div>
+      <div id="lembretesLista"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DECISOR -->
+<div class="page" id="page-decisor">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">🗳️ Decisor</h2>
+      <p style="font-size:.82rem;color:var(--txt2);margin-bottom:.5rem">Adicione opções e deixe o destino decidir!</p>
+      <div class="linha">
+        <input class="campo" id="decisorInput" placeholder="Opção...">
+        <button class="btn btn-p" onclick="addDecisorOpcao()">Adicionar</button>
+      </div>
+      <div id="decisorOpcoes" style="display:none"></div>
+      <div id="opcoesLista" style="margin-bottom:.8rem"></div>
+      <button class="btn btn-a" onclick="sortearDecisor()">🎲 Sortear</button>
+      <div class="decisor-resultado" id="decisorResultado"></div>
+    </div>
+  </div>
+</div>
+
+<!-- AGUA -->
+<div class="page" id="page-agua">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">💧 Água</h2>
+      <p style="font-size:.82rem;color:var(--txt2);margin-bottom:.5rem">Toque nos copos para registrar. Meta: 8 copos por dia.</p>
+      <div class="agua-grid" id="aguaGrid"></div>
+      <div class="agua-barra"><div class="agua-pct" id="aguaPct"></div></div>
+      <div class="agua-info" id="aguaInfo">Você bebeu <strong>0</strong> de 8 copos hoje</div>
+    </div>
+  </div>
+</div>
+
+<!-- EXERCICIOS -->
+<div class="page" id="page-exercicios">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">🏋️ Exercícios</h2>
+      <div class="linha">
+        <input class="campo" id="exercicioInput" placeholder="Exercício...">
+        <input class="campo" id="exercicioDuracao" placeholder="Duração" style="width:90px">
+        <select class="select" id="exercicioTipo">
+          <option value="cardio">🏃 Cardio</option>
+          <option value="forca">💪 Força</option>
+          <option value="flex">🧘 Flexibilidade</option>
+          <option value="outro">🔵 Outro</option>
+        </select>
+        <button class="btn btn-p" onclick="addExercicio()">Registrar</button>
+      </div>
+      <div id="exerciciosCount" style="font-size:.82rem;color:var(--txt2);margin-bottom:.5rem">0 exercícios hoje</div>
+      <div id="exerciciosLista"></div>
+    </div>
+  </div>
+</div>
+
+<!-- HUMOR -->
+<div class="page" id="page-humor">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">😊 Humor do Dia</h2>
+      <p style="font-size:.82rem;color:var(--txt2);margin-bottom:.5rem;text-align:center">Como você está se sentindo?</p>
+      <div class="humor-opcoes" id="humorOpcoes">
+        <button class="humor-btn" onclick="registrarHumor(' péssimo 😢')">😢</button>
+        <button class="humor-btn" onclick="registrarHumor('mal 😟')">😟</button>
+        <button class="humor-btn" onclick="registrarHumor('mais ou menos 😐')">😐</button>
+        <button class="humor-btn" onclick="registrarHumor('bem 🙂')">🙂</button>
+        <button class="humor-btn" onclick="registrarHumor('ótimo 😄')">😄</button>
+      </div>
+      <div class="humor-registro" id="humorRegistro"></div>
+      <div id="humorHistorico" style="margin-top:.6rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- GRATIDAO -->
+<div class="page" id="page-gratidao">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">🙏 Gratidão</h2>
+      <div class="linha">
+        <input class="campo" id="gratidaoInput" placeholder="Pelo que você é grato hoje?">
+        <button class="btn btn-p" onclick="addGratidao()">Salvar</button>
+      </div>
+      <ul class="gratidao-lista" id="gratidaoLista"></ul>
+    </div>
+  </div>
+</div>
+
+<!-- REFEICOES -->
+<div class="page" id="page-refeicoes">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">🍽️ Refeições</h2>
+      <p style="font-size:.82rem;color:var(--txt2);margin-bottom:.5rem">Planeie as refeições da semana para se organizar melhor.</p>
+      <div class="refeicoes-grid" id="refeicoesGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ORCAMENTO -->
+<div class="page" id="page-orcamento">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">💰 Orçamento</h2>
+      <div class="orc-resumo">
+        <div class="orc-card"><div class="orc-label">Total gasto</div><div class="orc-valor despesa" id="orcTotal">R$ 0</div></div>
+        <div class="orc-card"><div class="orc-label">Limite</div><div class="orc-valor" id="orcLimite">Defina um orçamento</div></div>
+        <div class="orc-card"><div class="orc-label">Usado</div><div class="orc-valor" id="orcPct">0%</div></div>
+      </div>
+      <div class="orc-barra" style="height:8px;background:var(--borda);border-radius:4px;margin-bottom:.8rem;overflow:hidden"><div id="orcSaldo" style="height:100%;width:0;border-radius:4px;background:var(--verde);transition:width .3s"></div></div>
+      <div class="linha">
+        <input class="campo" id="despesaDesc" placeholder="Descrição...">
+        <input class="campo" id="despesaVal" type="number" placeholder="Valor" step="0.01">
+        <select class="select" id="despesaCat">
+          <option value="alimentacao">🍔 Alimentação</option>
+          <option value="transporte">🚌 Transporte</option>
+          <option value="moradia">🏠 Moradia</option>
+          <option value="lazer">🎮 Lazer</option>
+          <option value="saude">💊 Saúde</option>
+          <option value="educacao">📚 Educação</option>
+          <option value="vestuario">👕 Vestuário</option>
+          <option value="assinaturas">📱 Assinaturas</option>
+          <option value="outros">📦 Outros</option>
+        </select>
+        <button class="btn btn-p" onclick="addDespesa()">Adicionar</button>
+      </div>
+      <div class="linha" style="margin-top:.3rem">
+        <input class="campo" id="orcamentoMesInput" type="number" placeholder="Orçamento do mês (R$)" step="0.01">
+        <button class="btn btn-s" onclick="setOrcamento()">Definir limite</button>
+      </div>
+      <div id="despesasLista"></div>
+      <div style="margin-top:.5rem"><button class="btn btn-d" style="font-size:.72rem" onclick="confirmar('Limpar todas as despesas?',limparDespesas)">Limpar tudo</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPRAS -->
+<div class="page" id="page-compras">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">🛒 Lista de Compras</h2>
+      <div class="linha">
+        <input class="campo" id="compraInput" placeholder="Item...">
+        <select class="select" id="compraCat">
+          <option value="alimentos">🥑 Alimentos</option>
+          <option value="bebidas">🥤 Bebidas</option>
+          <option value="limpeza">🧹 Limpeza</option>
+          <option value="higiene">🧴 Higiene</option>
+          <option value="frutas">🍎 Frutas</option>
+          <option value="carnes">🥩 Carnes</option>
+          <option value="laticinios">🧀 Laticínios</option>
+          <option value="padaria">🍞 Padaria</option>
+          <option value="congelados">🧊 Congelados</option>
+          <option value="outros">📦 Outros</option>
+        </select>
+        <button class="btn btn-p" onclick="addCompra()">Adicionar</button>
+      </div>
+      <ul class="lista" id="comprasLista"></ul>
+      <div style="margin-top:.5rem"><button class="btn btn-d" style="font-size:.72rem" onclick="confirmar('Limpar itens comprados?',limparCompras)">Limpar comprados</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- PLANEJAMENTO -->
+<div class="page" id="page-planejamento">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">📅 Planejamento Semanal</h2>
+      <div class="linha">
+        <input class="campo" id="planejamentoInput" placeholder="Tarefa do planejamento...">
+        <input class="campo" id="planejamentoData" type="date">
+        <button class="btn btn-p" onclick="addPlanejamento()">Adicionar</button>
+      </div>
+      <div id="planejamentosLista"></div>
+      <div class="planej-grid" id="planejGrid" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- REGRESSIVA -->
+<div class="page" id="page-regressiva">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">⏰ Contagem Regressiva</h2>
+      <div class="linha">
+        <input class="campo" id="regressivaNome" placeholder="Nome do evento...">
+        <input class="campo" id="regressivaData" type="datetime-local">
+        <button class="btn btn-p" onclick="addRegressiva()">Criar</button>
+      </div>
+      <div id="regressivaLista"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CALCULADORA -->
+<div class="page" id="page-calculadora">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">📐 Calculadora</h2>
+      <div class="calc-tela" id="calcTela">0</div>
+      <div class="calc-botoes">
+        <button class="calc-btn limpar" onclick="calcLimpar()">C</button>
+        <button class="calc-btn" onclick="calcDigito('⌫')">⌫</button>
+        <button class="calc-btn" onclick="calcDigito('%')">%</button>
+        <button class="calc-btn op" onclick="calcDigito('/')">÷</button>
+        <button class="calc-btn" onclick="calcDigito('7')">7</button>
+        <button class="calc-btn" onclick="calcDigito('8')">8</button>
+        <button class="calc-btn" onclick="calcDigito('9')">9</button>
+        <button class="calc-btn op" onclick="calcDigito('*')">×</button>
+        <button class="calc-btn" onclick="calcDigito('4')">4</button>
+        <button class="calc-btn" onclick="calcDigito('5')">5</button>
+        <button class="calc-btn" onclick="calcDigito('6')">6</button>
+        <button class="calc-btn op" onclick="calcDigito('-')">−</button>
+        <button class="calc-btn" onclick="calcDigito('1')">1</button>
+        <button class="calc-btn" onclick="calcDigito('2')">2</button>
+        <button class="calc-btn" onclick="calcDigito('3')">3</button>
+        <button class="calc-btn op" onclick="calcDigito('+')">+</button>
+        <button class="calc-btn" onclick="calcDigito('0')" style="grid-column:span 2">0</button>
+        <button class="calc-btn" onclick="calcDigito('.')">,</button>
+        <button class="calc-btn igual" onclick="calcIgual()">=</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SENHAS -->
+<div class="page" id="page-senhas">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">🔐 Senhas Seguras</h2>
+      <div class="senha-display" id="senhaDisplay">Clique para gerar</div>
+      <div class="senha-opcoes">
+        <label>Tamanho: <input type="range" id="senhaTam" min="8" max="32" value="16" oninput="document.getElementById('senhaTamVal').textContent=this.value"><span id="senhaTamVal">16</span></label>
+        <label><input type="checkbox" id="senhaMaius" checked> A-Z</label>
+        <label><input type="checkbox" id="senhaMinus" checked> a-z</label>
+        <label><input type="checkbox" id="senhaNum" checked> 0-9</label>
+        <label><input type="checkbox" id="senhaSimb"> !@#</label>
+      </div>
+      <button class="btn btn-p" onclick="gerarSenha()">Gerar senha</button> <button class="btn btn-s" onclick="copiarSenha()">📋 Copiar</button>
+      <hr style="border:0;border-top:1px solid var(--borda);margin:1rem 0">
+      <h3 style="font-size:.92rem;margin-bottom:.5rem">💾 Salvar senha</h3>
+      <div class="linha">
+        <input class="campo" id="senhaSite" placeholder="Site ou app...">
+        <input class="campo" id="senhaUser" placeholder="Usuário...">
+        <input class="campo" id="senhaPw" type="password" placeholder="Senha...">
+        <button class="btn btn-p" onclick="addSenha()">Salvar</button>
+      </div>
+      <div id="senhasLista"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LEITURA -->
+<div class="page" id="page-leitura">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">📚 Lista de Leitura</h2>
+      <div class="linha">
+        <input class="campo" id="leituraTitulo" placeholder="Título do livro...">
+        <input class="campo" id="leituraAutor" placeholder="Autor..." style="width:120px">
+        <input class="campo" id="leituraPag" type="number" placeholder="Págs" style="width:70px">
+        <select class="select" id="leituraStatus">
+          <option value="quero">Quero ler</option>
+          <option value="lendo">Lendo</option>
+          <option value="lido">Já li</option>
+        </select>
+        <button class="btn btn-p" onclick="addLeitura()">Adicionar</button>
+      </div>
+      <div style="display:flex;gap:.3rem;margin-bottom:.5rem;flex-wrap:wrap">
+        <button class="btn btn-s" style="font-size:.72rem" onclick="filtroLeitura('todos')">Todos</button>
+        <button class="btn btn-s" style="font-size:.72rem" onclick="filtroLeitura('quero')">Quero ler</button>
+        <button class="btn btn-s" style="font-size:.72rem" onclick="filtroLeitura('lendo')">Lendo</button>
+        <button class="btn btn-s" style="font-size:.72rem" onclick="filtroLeitura('lido')">Já li</button>
+      </div>
+      <div id="leiturasLista"></div>
+    </div>
+  </div>
+</div>
+
+<!-- REVISAO -->
+<div class="page" id="page-revisao">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">📊 Revisão Semanal</h2>
+      <p style="font-size:.82rem;color:var(--txt2);margin-bottom:.8rem">Resumo da sua semana para organizar os pensamentos.</p>
+      <div class="revisao-blocos" id="revisaoBlocos"></div>
+      <div style="margin-top:.8rem">
+        <textarea class="campo" id="revisaoNotas" placeholder="Anotações extras da semana..." rows="3"></textarea>
+        <button class="btn btn-p" onclick="salvarRevisao()" style="margin-top:.4rem">Salvar revisão</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FRASES -->
+<div class="page" id="page-frases">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">💭 Frases Motivacionais</h2>
+      <div class="frase-box" id="fraseBox">Clique para ver uma frase inspiradora</div>
+      <div class="frase-autor" id="fraseAutor"></div>
+      <div style="text-align:center;margin-top:.8rem">
+        <button class="btn btn-p" onclick="novaFrase()">✨ Nova frase</button>
+        <button class="btn btn-s" onclick="favoritarFrase()">❤️ Favoritar</button>
+      </div>
+      <h3 style="font-size:.92rem;margin-top:1.2rem;color:var(--txt2)">❤️ Favoritas</h3>
+      <ul class="lista" id="frasesFavLista"></ul>
+    </div>
+  </div>
+</div>
+
+<!-- PAINEL DA VIDA -->
+<div class="page" id="page-vida">
+  <div class="content-wrap">
+    <div class="secao">
+      <h2 class="secao-titulo">🌟 Painel da Vida</h2>
+      <p class="secao-desc" style="text-align:center;color:var(--txt3);font-size:.82rem;margin-bottom:.5rem">Veja como está a organização da sua vida em um só lugar</p>
+      <div class="vida-container" id="vidaPainel">
+        <div class="vida-score-wrap" id="vidaScoreWrap">
+          <svg viewBox="0 0 200 200"><circle class="vida-score-bg" cx="100" cy="100" r="85"/><circle class="vida-score-bar" id="vidaScoreBar" cx="100" cy="100" r="85" stroke-dasharray="534" stroke-dashoffset="534" stroke="var(--cor)"/></svg>
+          <div class="vida-score-num" id="vidaScoreNum">0</div>
+          <div class="vida-score-label">de 100</div>
+        </div>
+        <div class="vida-nivel n0" id="vidaNivel">Começando</div>
+        <div class="vida-comp" id="vidaComp"></div>
+        <div class="vida-cats" id="vidaCats"></div>
+        <div id="vidaDicas"></div>
+        <div class="vida-streak" id="vidaStreak"></div>
+        <div class="vida-hist" id="vidaHist"></div>
+        <div class="vida-refresh" onclick="renderVida()" style="cursor:pointer;padding:.5rem 1rem;background:var(--card);border-radius:var(--raio);border:1px solid var(--borda);display:inline-block;margin-top:.5rem;font-size:.8rem;transition:var(--transition)" onmouseover="this.style.background='var(--card2)'" onmouseout="this.style.background='var(--card)'">🔄 Recalcular</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEO Content (hidden) -->
+<section style="display:none" aria-hidden="true">
+  <h2>Ferramentas de organização pessoal gratuitas</h2>
+  <p>O OrganizaJá oferece 22 ferramentas gratuitas para organizar toda a sua vida.</p>
 </section>
-
-<div style="text-align:center;padding:1.2rem 1rem;max-width:800px;margin:0 auto">
-<a href="./ferramentas/" style="display:inline-flex;align-items:center;gap:.5rem;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;text-decoration:none;padding:.75rem 1.8rem;border-radius:50px;font-size:1rem;font-weight:700;box-shadow:0 4px 20px rgba(108,92,231,.3)">🧰 Conheça as 22 ferramentas em detalhes →</a>
-</div>
-
-<div class="stats" id="statsBar">
-<div class="stat"><div class="stat-icon">✅</div><div class="stat-num" id="statTarefas">0</div><div class="stat-lbl">Tarefas</div></div>
-<div class="stat"><div class="stat-icon">🎉</div><div class="stat-num" id="statFeitas">0</div><div class="stat-lbl">Concluidas</div></div>
-<div class="stat"><div class="stat-icon">🔥</div><div class="stat-num" id="statHabitos">0</div><div class="stat-lbl">Habitos Hoje</div></div>
-<div class="stat"><div class="stat-icon">🍅</div><div class="stat-num" id="statPomo">0</div><div class="stat-lbl">Pomodoros</div></div>
-<div class="stat"><div class="stat-icon">💧</div><div class="stat-num" id="statAgua">0</div><div class="stat-lbl">Copos de Agua</div></div>
-</div>
-
-<div class="ferramentas-section" id="ferramentasGrid">
-<h2>Escolha uma Ferramenta</h2>
-
-<div class="categoria-bloco" style="margin-bottom:1.5rem">
-<div class="cat-header" style="background:linear-gradient(90deg,rgba(232,67,147,.1),rgba(253,121,168,.08));border-radius:10px;padding:.5rem .6rem"><span class="cat-emoji">✨</span><span class="cat-nome cat-dest">Destaque</span><span class="cat-count">1</span></div>
-<div class="cat-tools"><button class="aba tool-card cat-dest" data-aba="vida" onclick="trocarAba('vida',this)" style="animation-delay:.05s;background:linear-gradient(135deg,rgba(232,67,147,.08),rgba(253,121,168,.06));border-color:rgba(232,67,147,.2)"><span class="tool-emoji">🌟</span><span class="tool-nome">Painel da Vida</span><a href="./painel-da-vida/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button></div>
-</div>
-<div class="categoria-bloco">
-<div class="cat-header"><span class="cat-emoji">🚀</span><span class="cat-nome cat-prod">Produtividade</span><span class="cat-count">6</span></div>
-<div class="cat-line cat-prod"></div>
-<div class="ferramentas-grid">
-<button class="aba tool-card cat-prod" data-aba="tarefas" onclick="trocarAba('tarefas',this)" style="animation-delay:.05s"><span class="tool-emoji">✅</span><span class="tool-nome">Tarefas</span><a href="./lista-de-tarefas/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-prod" data-aba="pomodoro" onclick="trocarAba('pomodoro',this)" style="animation-delay:.1s"><span class="tool-emoji">⏱️</span><span class="tool-nome">Pomodoro</span><a href="./timer-pomodoro/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-prod" data-aba="metas" onclick="trocarAba('metas',this)" style="animation-delay:.15s"><span class="tool-emoji">🎯</span><span class="tool-nome">Metas</span><a href="./metas-e-objetivos/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-prod" data-aba="notas" onclick="trocarAba('notas',this)" style="animation-delay:.2s"><span class="tool-emoji">📝</span><span class="tool-nome">Notas</span><a href="./bloco-de-notas/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-prod" data-aba="lembretes" onclick="trocarAba('lembretes',this)" style="animation-delay:.25s"><span class="tool-emoji">🔔</span><span class="tool-nome">Lembretes</span><a href="./lembretes/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-prod" data-aba="decisor" onclick="trocarAba('decisor',this)" style="animation-delay:.3s"><span class="tool-emoji">🗳️</span><span class="tool-nome">Decisor</span><a href="./decisor/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-</div>
-</div>
-
-<div class="categoria-bloco">
-<div class="cat-header"><span class="cat-emoji">💚</span><span class="cat-nome cat-saude">Saude e Bem-estar</span><span class="cat-count">6</span></div>
-<div class="cat-line cat-saude"></div>
-<div class="ferramentas-grid">
-<button class="aba tool-card cat-saude" data-aba="habitos" onclick="trocarAba('habitos',this)" style="animation-delay:.1s"><span class="tool-emoji">🔥</span><span class="tool-nome">Habitos</span><a href="./rastreador-de-habitos/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-saude" data-aba="agua" onclick="trocarAba('agua',this)" style="animation-delay:.15s"><span class="tool-emoji">💧</span><span class="tool-nome">Agua</span><a href="./rastreador-de-agua/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-saude" data-aba="exercicios" onclick="trocarAba('exercicios',this)" style="animation-delay:.2s"><span class="tool-emoji">🏋️</span><span class="tool-nome">Exercicios</span><a href="./registro-de-exercicios/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-saude" data-aba="humor" onclick="trocarAba('humor',this)" style="animation-delay:.25s"><span class="tool-emoji">😊</span><span class="tool-nome">Humor</span><a href="./tracker-de-humor/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-saude" data-aba="gratidao" onclick="trocarAba('gratidao',this)" style="animation-delay:.3s"><span class="tool-emoji">🙏</span><span class="tool-nome">Gratidao</span><a href="./diario-de-gratidao/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-saude" data-aba="refeicoes" onclick="trocarAba('refeicoes',this)" style="animation-delay:.35s"><span class="tool-emoji">🍽️</span><span class="tool-nome">Refeicoes</span><a href="./planejamento-de-refeicoes/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-</div>
-</div>
-
-<div class="categoria-bloco">
-<div class="cat-header"><span class="cat-emoji">💰</span><span class="cat-nome cat-fin">Financas</span><span class="cat-count">2</span></div>
-<div class="cat-line cat-fin"></div>
-<div class="ferramentas-grid">
-<button class="aba tool-card cat-fin" data-aba="orcamento" onclick="trocarAba('orcamento',this)" style="animation-delay:.15s"><span class="tool-emoji">💰</span><span class="tool-nome">Orcamento</span><a href="./controle-de-orcamento/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-fin" data-aba="compras" onclick="trocarAba('compras',this)" style="animation-delay:.2s"><span class="tool-emoji">🛒</span><span class="tool-nome">Compras</span><a href="./lista-de-compras/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-</div>
-</div>
-
-<div class="categoria-bloco">
-<div class="cat-header"><span class="cat-emoji">📅</span><span class="cat-nome cat-plan">Planejamento</span><span class="cat-count">2</span></div>
-<div class="cat-line cat-plan"></div>
-<div class="ferramentas-grid">
-<button class="aba tool-card cat-plan" data-aba="planejamento" onclick="trocarAba('planejamento',this)" style="animation-delay:.2s"><span class="tool-emoji">📅</span><span class="tool-nome">Semanal</span><a href="./planejamento-semanal/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-plan" data-aba="regressiva" onclick="trocarAba('regressiva',this)" style="animation-delay:.25s"><span class="tool-emoji">⏰</span><span class="tool-nome">Regressiva</span><a href="./contagem-regressiva/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-</div>
-</div>
-
-<div class="categoria-bloco">
-<div class="cat-header"><span class="cat-emoji">🛠️</span><span class="cat-nome cat-util">Utilidades</span><span class="cat-count">5</span></div>
-<div class="cat-line cat-util"></div>
-<div class="ferramentas-grid">
-<button class="aba tool-card cat-util" data-aba="calculadora" onclick="trocarAba('calculadora',this)" style="animation-delay:.25s"><span class="tool-emoji">📐</span><span class="tool-nome">Calculadora</span><a href="./calculadora/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-util" data-aba="senhas" onclick="trocarAba('senhas',this)" style="animation-delay:.3s"><span class="tool-emoji">🔐</span><span class="tool-nome">Senhas</span><a href="./gerador-de-senhas/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-util" data-aba="leitura" onclick="trocarAba('leitura',this)" style="animation-delay:.35s"><span class="tool-emoji">📚</span><span class="tool-nome">Leitura</span><a href="./lista-de-leitura/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-util" data-aba="revisao" onclick="trocarAba('revisao',this)" style="animation-delay:.4s"><span class="tool-emoji">📊</span><span class="tool-nome">Revisao</span><a href="./revisao-semanal/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-<button class="aba tool-card cat-util" data-aba="frases" onclick="trocarAba('frases',this)" style="animation-delay:.45s"><span class="tool-emoji">💭</span><span class="tool-nome">Frases</span><a href="./frases-motivacionais/" style="position:absolute;bottom:2px;right:4px;font-size:.55rem;color:var(--txt3);text-decoration:none;opacity:.6" title="Saiba mais" onclick="event.stopPropagation()">ℹ️</a></button>
-</div>
-</div>
-</div>
-
-<div class="conteudo">
-<div class="painel" id="p-vida">
-<div class="secao"><h2 class="secao-titulo">🌟 Painel da Vida</h2>
-<p class="secao-desc" style="text-align:center;color:var(--txt3);font-size:.82rem;margin-bottom:.5rem">Veja como está a organização da sua vida em um só lugar</p>
-<div class="vida-container">
-<div class="vida-score-wrap" id="vidaScoreWrap">
-<svg viewBox="0 0 200 200"><circle class="vida-score-bg" cx="100" cy="100" r="85"/><circle class="vida-score-bar" id="vidaScoreBar" cx="100" cy="100" r="85" stroke-dasharray="534" stroke-dashoffset="534" stroke="var(--cor)"/></svg>
-<div class="vida-score-num" id="vidaScoreNum">0</div>
-<div class="vida-score-label">de 100</div>
-</div>
-<div class="vida-nivel n0" id="vidaNivel">Começando</div>
-<div class="vida-comp" id="vidaComp"></div>
-<div class="vida-cats" id="vidaCats"></div>
-<div id="vidaDicas"></div>
-<div class="vida-streak" id="vidaStreak"></div>
-<div class="vida-hist" id="vidaHist"></div>
-<div class="vida-refresh" onclick="renderVida()">🔄 Recalcular</div>
-</div>
-</div>
-</div>
-<div class="painel ativo" id="p-tarefas">
-<div class="secao"><h2 class="secao-titulo">✅ Tarefas</h2>
-<div class="linha"><input class="campo" id="tarefaInput" placeholder="Nova tarefa..."><select class="select" id="tarefaPrio"><option value="media">Média</option><option value="alta">Alta</option><option value="baixa">Baixa</option></select><button class="btn btn-p" onclick="addTarefa()">Adicionar</button></div>
-<div style="display:flex;gap:.3rem;margin-bottom:.5rem;flex-wrap:wrap;"><button class="btn btn-s" style="font-size:.72rem" onclick="filtroTarefa('todas')">Todas</button><button class="btn btn-s" style="font-size:.72rem" onclick="filtroTarefa('ativas')">Ativas</button><button class="btn btn-s" style="font-size:.72rem" onclick="filtroTarefa('feitas')">Concluídas</button></div>
-<ul class="lista" id="tarefasLista"></ul>
-<div style="margin-top:.5rem"><button class="btn btn-d" style="font-size:.72rem" onclick="confirmar('Limpar todas as tarefas?',limparTarefas)">Limpar concluídas</button></div>
-</div></div>
-<div class="painel" id="p-compras">
-<div class="secao"><h2 class="secao-titulo">🛒 Lista de Compras</h2>
-<div class="linha"><input class="campo" id="compraInput" placeholder="Item..."><select class="select" id="compraCat"><option value="alimentos">🥑 Alimentos</option><option value="bebidas">🥤 Bebidas</option><option value="limpeza">🧹 Limpeza</option><option value="higiene">🧴 Higiene</option><option value="frutas">🍎 Frutas</option><option value="carnes">🥩 Carnes</option><option value="laticinios">🧀 Laticínios</option><option value="padaria">🍞 Padaria</option><option value="congelados">🧊 Congelados</option><option value="outros">📦 Outros</option></select><button class="btn btn-p" onclick="addCompra()">Adicionar</button></div>
-<ul class="lista" id="comprasLista"></ul>
-<div style="margin-top:.5rem"><button class="btn btn-d" style="font-size:.72rem" onclick="confirmar('Limpar itens comprados?',limparCompras)">Limpar comprados</button></div>
-</div></div>
-<div class="painel" id="p-pomodoro">
-<div class="secao"><h2 class="secao-titulo">⏱️ Pomodoro</h2>
-<div class="pomodoro-tela"><div class="pomodoro-label" id="pomoLabel">Foco</div><div class="pomodoro-tempo" id="pomoTempo">25:00</div>
-<div class="pomodoro-ciclos" id="pomoCiclos"></div>
-<div class="pomodoro-controles"><button class="btn btn-p" id="pomoStart" onclick="pomoToggle()">▶ Iniciar</button><button class="btn btn-s" onclick="pomoReset()">↺ Zerar</button><button class="btn btn-s" onclick="pomoPausaCurta()">☕ Pausa 5min</button><button class="btn btn-s" onclick="pomoPausaLonga()">🌴 Pausa 15min</button></div></div>
-<div class="linha" style="margin-top:1rem"><label style="font-size:.8rem;color:var(--txt2)">Foco (min):</label><input class="campo" id="pomoFocoMin" type="number" value="25" min="1" max="90" style="width:70px"><label style="font-size:.8rem;color:var(--txt2)">Pausa (min):</label><input class="campo" id="pomoPausaMin" type="number" value="5" min="1" max="30" style="width:70px"><button class="btn btn-s" onclick="pomoConfigurar()">Aplicar</button></div>
-</div></div>
-<div class="painel" id="p-habitos">
-<div class="secao"><h2 class="secao-titulo">🔥 Hábitos</h2>
-<div class="linha"><input class="campo" id="habitoInput" placeholder="Novo hábito..."><input class="campo" id="habitoEmoji" placeholder="😀" style="width:50px" maxlength="2"><button class="btn btn-p" onclick="addHabito()">Adicionar</button></div>
-<div class="habitos-grid" id="habitosGrid"></div>
-</div></div>
-<div class="painel" id="p-metas">
-<div class="secao"><h2 class="secao-titulo">🎯 Metas</h2>
-<div class="linha"><input class="campo" id="metaInput" placeholder="Nova meta..."><input class="campo" id="metaPrazo" type="date" style="width:140px"><button class="btn btn-p" onclick="addMeta()">Adicionar</button></div>
-<div id="metasLista"></div>
-</div></div>
-<div class="painel" id="p-notas">
-<div class="secao"><h2 class="secao-titulo">📝 Notas</h2>
-<div class="linha"><input class="campo" id="notaTitulo" placeholder="Título..."><button class="btn btn-p" onclick="addNota()">Salvar nota</button></div>
-<textarea class="campo" id="notaTexto" placeholder="Escreva sua nota..." rows="3" style="margin-bottom:.6rem"></textarea>
-<div class="notas-grid" id="notasGrid"></div>
-</div></div>
-<div class="painel" id="p-orcamento">
-<div class="secao"><h2 class="secao-titulo">💰 Orçamento</h2>
-<div class="orc-resumo"><div class="orc-card"><div class="orc-label">Receitas</div><div class="orc-valor receita" id="orcReceita">R$ 0</div></div><div class="orc-card"><div class="orc-label">Despesas</div><div class="orc-valor despesa" id="orcDespesa">R$ 0</div></div><div class="orc-card"><div class="orc-label">Saldo</div><div class="orc-valor saldo" id="orcSaldo">R$ 0</div></div></div>
-<div class="linha"><input class="campo" id="transDesc" placeholder="Descrição..."><input class="campo" id="transValor" type="number" placeholder="Valor" step="0.01"><select class="select" id="transTipo"><option value="despesa">Despesa</option><option value="receita">Receita</option></select><select class="select" id="transCat"><option value="alimentacao">Alimentação</option><option value="transporte">Transporte</option><option value="moradia">Moradia</option><option value="lazer">Lazer</option><option value="saude">Saúde</option><option value="educacao">Educação</option><option value="vestuario">Vestuário</option><option value="assinaturas">Assinaturas</option><option value="salario">Salário</option><option value="outros">Outros</option></select><button class="btn btn-p" onclick="addTransacao()">Adicionar</button></div>
-<ul class="lista" id="transLista"></ul>
-<div style="margin-top:.5rem"><button class="btn btn-d" style="font-size:.72rem" onclick="confirmar('Limpar todas as transações?',limparTransacoes)">Limpar tudo</button></div>
-</div></div>
-<div class="painel" id="p-agua">
-<div class="secao"><h2 class="secao-titulo">💧 Água</h2>
-<p style="font-size:.82rem;color:var(--txt2);margin-bottom:.5rem">Toque nos copos para registrar. Meta: 8 copos por dia.</p>
-<div class="agua-grid" id="aguaGrid"></div>
-<div class="agua-info" id="aguaInfo">Você bebeu <strong>0</strong> de 8 copos hoje</div>
-</div></div>
-<div class="painel" id="p-refeicoes">
-<div class="secao"><h2 class="secao-titulo">🍽️ Refeições</h2>
-<p style="font-size:.82rem;color:var(--txt2);margin-bottom:.5rem">Planeie as refeições da semana para se organizar melhor.</p>
-<div class="refeicoes-grid" id="refeicoesGrid"></div>
-</div></div>
-<div class="painel" id="p-planejamento">
-<div class="secao"><h2 class="secao-titulo">📅 Planejamento Semanal</h2>
-<div class="planej-grid" id="planejGrid"></div>
-</div></div>
-<div class="painel" id="p-gratidao">
-<div class="secao"><h2 class="secao-titulo">🙏 Gratidão</h2>
-<div class="linha"><input class="campo" id="gratidaoInput" placeholder="Pelo que você é grato hoje?"><button class="btn btn-p" onclick="addGratidao()">Salvar</button></div>
-<ul class="gratidao-lista" id="gratidaoLista"></ul>
-</div></div>
-<div class="painel" id="p-humor">
-<div class="secao"><h2 class="secao-titulo">😊 Humor do Dia</h2>
-<p style="font-size:.82rem;color:var(--txt2);margin-bottom:.5rem;text-align:center">Como você está se sentindo?</p>
-<div class="humor-opcoes" id="humorOpcoes">
-<button class="humor-btn" onclick="registrarHumor(' péssimo 😢')">😢</button>
-<button class="humor-btn" onclick="registrarHumor('mal 😟')">😟</button>
-<button class="humor-btn" onclick="registrarHumor('mais ou menos 😐')">😐</button>
-<button class="humor-btn" onclick="registrarHumor('bem 🙂')">🙂</button>
-<button class="humor-btn" onclick="registrarHumor('ótimo 😄')">😄</button>
-</div>
-<div class="humor-registro" id="humorRegistro"></div>
-<div id="humorHistorico" style="margin-top:.6rem"></div>
-</div></div>
-<div class="painel" id="p-leitura">
-<div class="secao"><h2 class="secao-titulo">📚 Lista de Leitura</h2>
-<div class="linha"><input class="campo" id="leituraInput" placeholder="Título do livro..."><select class="select" id="leituraStatus"><option value="quero">Quero ler</option><option value="lendo">Lendo</option><option value="lido">Já li</option></select><button class="btn btn-p" onclick="addLeitura()">Adicionar</button></div>
-<div style="display:flex;gap:.3rem;margin-bottom:.5rem;flex-wrap:wrap;"><button class="btn btn-s" style="font-size:.72rem" onclick="filtroLeitura('todos')">Todos</button><button class="btn btn-s" style="font-size:.72rem" onclick="filtroLeitura('quero')">Quero ler</button><button class="btn btn-s" style="font-size:.72rem" onclick="filtroLeitura('lendo')">Lendo</button><button class="btn btn-s" style="font-size:.72rem" onclick="filtroLeitura('lido')">Já li</button></div>
-<div id="leituraLista"></div>
-</div></div>
-<div class="painel" id="p-exercicios">
-<div class="secao"><h2 class="secao-titulo">🏋️ Exercícios</h2>
-<div class="linha"><input class="campo" id="exercicioInput" placeholder="Exercício..."><input class="campo" id="exercicioDuracao" placeholder="Duração" style="width:90px"><select class="select" id="exercicioTipo"><option value="cardio">🏃 Cardio</option><option value="forca">💪 Força</option><option value="flex">🧘 Flexibilidade</option><option value="outro">🔵 Outro</option></select><button class="btn btn-p" onclick="addExercicio()">Registrar</button></div>
-<div id="exerciciosLista"></div>
-</div></div>
-<div class="painel" id="p-regressiva">
-<div class="secao"><h2 class="secao-titulo">⏰ Contagem Regressiva</h2>
-<div class="linha"><input class="campo" id="regressivaNome" placeholder="Nome do evento..."><input class="campo" id="regressivaData" type="datetime-local"><button class="btn btn-p" onclick="addRegressiva()">Criar</button></div>
-<div id="regressivaLista"></div>
-</div></div>
-<div class="painel" id="p-senhas">
-<div class="secao"><h2 class="secao-titulo">🔐 Senhas Seguras</h2>
-<div class="senha-display" id="senhaDisplay">Clique para gerar</div>
-<div class="senha-opcoes"><label>Tamanho: <input type="range" id="senhaTam" min="8" max="32" value="16" oninput="document.getElementById('senhaTamVal').textContent=this.value"><span id="senhaTamVal">16</span></label><label><input type="checkbox" id="senhaMaius" checked> A-Z</label><label><input type="checkbox" id="senhaMinus" checked> a-z</label><label><input type="checkbox" id="senhaNum" checked> 0-9</label><label><input type="checkbox" id="senhaSimb"> !@#</label></div>
-<button class="btn btn-p" onclick="gerarSenha()">Gerar senha</button> <button class="btn btn-s" onclick="copiarSenha()">📋 Copiar</button>
-</div></div>
-<div class="painel" id="p-calculadora">
-<div class="secao"><h2 class="secao-titulo">📐 Calculadora</h2>
-<div class="calc-tela" id="calcTela">0</div>
-<div class="calc-botoes">
-<button class="calc-btn limpar" onclick="calcLimpar()">C</button>
-<button class="calc-btn" onclick="calcDigito('⌫')">⌫</button>
-<button class="calc-btn" onclick="calcDigito('%')">%</button>
-<button class="calc-btn op" onclick="calcDigito('/')">÷</button>
-<button class="calc-btn" onclick="calcDigito('7')">7</button>
-<button class="calc-btn" onclick="calcDigito('8')">8</button>
-<button class="calc-btn" onclick="calcDigito('9')">9</button>
-<button class="calc-btn op" onclick="calcDigito('*')">×</button>
-<button class="calc-btn" onclick="calcDigito('4')">4</button>
-<button class="calc-btn" onclick="calcDigito('5')">5</button>
-<button class="calc-btn" onclick="calcDigito('6')">6</button>
-<button class="calc-btn op" onclick="calcDigito('-')">−</button>
-<button class="calc-btn" onclick="calcDigito('1')">1</button>
-<button class="calc-btn" onclick="calcDigito('2')">2</button>
-<button class="calc-btn" onclick="calcDigito('3')">3</button>
-<button class="calc-btn op" onclick="calcDigito('+')">+</button>
-<button class="calc-btn" onclick="calcDigito('0')" style="grid-column:span 2">0</button>
-<button class="calc-btn" onclick="calcDigito('.')">,</button>
-<button class="calc-btn igual" onclick="calcIgual()">=</button>
-</div></div></div>
-<div class="painel" id="p-lembretes">
-<div class="secao"><h2 class="secao-titulo">🔔 Lembretes</h2>
-<div class="linha"><input class="campo" id="lembreteInput" placeholder="Lembrete..."><input class="campo" id="lembreteHora" type="time" style="width:100px"><button class="btn btn-p" onclick="addLembrete()">Salvar</button></div>
-<div id="lembretesLista"></div>
-</div></div>
-<div class="painel" id="p-decisor">
-<div class="secao"><h2 class="secao-titulo">🗳️ Decisor</h2>
-<p style="font-size:.82rem;color:var(--txt2);margin-bottom:.5rem">Adicione opções e deixe o destino decidir!</p>
-<div class="linha"><input class="campo" id="decisorInput" placeholder="Opção..."><button class="btn btn-p" onclick="addDecisorOpcao()">Adicionar</button></div>
-<div id="decisorOpcoes" style="margin-bottom:.8rem"></div>
-<button class="btn btn-a" onclick="sortearDecisor()">🎲 Sortear</button>
-<div class="decisor-resultado" id="decisorResultado"></div>
-</div></div>
-<div class="painel" id="p-revisao">
-<div class="secao"><h2 class="secao-titulo">📊 Revisão Semanal</h2>
-<p style="font-size:.82rem;color:var(--txt2);margin-bottom:.8rem">Resumo da sua semana para organizar os pensamentos.</p>
-<div class="revisao-blocos" id="revisaoBlocos"></div>
-<div style="margin-top:.8rem"><textarea class="campo" id="revisaoNotas" placeholder="Anotações extras da semana..." rows="3"></textarea><button class="btn btn-p" onclick="salvarRevisao()" style="margin-top:.4rem">Salvar revisão</button></div>
-</div></div>
-<div class="painel" id="p-frases">
-<div class="secao"><h2 class="secao-titulo">💭 Frases Motivacionais</h2>
-<div class="frase-box" id="fraseBox">Clique para ver uma frase inspiradora</div>
-<div class="frase-autor" id="fraseAutor"></div>
-<div style="text-align:center;margin-top:.8rem"><button class="btn btn-p" onclick="novaFrase()">✨ Nova frase</button> <button class="btn btn-s" onclick="favoritarFrase()">❤️ Favoritar</button></div>
-<h3 style="font-size:.92rem;margin-top:1.2rem;color:var(--txt2)">❤️ Favoritas</h3>
-<ul class="lista" id="frasesFavLista"></ul>
-</div></div>
-
-
-<div class="dicas-rodape">
-<div class="dica-card" id="dicaDoDia">
-<div class="dica-icone">💡</div>
-<div class="dica-conteudo">
-<h3 class="dica-titulo">Dica do Dia</h3>
-<p class="dica-texto" id="dicaTexto">Carregando dica...</p>
-<button class="dica-btn" onclick="novaDica()">🔄 Outra dica</button>
-</div>
-</div>
-
-<div class="dica-card">
-<div class="dica-icone">🔥</div>
-<div class="dica-conteudo">
-<h3 class="dica-titulo">Motivação Rápida</h3>
-<p class="dica-texto" id="motivacaoTexto">Carregando...</p>
-<button class="dica-btn" onclick="novaMotivacao()">⚡ Nova motivação</button>
-</div>
-</div>
-
-<div class="dica-card">
-<div class="dica-icone">🎯</div>
-<div class="dica-conteudo">
-<h3 class="dica-titulo">Desafio do Dia</h3>
-<p class="dica-texto" id="desafioTexto">Carregando...</p>
-<button class="dica-btn" onclick="novoDesafio()">🏆 Novo desafio</button>
-</div>
-</div>
-
-<div class="dica-card dica-guia">
-<div class="dica-icone">📖</div>
-<div class="dica-conteudo">
-<h3 class="dica-titulo">Como Usar Este App</h3>
-<div class="guia-grid">
-<div class="guia-item" onclick="trocarAba('tarefas')"><span>✅</span> <span>Tarefas: liste e marque o que precisa fazer</span></div>
-<div class="guia-item" onclick="trocarAba('pomodoro')"><span>🍅</span> <span>Pomodoro: foque 25 min, descanse 5</span></div>
-<div class="guia-item" onclick="trocarAba('habitos')"><span>📅</span> <span>Hábitos: acompanhe sua rotina semanal</span></div>
-<div class="guia-item" onclick="trocarAba('orcamento')"><span>💰</span> <span>Orçamento: controle receitas e despesas</span></div>
-<div class="guia-item" onclick="trocarAba('agua')"><span>💧</span> <span>Água: marque os copos que você bebeu</span></div>
-<div class="guia-item" onclick="trocarAba('gratidao')"><span>🙏</span> <span>Gratidão: anote o que te faz grato</span></div>
-</div>
-</div>
-</div>
-</div>
-<div class="painel" id="p-dicas" style="display:none">
-<article class="artigo">
-<h3>Como organizar sua rotina diária</h3>
-<p>Comece o dia listando as 3 tarefas mais importantes. Use a técnica Pomodoro para manter o foco e faça pausas regulares. Registre seus hábitos para criar consistência e acompanhe seu progresso com metas claras.</p>
-<h3>Por que manter um diário de gratidão</h3>
-<p>Anotar pelo menos 3 coisas pelas quais você é grato todos os dias ajuda a treinar seu cérebro para focar no positivo. Com o tempo, isso melhora seu humor, reduz o estresse e aumenta a sensação de bem-estar.</p>
-<h3>Dicas para economizar e controlar gastos</h3>
-<p>Registre todas as suas receitas e despesas. Categorize seus gastos para identificar onde pode cortar. Defina um orçamento mensal e acompanhe o saldo regularmente. Pequenas economias diárias fazem grande diferença no fim do mês.</p>
-<h3>A importância de beber água</h3>
-<p>O corpo humano precisa de cerca de 2 litros de água por dia. Manter-se hidratado melhora a concentração, a disposição e até a qualidade da pele. Use o rastreador de água para não perder de conta.</p>
-<h3>Como criar hábitos que duram</h3>
-<p>Comece pequeno: em vez de se comprometer com 1 hora de exercício, comece com 10 minutos. Marque cada dia no rastreador de hábitos. A corrente de dias consecutivos vai te motivar a não quebrar o ritmo.</p>
-</article></div>
-</div>
-
-
-<footer class="rodape" role="contentinfo"><p>OrganizaJá 2025 - Organize sua vida de graça</p><p style="font-size:.72rem">Todos os dados ficam salvos no seu dispositivo. Nada é enviado para servidores.</p>
-<div class="visit-counter" id="visitCounter"><span class="vc-icon">👀</span><span class="vc-num" id="visitNum">0</span> visitas</div><div class="rodape-links"><a href="#" onclick="trocarAba('tarefas');return false">Tarefas</a><a href="#" onclick="trocarAba('habitos');return false">Habitos</a><a href="#" onclick="trocarAba('orcamento');return false">Orcamento</a><a href="#" onclick="trocarAba('pomodoro');return false">Pomodoro</a><a href="#" onclick="trocarAba('metas');return false">Metas</a><a href="#" onclick="trocarAba('agua');return false">Agua</a></div></footer>
-
-<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
-
-<div class="modal-overlay" id="modalOverlay"><div class="modal-box"><h3 id="modalTitulo">Confirmar</h3><p id="modalMsg">Tem certeza?</p><div class="modal-botoes"><button class="btn btn-s" onclick="fecharModal()">Cancelar</button><button class="btn btn-d" id="modalConfirmar" onclick="confirmarAcao()">Confirmar</button></div></div></div>
-
-
-<footer class="seo-footer" style="background:var(--card);border-top:1px solid var(--borda);padding:1.5rem 1rem;text-align:center;font-size:.75rem;color:var(--txt3);line-height:1.7;display:block !important"><p><strong style="color:var(--txt2)">OrganizaJá</strong> é um aplicativo gratuito de organização pessoal e produtividade.</p><p style="margin-top:.3rem">App de produtividade grátis | Organização pessoal | Lista de tarefas | Painel da Vida | Rastreador de hábitos | Timer Pomodoro | Controle financeiro | Planejamento semanal</p>
-<p style="margin-top:.7rem"><a href="./ferramentas/" style="color:var(--cor);text-decoration:none;font-weight:700">🧰 Conheca as 22 ferramentas uma por uma</a></p>
-<div style="margin-top:.8rem;max-width:820px;margin-left:auto;margin-right:auto;line-height:2.2">
-<a href="./painel-da-vida/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Painel da Vida</a>
-<a href="./lista-de-tarefas/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Tarefas</a>
-<a href="./timer-pomodoro/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Pomodoro</a>
-<a href="./metas-e-objetivos/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Metas</a>
-<a href="./bloco-de-notas/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Notas</a>
-<a href="./lembretes/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Lembretes</a>
-<a href="./decisor/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Decisor</a>
-<a href="./rastreador-de-habitos/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Habitos</a>
-<a href="./rastreador-de-agua/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Agua</a>
-<a href="./registro-de-exercicios/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Exercicios</a>
-<a href="./tracker-de-humor/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Humor</a>
-<a href="./diario-de-gratidao/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Gratidao</a>
-<a href="./planejamento-de-refeicoes/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Refeicoes</a>
-<a href="./controle-de-orcamento/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Orcamento</a>
-<a href="./lista-de-compras/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Compras</a>
-<a href="./planejamento-semanal/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Semanal</a>
-<a href="./contagem-regressiva/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Regressiva</a>
-<a href="./calculadora/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Calculadora</a>
-<a href="./gerador-de-senhas/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Senhas</a>
-<a href="./lista-de-leitura/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Leitura</a>
-<a href="./revisao-semanal/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Revisao</a>
-<a href="./frases-motivacionais/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Frases</a>
-</div></footer>
-<section style="display:none" aria-hidden="true"><h2>Ferramentas de organização pessoal gratuitas</h2><p>O OrganizaJá oferece 22 ferramentas gratuitas para organizar toda a sua vida.</p></section>
 
 <section class="secao" style="text-align:center;padding:2rem 1rem;max-width:800px;margin:2rem auto">
-<h2 style="font-size:1.1rem;font-weight:700;margin-bottom:.8rem">Por que milhares confiam no OrganizaJA</h2>
-<div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center">
-<div style="flex:1;min-width:140px;padding:1rem;background:var(--card);border:1px solid var(--borda);border-radius:12px">
-<div style="font-size:1.5rem;margin-bottom:.3rem">🛡</div>
-<strong style="font-size:.9rem;display:block">Dados privados</strong>
-<span style="font-size:.8rem;color:var(--txt2)">Tudo fica no seu aparelho. Nada vai para servidores.</span>
-</div>
-<div style="flex:1;min-width:140px;padding:1rem;background:var(--card);border:1px solid var(--borda);border-radius:12px">
-<div style="font-size:1.5rem;margin-bottom:.3rem">⚡</div>
-<strong style="font-size:.9rem;display:block">Sem cadastro</strong>
-<span style="font-size:.8rem;color:var(--txt2)">Abra e use. Nao pedimos email, senha nem cartao.</span>
-</div>
-<div style="flex:1;min-width:140px;padding:1rem;background:var(--card);border:1px solid var(--borda);border-radius:12px">
-<div style="font-size:1.5rem;margin-bottom:.3rem">📱</div>
-<strong style="font-size:.9rem;display:block">Celular e PC</strong>
-<span style="font-size:.8rem;color:var(--txt2)">Funciona em qualquer navegador. Responsivo e rapido.</span>
-</div>
-<div style="flex:1;min-width:140px;padding:1rem;background:var(--card);border:1px solid var(--borda);border-radius:12px">
-<div style="font-size:1.5rem;margin-bottom:.3rem">📴</div>
-<strong style="font-size:.9rem;display:block">Funciona offline</strong>
-<span style="font-size:.8rem;color:var(--txt2)">Depois de abrir, funciona sem internet. Seus dados estao la.</span>
-</div>
-</div>
+  <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:.8rem">Por que milhares confiam no OrganizaJá</h2>
+  <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center">
+    <div style="flex:1;min-width:140px;padding:1rem;background:var(--card);border:1px solid var(--borda);border-radius:12px">
+      <div style="font-size:1.5rem;margin-bottom:.3rem">🛡</div>
+      <strong style="font-size:.9rem;display:block">Dados privados</strong>
+      <span style="font-size:.8rem;color:var(--txt2)">Tudo fica no seu aparelho. Nada vai para servidores.</span>
+    </div>
+    <div style="flex:1;min-width:140px;padding:1rem;background:var(--card);border:1px solid var(--borda);border-radius:12px">
+      <div style="font-size:1.5rem;margin-bottom:.3rem">⚡</div>
+      <strong style="font-size:.9rem;display:block">Sem cadastro</strong>
+      <span style="font-size:.8rem;color:var(--txt2)">Abra e use. Não pedimos email, senha nem cartão.</span>
+    </div>
+    <div style="flex:1;min-width:140px;padding:1rem;background:var(--card);border:1px solid var(--borda);border-radius:12px">
+      <div style="font-size:1.5rem;margin-bottom:.3rem">📱</div>
+      <strong style="font-size:.9rem;display:block">Celular e PC</strong>
+      <span style="font-size:.8rem;color:var(--txt2)">Funciona em qualquer navegador. Responsivo e rápido.</span>
+    </div>
+    <div style="flex:1;min-width:140px;padding:1rem;background:var(--card);border:1px solid var(--borda);border-radius:12px">
+      <div style="font-size:1.5rem;margin-bottom:.3rem">📴</div>
+      <strong style="font-size:.9rem;display:block">Funciona offline</strong>
+      <span style="font-size:.8rem;color:var(--txt2)">Depois de abrir, funciona sem internet. Seus dados estão lá.</span>
+    </div>
+  </div>
 </section>
-</main>
+
+</div><!-- /main-area -->
+
+<!-- Bottom Bar Mobile -->
+<nav class="bottombar" id="bottombar">
+  <div class="bottombar-item ativo" data-page="inicio" onclick="navegarPara('inicio',this)">
+    <div class="b-icon">🏠</div><span>Início</span>
+  </div>
+  <div class="bottombar-item" data-page="tarefas" onclick="navegarPara('tarefas',this)">
+    <div class="b-icon">✅</div><span>Tarefas</span>
+  </div>
+  <div class="bottombar-item" data-page="calendario" onclick="navegarPara('calendario',this)">
+    <div class="b-icon">📅</div><span>Calendário</span>
+  </div>
+  <div class="bottombar-item" data-page="estudos" onclick="navegarPara('estudos',this)">
+    <div class="b-icon">📚</div><span>Estudos</span>
+  </div>
+  <div class="bottombar-item" data-page="habitos" onclick="navegarPara('habitos',this)">
+    <div class="b-icon">🔥</div><span>Hábitos</span>
+  </div>
+  <div class="bottombar-item bottombar-more" onclick="toggleMoreSheet()">
+    <div class="b-icon">🧰</div><span>Mais</span>
+  </div>
+</nav>
+
+<!-- More Sheet (mobile) -->
+<div class="bottombar-more-sheet" id="moreSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-grid">
+    <div class="sheet-tool" onclick="navegarPara('pomodoro');fecharMoreSheet()"><div class="st-icon">⏱️</div>Pomodoro</div>
+    <div class="sheet-tool" onclick="navegarPara('metas');fecharMoreSheet()"><div class="st-icon">🎯</div>Metas</div>
+    <div class="sheet-tool" onclick="navegarPara('notas');fecharMoreSheet()"><div class="st-icon">📝</div>Notas</div>
+    <div class="sheet-tool" onclick="navegarPara('lembretes');fecharMoreSheet()"><div class="st-icon">🔔</div>Lembretes</div>
+    <div class="sheet-tool" onclick="navegarPara('decisor');fecharMoreSheet()"><div class="st-icon">🗳️</div>Decisor</div>
+    <div class="sheet-tool" onclick="navegarPara('agua');fecharMoreSheet()"><div class="st-icon">💧</div>Água</div>
+    <div class="sheet-tool" onclick="navegarPara('exercicios');fecharMoreSheet()"><div class="st-icon">🏋️</div>Exercícios</div>
+    <div class="sheet-tool" onclick="navegarPara('humor');fecharMoreSheet()"><div class="st-icon">😊</div>Humor</div>
+    <div class="sheet-tool" onclick="navegarPara('gratidao');fecharMoreSheet()"><div class="st-icon">🙏</div>Gratidão</div>
+    <div class="sheet-tool" onclick="navegarPara('refeicoes');fecharMoreSheet()"><div class="st-icon">🍽️</div>Refeições</div>
+    <div class="sheet-tool" onclick="navegarPara('orcamento');fecharMoreSheet()"><div class="st-icon">💰</div>Orçamento</div>
+    <div class="sheet-tool" onclick="navegarPara('compras');fecharMoreSheet()"><div class="st-icon">🛒</div>Compras</div>
+    <div class="sheet-tool" onclick="navegarPara('planejamento');fecharMoreSheet()"><div class="st-icon">📅</div>Semanal</div>
+    <div class="sheet-tool" onclick="navegarPara('regressiva');fecharMoreSheet()"><div class="st-icon">⏰</div>Regressiva</div>
+    <div class="sheet-tool" onclick="navegarPara('calculadora');fecharMoreSheet()"><div class="st-icon">📐</div>Calculadora</div>
+    <div class="sheet-tool" onclick="navegarPara('senhas');fecharMoreSheet()"><div class="st-icon">🔐</div>Senhas</div>
+    <div class="sheet-tool" onclick="navegarPara('leitura');fecharMoreSheet()"><div class="st-icon">📖</div>Leitura</div>
+    <div class="sheet-tool" onclick="navegarPara('revisao');fecharMoreSheet()"><div class="st-icon">📊</div>Revisão</div>
+    <div class="sheet-tool" onclick="navegarPara('frases');fecharMoreSheet()"><div class="st-icon">💭</div>Frases</div>
+    <div class="sheet-tool" onclick="navegarPara('vida');fecharMoreSheet()"><div class="st-icon">🌟</div>Painel da Vida</div>
+  </div>
+</div>
+
+</div><!-- /app-layout -->
+
+<!-- Pix Modal -->
+<div class="pix-modal-bg" id="pixModal" onclick="fecharPix(event)">
+  <div class="pix-modal">
+    <button class="pix-fechar" onclick="fecharPixBtn()">✕</button>
+    <div class="pix-coracao">💖💖💖</div>
+    <h3>Apoie o OrganizaJá</h3>
+    <p>Se este app te ajuda, considere fazer uma doação para manter o projeto vivo. Qualquer valor faz diferença! 🙏</p>
+    <div class="pix-chave-box">
+      <span class="pix-icon">📧</span>
+      <span class="pix-email">henriquehabitz@gmail.com</span>
+    </div>
+    <button class="pix-copiar" onclick="copiarPix()">📋 Copiar chave PIX</button>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <h3 id="modalTitulo">Confirmar</h3>
+    <p id="modalMsg">Tem certeza?</p>
+    <div class="modal-botoes">
+      <button class="btn btn-s" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-d" id="modalConfirmar" onclick="confirmarAcao()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Scroll Top -->
+<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
+
+<!-- Footer -->
+<footer class="rodape" role="contentinfo">
+  <p>OrganizaJá 2025 — Organize sua vida de graça</p>
+  <p style="font-size:.72rem">Todos os dados ficam salvos no seu dispositivo. Nada é enviado para servidores.</p>
+  <div class="visit-counter" id="visitCounter"><span class="vc-icon">👀</span><span class="vc-num" id="visitNum">0</span> visitas</div>
+  <div class="rodape-links">
+    <a href="#" onclick="navegarPara('tarefas');return false">Tarefas</a>
+    <a href="#" onclick="navegarPara('habitos');return false">Hábitos</a>
+    <a href="#" onclick="navegarPara('orcamento');return false">Orçamento</a>
+    <a href="#" onclick="navegarPara('pomodoro');return false">Pomodoro</a>
+    <a href="#" onclick="navegarPara('metas');return false">Metas</a>
+    <a href="#" onclick="navegarPara('agua');return false">Água</a>
+  </div>
+</footer>
+
+<!-- SEO Footer -->
+<footer class="seo-footer" style="display:block !important">
+  <p><strong style="color:var(--txt2)">OrganizaJá</strong> é um aplicativo gratuito de organização pessoal e produtividade.</p>
+  <p style="margin-top:.3rem">App de produtividade grátis | Organização pessoal | Lista de tarefas | Painel da Vida | Rastreador de hábitos | Timer Pomodoro | Controle financeiro | Planejamento semanal</p>
+  <p style="margin-top:.7rem"><a href="./ferramentas/" style="color:var(--cor);text-decoration:none;font-weight:700">🧰 Conheça as 22 ferramentas uma por uma</a></p>
+  <div style="margin-top:.8rem;max-width:820px;margin-left:auto;margin-right:auto;line-height:2.2">
+    <a href="./painel-da-vida/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Painel da Vida</a>
+    <a href="./lista-de-tarefas/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Tarefas</a>
+    <a href="./timer-pomodoro/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Pomodoro</a>
+    <a href="./metas-e-objetivos/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Metas</a>
+    <a href="./bloco-de-notas/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Notas</a>
+    <a href="./lembretes/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Lembretes</a>
+    <a href="./decisor/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Decisor</a>
+    <a href="./rastreador-de-habitos/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Hábitos</a>
+    <a href="./rastreador-de-agua/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Água</a>
+    <a href="./registro-de-exercicios/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Exercícios</a>
+    <a href="./tracker-de-humor/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Humor</a>
+    <a href="./diario-de-gratidao/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Gratidão</a>
+    <a href="./planejamento-de-refeicoes/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Refeições</a>
+    <a href="./controle-de-orcamento/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Orçamento</a>
+    <a href="./lista-de-compras/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Compras</a>
+    <a href="./planejamento-semanal/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Semanal</a>
+    <a href="./contagem-regressiva/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Regressiva</a>
+    <a href="./calculadora/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Calculadora</a>
+    <a href="./gerador-de-senhas/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Senhas</a>
+    <a href="./lista-de-leitura/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Leitura</a>
+    <a href="./revisao-semanal/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Revisão</a>
+    <a href="./frases-motivacionais/" style="color:var(--cor);text-decoration:none;margin:0 .5rem;font-weight:600">Frases</a>
+  </div>
+</footer>
+
+<noscript>
+  <div style="padding:2rem;text-align:center">
+    <h1>OrganizaJá — Organize sua vida de graça</h1>
+    <p>App gratuito com 22 ferramentas de organização pessoal: lista de tarefas, rastreador de hábitos, timer Pomodoro, controle financeiro, painel da vida e mais. Funciona offline no navegador sem cadastro.</p>
+  </div>
+</noscript>
+
 <script src="app.js" defer></script>
 </body>
 </html>

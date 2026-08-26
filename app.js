@@ -1,416 +1,2302 @@
-/* OrganizaJa - app.js */
-var estado={tarefas:[],compras:[],habitos:[],metas:[],notas:[],transacoes:[],planejamento:{},gratidao:[],humor:[],leitura:[],contagens:[],exercicios:[],lembretes:[],decisorOpcoes:[],revisao:{notas:"",vitorias:"",desafios:"",aprendidos:"",proxSemana:""},frasesFav:[],aguaHoje:0,aguaData:"",pomodorosHoje:0,pomodorosData:"",tema:"claro",abaAtual:"tarefas",filtroTarefas:"todas",filtroLeitura:"todos",fraseAtual:null};
-var pomoSeg=25*60;pomoInt=null;pomoRodando=false;pomoPausando=false;pomoTrabalho=25;pomoPausa=5;
-var calcVisor="0";calcOp="";calcAnt=0;calcNovo=true;
-var modalCallback=null;
-function confirmar(msg,cb){document.getElementById("modalMsg").textContent=msg;document.getElementById("modalOverlay").classList.add("visivel");modalCallback=cb;}
-function fecharModal(){document.getElementById("modalOverlay").classList.remove("visivel");modalCallback=null;}
-function confirmarAcao(){if(modalCallback)modalCallback();fecharModal();}
-function salvar(){try{localStorage.setItem("organizaja",JSON.stringify(estado))}catch(e){}}
-function carregar(){try{var d=localStorage.getItem("organizaja");if(d){var parsed=JSON.parse(d);for(var k in parsed){if(parsed.hasOwnProperty(k))estado[k]=parsed[k]}}}catch(e){}}
-function toggleTema(){if(estado.tema==="claro"){estado.tema="escuro";document.body.classList.add("escuro");document.getElementById("temaBtn").textContent="☀️"}else{estado.tema="claro";document.body.classList.remove("escuro");document.getElementById("temaBtn").textContent="🌙"}salvar()}
-function aplicarTema(){if(estado.tema==="escuro"){document.body.classList.add("escuro");document.getElementById("temaBtn").textContent="☀️"}}
-function notificar(msg){var el=document.createElement("div");el.className="notificacao";el.textContent=msg;document.body.appendChild(el);setTimeout(function(){el.remove()},2500)}
-function trocarAba(nome,btn){document.querySelectorAll(".aba").forEach(function(b){b.classList.remove("ativa")});if(!btn){var found=document.querySelector('[data-aba="'+nome+'"]');if(found)btn=found}if(btn)btn.classList.add("ativa");document.querySelectorAll(".painel").forEach(function(p){p.classList.remove("ativo")});var p=document.getElementById("p-"+nome);if(p)p.classList.add("ativo");estado.abaAtual=nome;salvar();window.scrollTo({top:0,behavior:"smooth"})}
-function toggleBusca(){var w=document.getElementById("buscaWrap");var r=document.getElementById("buscaResultados");if(w.classList.contains("visivel")){w.classList.remove("visivel");r.classList.remove("visivel")}else{w.classList.add("visivel");document.getElementById("buscaInput").focus()}}
-function buscar(){var q=document.getElementById("buscaInput").value.toLowerCase().trim();var res=document.getElementById("buscaResultados");if(!q){res.classList.remove("visivel");return}var resultados=[];estado.tarefas.forEach(function(t){if(t.texto.toLowerCase().indexOf(q)>=0)resultados.push({texto:t.texto,tipo:"Tarefa",aba:"tarefas"})});estado.compras.forEach(function(c){if(c.texto.toLowerCase().indexOf(q)>=0)resultados.push({texto:c.texto,tipo:"Compra",aba:"compras"})});estado.notas.forEach(function(n){if(n.titulo.toLowerCase().indexOf(q)>=0||n.texto.toLowerCase().indexOf(q)>=0)resultados.push({texto:n.titulo,tipo:"Nota",aba:"notas"})});estado.metas.forEach(function(m){if(m.nome.toLowerCase().indexOf(q)>=0)resultados.push({texto:m.nome,tipo:"Meta",aba:"metas"})});estado.habitos.forEach(function(h){if(h.nome.toLowerCase().indexOf(q)>=0)resultados.push({texto:h.nome,tipo:"Hábito",aba:"habitos"})});estado.leitura.forEach(function(l){if(l.titulo.toLowerCase().indexOf(q)>=0)resultados.push({texto:l.titulo,tipo:"Leitura",aba:"leitura"})});estado.gratidao.forEach(function(g){if(g.texto.toLowerCase().indexOf(q)>=0)resultados.push({texto:g.texto,tipo:"Gratidão",aba:"gratidao"})});estado.lembretes.forEach(function(l){if(l.texto.toLowerCase().indexOf(q)>=0)resultados.push({texto:l.texto,tipo:"Lembrete",aba:"lembretes"})});if(resultados.length===0){res.innerHTML="<div class=busca-item>Nenhum resultado encontrado</div>"}else{res.innerHTML=resultados.slice(0,10).map(function(r){return"<div class=busca-item onclick=trocarAba('"+r.aba+"',null)>"+r.texto+"<small>"+r.tipo+"</small></div>"}).join("")}res.classList.add("visivel")}
-function exportarDados(){var t=JSON.stringify(estado,null,2);var b=new Blob([t],{type:"application/json"});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download="organizaja-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();URL.revokeObjectURL(u);notificar("Dados exportados!")}
-function importarDados(){document.getElementById("importarArquivo").click()}
-function processarImportacao(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var d=JSON.parse(ev.target.result);for(var k in d){if(d.hasOwnProperty(k))estado[k]=d[k]}salvar();renderTudo();notificar("Dados importados!")}catch(err){notificar("Arquivo inválido!")}};r.readAsText(f)}
-window.addEventListener("scroll",function(){var btn=document.getElementById("scrollTopBtn");if(window.scrollY>400)btn.classList.add("visivel");else btn.classList.remove("visivel")});
-var deferredPrompt=null;window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();deferredPrompt=e;document.getElementById("instalarBanner").classList.add("visivel")});
-document.getElementById("instalarBtn").addEventListener("click",function(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;document.getElementById("instalarBanner").classList.remove("visivel")}});
-function fecharInstalar(){document.getElementById("instalarBanner").classList.remove("visivel")}
-function addTarefa(){var t=document.getElementById("tarefaInput").value.trim();if(!t)return notificar("Digite uma tarefa!");var p=document.getElementById("tarefaPrio").value;estado.tarefas.push({texto:t,prio:p,feito:false,id:Date.now()});document.getElementById("tarefaInput").value="";salvar();renderTarefas();atualizarStats()}
-function toggleTarefa(id){estado.tarefas.forEach(function(t){if(t.id===id)t.feito=!t.feito});salvar();renderTarefas();atualizarStats()}
-function delTarefa(id){estado.tarefas=estado.tarefas.filter(function(t){return t.id!==id});salvar();renderTarefas();atualizarStats()}
-function filtroTarefa(f){estado.filtroTarefas=f;renderTarefas()}
-function limparTarefas(){estado.tarefas=estado.tarefas.filter(function(t){return!t.feito});salvar();renderTarefas();atualizarStats()}
-function renderTarefas(){var lista=document.getElementById("tarefasLista");var f=estado.filtroTarefas;var items=estado.tarefas.filter(function(t){if(f==="ativas")return!t.feito;if(f==="feitas")return t.feito;return true});lista.innerHTML=items.map(function(t){var tc=t.prio==="alta"?"tag-alta":t.prio==="media"?"tag-media":"tag-baixa";var pc=t.prio==="alta"?"Alta":t.prio==="media"?"Média":"Baixa";return'<li><div class="check '+(t.feito?"feito":"")+'" onclick="toggleTarefa('+t.id+')">'+(t.feito?"✓":"")+'</div><span class="texto '+(t.feito?"riscado":"")+'">'+t.texto+'</span><span class="tag '+tc+'">'+pc+'</span><div class="acoes"><button class="icone-btn" onclick="delTarefa('+t.id+')" title="Remover">🗑️</button></div></li>'}).join("")}
-var catCompras={alimentos:"🥑 Alimentos",bebidas:"🥤 Bebidas",limpeza:"🧹 Limpeza",higiene:"🧴 Higiene",frutas:"🍎 Frutas",carnes:"🥩 Carnes",laticinios:"🧀 Laticínios",padaria:"🍞 Padaria",congelados:"🧊 Congelados",outros:"📦 Outros"};
-function addCompra(){var t=document.getElementById("compraInput").value.trim();if(!t)return notificar("Digite um item!");var c=document.getElementById("compraCat").value;estado.compras.push({texto:t,cat:c,comprado:false,id:Date.now()});document.getElementById("compraInput").value="";salvar();renderCompras()}
-function toggleCompra(id){estado.compras.forEach(function(c){if(c.id===id)c.comprado=!c.comprado});salvar();renderCompras()}
-function delCompra(id){estado.compras=estado.compras.filter(function(c){return c.id!==id});salvar();renderCompras()}
-function limparCompras(){estado.compras=estado.compras.filter(function(c){return!c.comprado});salvar();renderCompras()}
-function renderCompras(){var lista=document.getElementById("comprasLista");lista.innerHTML=estado.compras.map(function(c){return'<li><div class="check '+(c.comprado?"feito":"")+'" onclick="toggleCompra('+c.id+')">'+(c.comprado?"✓":"")+'</div><span class="texto '+(c.comprado?"riscado":"")+'">'+c.texto+'</span><span class="tag" style="background:var(--card2);color:var(--txt3)">'+(catCompras[c.cat]||c.cat)+'</span><div class="acoes"><button class="icone-btn" onclick="delCompra('+c.id+')" title="Remover">🗑️</button></div></li>'}).join("")}
-function pomoToggle(){if(pomoRodando){pomoRodando=false;clearInterval(pomoInt);pomoInt=null;document.getElementById("pomoStart").textContent="▶ Iniciar"}else{pomoRodando=true;pomoInt=setInterval(pomoTick,1000);document.getElementById("pomoStart").textContent="⏸ Pausar"}}
-function pomoTick(){pomoSeg--;if(pomoSeg<=0){clearInterval(pomoInt);pomoInt=null;pomoRodando=false;notificar(pomoPausando?"Pausa acabou! Volte ao foco!":"Pomodoro concluído! Hora da pausa!");if(!pomoPausando){estado.pomodorosHoje++;salvar();atualizarStats();pomoPausando=true;pomoSeg=pomoPausa*60;document.getElementById("pomoLabel").textContent="Pausa";document.getElementById("pomoStart").textContent="▶ Iniciar"}else{pomoPausando=false;pomoSeg=pomoTrabalho*60;document.getElementById("pomoLabel").textContent="Foco";document.getElementById("pomoStart").textContent="▶ Iniciar"}}renderPomo()}
-function pomoReset(){clearInterval(pomoInt);pomoInt=null;pomoRodando=false;pomoPausando=false;pomoSeg=pomoTrabalho*60;document.getElementById("pomoLabel").textContent="Foco";document.getElementById("pomoStart").textContent="▶ Iniciar";renderPomo()}
-function pomoPausaCurta(){clearInterval(pomoInt);pomoInt=null;pomoRodando=false;pomoPausando=true;pomoSeg=5*60;document.getElementById("pomoLabel").textContent="Pausa curta";renderPomo()}
-function pomoPausaLonga(){clearInterval(pomoInt);pomoInt=null;pomoRodando=false;pomoPausando=true;pomoSeg=15*60;document.getElementById("pomoLabel").textContent="Pausa longa";renderPomo()}
-function pomoConfigurar(){pomoTrabalho=parseInt(document.getElementById("pomoFocoMin").value)||25;pomoPausa=parseInt(document.getElementById("pomoPausaMin").value)||5;pomoReset()}
-function renderPomo(){var m=Math.floor(pomoSeg/60);var s=pomoSeg%60;document.getElementById("pomoTempo").textContent=(m<10?"0":"")+m+":"+(s<10?"0":"")+s;var ciclos=document.getElementById("pomoCiclos");var html="";for(var i=0;i<4;i++)html+='<div class="pomodoro-ponto '+(i<estado.pomodorosHoje%4?"preenchido":"")+'"></div>';ciclos.innerHTML=html}
-var diasLetra=["S","T","Q","Q","S","S","D"];
-function chaveSemana(){var a=new Date();var i=new Date(a.getFullYear(),0,1);var d=Math.floor((a-i)/86400000);return a.getFullYear()+"-S"+Math.ceil(d/7)}
-function addHabito(){var n=document.getElementById("habitoInput").value.trim();if(!n)return notificar("Digite um hábito!");var e=document.getElementById("habitoEmoji").value.trim()||"🔵";estado.habitos.push({nome:n,emoji:e,id:Date.now(),semanas:{}});document.getElementById("habitoInput").value="";document.getElementById("habitoEmoji").value="";salvar();renderHabitos()}
-function delHabito(id){estado.habitos=estado.habitos.filter(function(h){return h.id!==id});salvar();renderHabitos()}
-function toggleHabitoDia(id,dia){var h=estado.habitos.find(function(h){return h.id===id});if(!h)return;var s=chaveSemana();if(!h.semanas[s])h.semanas[s]=[false,false,false,false,false,false,false];h.semanas[s][dia]=!h.semanas[s][dia];salvar();renderHabitos();atualizarStats()}
-function renderHabitos(){var grid=document.getElementById("habitosGrid");var s=chaveSemana();var hoje=new Date().getDay();var hojeIdx=hoje===0?6:hoje-1;grid.innerHTML=estado.habitos.map(function(h){var wd=h.semanas[s]||[false,false,false,false,false,false,false];var dias=wd.map(function(d,i){return'<div class="habito-dia '+(d?"marcado":"")+' '+(i===hojeIdx?"hoje":"")+'" onclick="toggleHabitoDia('+h.id+","+i+')">'+diasLetra[i]+'</div>'}).join("");return'<div class="habito-card"><div class="habito-emoji">'+h.emoji+'</div><div class="habito-info"><div class="habito-nome">'+h.nome+'</div><div class="habito-semana">'+dias+'</div></div><button class="icone-btn" onclick="delHabito('+h.id+')">🗑️</button></div>'}).join("")}
-function addMeta(){var n=document.getElementById("metaInput").value.trim();if(!n)return notificar("Digite uma meta!");var p=document.getElementById("metaPrazo").value;estado.metas.push({nome:n,prazo:p||"",progresso:0,id:Date.now()});document.getElementById("metaInput").value="";document.getElementById("metaPrazo").value="";salvar();renderMetas()}
-function atualizarMetaProgresso(id,val){var m=estado.metas.find(function(m){return m.id===id});if(m){m.progresso=Math.min(100,Math.max(0,parseInt(val)||0));salvar();renderMetas()}}
-function delMeta(id){estado.metas=estado.metas.filter(function(m){return m.id!==id});salvar();renderMetas()}
-function renderMetas(){var lista=document.getElementById("metasLista");lista.innerHTML=estado.metas.map(function(m){var prazoStr=m.prazo?new Date(m.prazo+"T00:00").toLocaleDateString("pt-BR"):"Sem prazo";return'<div class="meta-card"><div class="meta-nome">'+m.nome+'</div><div class="meta-barra"><div class="meta-progresso" style="width:'+m.progresso+'%"></div></div><div class="meta-info"><span>'+prazoStr+'</span><span>'+m.progresso+'%</span></div><div style="margin-top:.4rem;display:flex;gap:.3rem;align-items:center"><input type="range" min="0" max="100" value="'+m.progresso+'" onchange="atualizarMetaProgresso('+m.id+',this.value)" style="flex:1;accent-color:var(--cor)"><button class="icone-btn" onclick="delMeta('+m.id+')">🗑️</button></div></div>'}).join("")}
-function addNota(){var t=document.getElementById("notaTitulo").value.trim();var txt=document.getElementById("notaTexto").value.trim();if(!t&&!txt)return notificar("Escreva algo!");estado.notas.push({titulo:t||"Sem título",texto:txt,id:Date.now()});document.getElementById("notaTitulo").value="";document.getElementById("notaTexto").value="";salvar();renderNotas()}
-function delNota(id){estado.notas=estado.notas.filter(function(n){return n.id!==id});salvar();renderNotas()}
-function renderNotas(){var grid=document.getElementById("notasGrid");grid.innerHTML=estado.notas.map(function(n){return'<div class="nota-card"><div class="nota-acoes"><button class="icone-btn" onclick="delNota('+n.id+')">🗑️</button></div><h4>'+n.titulo+'</h4><p>'+n.texto+'</p></div>'}).join("")}
-function addTransacao(){var d=document.getElementById("transDesc").value.trim();var v=parseFloat(document.getElementById("transValor").value);if(!d||isNaN(v))return notificar("Preencha descrição e valor!");var t=document.getElementById("transTipo").value;var c=document.getElementById("transCat").value;estado.transacoes.push({desc:d,valor:v,tipo:t,cat:c,data:new Date().toISOString().slice(0,10),id:Date.now()});document.getElementById("transDesc").value="";document.getElementById("transValor").value="";salvar();renderOrcamento()}
-function delTransacao(id){estado.transacoes=estado.transacoes.filter(function(t){return t.id!==id});salvar();renderOrcamento()}
-function limparTransacoes(){estado.transacoes=[];salvar();renderOrcamento()}
-function renderOrcamento(){var rec=0,des=0;estado.transacoes.forEach(function(t){if(t.tipo==="receita")rec+=t.valor;else des+=t.valor});document.getElementById("orcReceita").textContent="R$ "+rec.toFixed(2);document.getElementById("orcDespesa").textContent="R$ "+des.toFixed(2);document.getElementById("orcSaldo").textContent="R$ "+(rec-des).toFixed(2);var lista=document.getElementById("transLista");lista.innerHTML=estado.transacoes.slice().reverse().map(function(t){return'<li><span style="color:'+(t.tipo==="receita"?"var(--verde)":"var(--vermelho)")+'">'+(t.tipo==="receita"?"↑":"↓")+'</span><span class="texto">'+t.desc+'</span><span class="tag" style="background:var(--card2);color:var(--txt3)">'+t.cat+'</span><span style="font-weight:600;color:'+(t.tipo==="receita"?"var(--verde)":"var(--vermelho)")+'">R$ '+t.valor.toFixed(2)+'</span><button class="icone-btn" onclick="delTransacao('+t.id+')">🗑️</button></li>'}).join("")}
-function renderAgua(){var hoje=new Date().toISOString().slice(0,10);if(estado.aguaData!==hoje){estado.aguaHoje=0;estado.aguaData=hoje;salvar()}var grid=document.getElementById("aguaGrid");var html="";for(var i=0;i<8;i++)html+='<div class="agua-copo '+(i<estado.aguaHoje?"cheio":"")+'" onclick="toggleAgua('+i+')">💧</div>';grid.innerHTML=html;document.getElementById("aguaInfo").innerHTML="Você bebeu <strong>"+estado.aguaHoje+"</strong> de 8 copos hoje";atualizarStats()}
-function toggleAgua(n){estado.aguaHoje=n<estado.aguaHoje?n:n+1;salvar();renderAgua();atualizarStats()}
-var diasSemana=["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
-var refeicoesTipos=["Café da manhã","Almoço","Lanche","Jantar"];
-function renderRefeicoes(){var grid=document.getElementById("refeicoesGrid");if(!estado.refeicoes)estado.refeicoes={};grid.innerHTML=diasSemana.map(function(dia,idx){var card='<div class="refeicao-card"><div class="refeicao-dia">'+dia+'</div>';refeicoesTipos.forEach(function(tipo,tidx){var chave=idx+"-"+tidx;var val=estado.refeicoes[chave]||"";card+='<div class="refeicao-linha"><span>'+tipo+'</span><input value="'+val+'" onchange="salvarRefeicao(\''+chave+'\',this.value)" placeholder="-"></div>'});card+='</div>';return card}).join("")}
-function salvarRefeicao(chave,val){if(!estado.refeicoes)estado.refeicoes={};estado.refeicoes[chave]=val;salvar()}
-function renderPlanejamento(){var grid=document.getElementById("planejGrid");if(!estado.planejamento)estado.planejamento={};grid.innerHTML=diasSemana.map(function(dia,idx){var val=estado.planejamento[idx]||"";return'<div class="planej-dia"><h4>'+dia+'</h4><textarea onchange="salvarPlanej('+idx+',this.value)">'+val+'</textarea></div>'}).join("")}
-function salvarPlanej(idx,val){estado.planejamento[idx]=val;salvar()}
-function addGratidao(){var t=document.getElementById("gratidaoInput").value.trim();if(!t)return notificar("Escreva algo!");estado.gratidao.push({texto:t,data:new Date().toLocaleDateString("pt-BR"),id:Date.now()});document.getElementById("gratidaoInput").value="";salvar();renderGratidao()}
-function delGratidao(id){estado.gratidao=estado.gratidao.filter(function(g){return g.id!==id});salvar();renderGratidao()}
-function renderGratidao(){var lista=document.getElementById("gratidaoLista");lista.innerHTML=estado.gratidao.slice().reverse().map(function(g){return'<li><span>'+g.texto+' <small style="color:var(--txt3)">'+g.data+'</small></span><button class="icone-btn" onclick="delGratidao('+g.id+')">🗑️</button></li>'}).join("")}
-function registrarHumor(h){var hoje=new Date().toISOString().slice(0,10);var existente=estado.humor.find(function(r){return r.data===hoje});if(existente){existente.humor=h}else{estado.humor.push({data:hoje,humor:h})}salvar();renderHumor();notificar("Humor registrado: "+h)}
-function renderHumor(){var hoje=new Date().toISOString().slice(0,10);var regHoje=estado.humor.find(function(r){return r.data===hoje});document.getElementById("humorRegistro").textContent=regHoje?"Hoje: "+regHoje.humor:"Nenhum registro hoje";document.querySelectorAll(".humor-btn").forEach(function(b){b.classList.remove("selecionado");if(regHoje&&b.textContent.trim()===regHoje.humor.split(" ").pop())b.classList.add("selecionado")});var hist=document.getElementById("humorHistorico");var ultimos=estado.humor.slice(-14).reverse();hist.innerHTML=ultimos.length?'<p style="font-size:.8rem;color:var(--txt3);margin-bottom:.3rem">Últimos 14 dias</p>'+ultimos.map(function(r){return'<div style="font-size:.8rem;padding:.2rem 0;border-bottom:1px solid var(--borda)">'+r.data+": "+r.humor+"</div>"}).join(""):""}
-function addLeitura(){var t=document.getElementById("leituraInput").value.trim();if(!t)return notificar("Digite um título!");var s=document.getElementById("leituraStatus").value;estado.leitura.push({titulo:t,status:s,id:Date.now()});document.getElementById("leituraInput").value="";salvar();renderLeitura()}
-function trocarLeituraStatus(id){var l=estado.leitura.find(function(l){return l.id===id});if(l){if(l.status==="quero")l.status="lendo";else if(l.status==="lendo")l.status="lido";else l.status="quero";salvar();renderLeitura()}}
-function delLeitura(id){estado.leitura=estado.leitura.filter(function(l){return l.id!==id});salvar();renderLeitura()}
-function filtroLeitura(f){estado.filtroLeitura=f;renderLeitura()}
-function renderLeitura(){var lista=document.getElementById("leituraLista");var f=estado.filtroLeitura;var items=estado.leitura.filter(function(l){if(f==="quero")return l.status==="quero";if(f==="lendo")return l.status==="lendo";if(f==="lido")return l.status==="lido";return true});var emojis={quero:"📖",lendo:"📗",lido:"✅"};lista.innerHTML=items.map(function(l){return'<div class="leitura-card"><div class="leitura-emoji">'+emojis[l.status]+'</div><div class="leitura-info"><h4>'+l.titulo+'</h4><p>'+(l.status==="quero"?"Quero ler":l.status==="lendo"?"Lendo":"Já li")+'</p></div><button class="btn btn-s" style="font-size:.7rem" onclick="trocarLeituraStatus('+l.id+')">Avançar</button><button class="icone-btn" onclick="delLeitura('+l.id+')">🗑️</button></div>'}).join("")}
-function addExercicio(){var n=document.getElementById("exercicioInput").value.trim();if(!n)return notificar("Digite o exercício!");var d=document.getElementById("exercicioDuracao").value.trim();var t=document.getElementById("exercicioTipo").value;estado.exercicios.push({nome:n,duracao:d,tipo:t,data:new Date().toLocaleDateString("pt-BR"),id:Date.now()});document.getElementById("exercicioInput").value="";document.getElementById("exercicioDuracao").value="";salvar();renderExercicios()}
-function delExercicio(id){estado.exercicios=estado.exercicios.filter(function(e){return e.id!==id});salvar();renderExercicios()}
-var emojisExercicio={cardio:"🏃",forca:"💪",flex:"🧘",outro:"🔵"};
-function renderExercicios(){var lista=document.getElementById("exerciciosLista");lista.innerHTML=estado.exercicios.slice().reverse().map(function(e){return'<div class="exercicio-card"><span>'+(emojisExercicio[e.tipo]||"🔵")+' '+e.nome+'</span><span style="color:var(--txt3);font-size:.78rem">'+e.duracao+" · "+e.data+'</span><button class="icone-btn" onclick="delExercicio('+e.id+')">🗑️</button></div>'}).join("")}
-function addRegressiva(){var n=document.getElementById("regressivaNome").value.trim();if(!n)return notificar("Digite o nome!");var d=document.getElementById("regressivaData").value;if(!d)return notificar("Escolha a data!");estado.contagens.push({nome:n,data:d,id:Date.now()});document.getElementById("regressivaNome").value="";document.getElementById("regressivaData").value="";salvar();renderRegressiva()}
-function delRegressiva(id){estado.contagens=estado.contagens.filter(function(c){return c.id!==id});salvar();renderRegressiva()}
-function renderRegressiva(){var lista=document.getElementById("regressivaLista");var agora=new Date().getTime();lista.innerHTML=estado.contagens.map(function(c){var alvo=new Date(c.data).getTime();var diff=alvo-agora;var txt;if(diff<=0){txt="🎉 Chegou!"}else{var dias=Math.floor(diff/86400000);var horas=Math.floor((diff%86400000)/3600000);var mins=Math.floor((diff%3600000)/60000);txt=dias+"d "+horas+"h "+mins+"m"}return'<div class="regressiva-item"><h4>'+c.nome+'</h4><div class="tempo">'+txt+'</div><div class="detalhes">'+new Date(c.data).toLocaleString("pt-BR")+'</div><button class="icone-btn" onclick="delRegressiva('+c.id+')">🗑️</button></div>'}).join("")}
-function gerarSenha(){var tam=parseInt(document.getElementById("senhaTam").value)||16;var chars="";if(document.getElementById("senhaMaius").checked)chars+="ABCDEFGHIJKLMNOPQRSTUVWXYZ";if(document.getElementById("senhaMinus").checked)chars+="abcdefghijklmnopqrstuvwxyz";if(document.getElementById("senhaNum").checked)chars+="0123456789";if(document.getElementById("senhaSimb").checked)chars+="!@#$%^&*()_+-=[]{}|;:,.<>?";if(!chars)chars="abcdefghijklmnopqrstuvwxyz0123456789";var senha="";for(var i=0;i<tam;i++)senha+=chars.charAt(Math.floor(Math.random()*chars.length));document.getElementById("senhaDisplay").textContent=senha}
-function copiarSenha(){var s=document.getElementById("senhaDisplay").textContent;if(s&&s!=="Clique para gerar"){navigator.clipboard.writeText(s).then(function(){notificar("Senha copiada!")}).catch(function(){notificar("Erro ao copiar")})}}
-function calcDigito(d){var tela=document.getElementById("calcTela");if(d==="C"){calcVisor="0";calcOp="";calcAnt=0;calcNovo=true;tela.textContent="0";return}if(d==="⌫"){calcVisor=calcVisor.length>1?calcVisor.slice(0,-1):"0";tela.textContent=calcVisor;return}if(d==="%"){var v=parseFloat(calcVisor);calcVisor=String(v/100);tela.textContent=calcVisor;return}if(["+","-","*","/"].indexOf(d)>=0){calcAnt=parseFloat(calcVisor);calcOp=d;calcNovo=true;return}if(d==="."){if(calcVisor.indexOf(".")>=0)return;if(calcNovo){calcVisor="0";calcNovo=false}calcVisor+=".";tela.textContent=calcVisor;return}if(calcNovo){calcVisor=d;calcNovo=false}else{calcVisor+=d}tela.textContent=calcVisor}
-function calcIgual(){if(!calcOp)return;var b=parseFloat(calcVisor);var r=0;if(calcOp==="+")r=calcAnt+b;if(calcOp==="-")r=calcAnt-b;if(calcOp==="*")r=calcAnt*b;if(calcOp==="/")r=b!==0?calcAnt/b:0;calcVisor=String(Math.round(r*1e10)/1e10);calcOp="";calcNovo=true;document.getElementById("calcTela").textContent=calcVisor}
-function calcLimpar(){calcVisor="0";calcOp="";calcAnt=0;calcNovo=true;document.getElementById("calcTela").textContent="0"}
-function addLembrete(){var t=document.getElementById("lembreteInput").value.trim();if(!t)return notificar("Digite o lembrete!");var h=document.getElementById("lembreteHora").value||"";estado.lembretes.push({texto:t,hora:h,id:Date.now()});document.getElementById("lembreteInput").value="";document.getElementById("lembreteHora").value="";salvar();renderLembretes();verificarLembretes()}
-function delLembrete(id){estado.lembretes=estado.lembretes.filter(function(l){return l.id!==id});salvar();renderLembretes()}
-function renderLembretes(){var lista=document.getElementById("lembretesLista");lista.innerHTML=estado.lembretes.slice().reverse().map(function(l){return'<div class="lembrete-card"><span class="lembrete-texto">'+l.texto+'</span>'+(l.hora?'<span class="lembrete-hora">'+l.hora+'</span>':'')+'<button class="icone-btn" onclick="delLembrete('+l.id+')">🗑️</button></div>'}).join("")}
-function verificarLembretes(){if(!("Notification" in window))return;Notification.requestPermission();setInterval(function(){var agora=new Date();var h=agora.getHours().toString().padStart(2,"0")+":"+agora.getMinutes().toString().padStart(2,"0");estado.lembretes.forEach(function(l){if(l.hora===h&&l.notificado!==agora.toISOString().slice(0,10)){l.notificado=agora.toISOString().slice(0,10);salvar();new Notification("OrganizaJá - Lembrete",{body:l.texto})}})},60000)}
-function addDecisorOpcao(){var t=document.getElementById("decisorInput").value.trim();if(!t)return notificar("Digite uma opção!");estado.decisorOpcoes.push({texto:t,id:Date.now()});document.getElementById("decisorInput").value="";salvar();renderDecisor()}
-function delDecisorOpcao(id){estado.decisorOpcoes=estado.decisorOpcoes.filter(function(o){return o.id!==id});salvar();renderDecisor()}
-function sortearDecisor(){if(estado.decisorOpcoes.length<2)return notificar("Adicione pelo menos 2 opções!");var idx=Math.floor(Math.random()*estado.decisorOpcoes.length);document.getElementById("decisorResultado").textContent="🎉 "+estado.decisorOpcoes[idx].texto}
-function renderDecisor(){var lista=document.getElementById("decisorOpcoes");lista.innerHTML=estado.decisorOpcoes.map(function(o){return'<div style="display:flex;align-items:center;gap:.3rem;margin-bottom:.2rem;font-size:.85rem;padding:.2rem 0"><span style="flex:1">'+o.texto+'</span><button class="icone-btn" onclick="delDecisorOpcao('+o.id+')">🗑️</button></div>'}).join("")}
-function renderRevisao(){var blocos=document.getElementById("revisaoBlocos");var campos=[{k:"vitorias",icone:"🏆",titulo:"Vitórias da semana"},{k:"desafios",icone:"⚡",titulo:"Desafios enfrentados"},{k:"aprendidos",icone:"💡",titulo:"O que aprendi"},{k:"proxSemana",icone:"🎯",titulo:"Foco da próxima semana"}];if(!estado.revisao)estado.revisao={};blocos.innerHTML=campos.map(function(c){var val=estado.revisao[c.k]||"";return'<div class="revisao-bloco"><h4>'+c.icone+" "+c.titulo+'</h4><textarea class="campo" rows="2" onchange="salvarRevisaoCampo(\''+c.k+'\',this.value)">'+val+'</textarea></div>'}).join("");var notas=estado.revisao.notas||"";document.getElementById("revisaoNotas").value=notas}
-function salvarRevisaoCampo(k,val){estado.revisao[k]=val;salvar()}
-function salvarRevisao(){estado.revisao.notas=document.getElementById("revisaoNotas").value;salvar();notificar("Revisão salva!")}
-var frases=[{t:"A jornada de mil milhas começa com um simples passo.",a:"Laozi"},{t:"Não é sobre ter tempo. É sobre fazer tempo.",a:"Desconhecido"},{t:"O sucesso é a soma de pequenos esforços repetidos dia após dia.",a:"Robert Collier"},{t:"A disciplina é a ponte entre metas e conquistas.",a:"Jim Rohn"},{t:"Comece onde você está. Use o que tem. Faça o que pode.",a:"Arthur Ashe"},{t:"O único modo de fazer um excelente trabalho é amar o que você faz.",a:"Steve Jobs"},{t:"Tudo o que você sempre quis está do outro lado do medo.",a:"George Addair"},{t:"Acredite que você pode, assim você já está no meio do caminho.",a:"Theodore Roosevelt"},{t:"O futuro pertence a quem acredita na beleza dos seus sonhos.",a:"Eleanor Roosevelt"},{t:"Não espere por circunstâncias ideais. Crie-as.",a:"George Bernard Shaw"},{t:"A persistência é o caminho do êxito.",a:"Charles Chaplin"},{t:"Mude seus pensamentos e mude o mundo.",a:"Norman Vincent Peale"},{t:"O que não mata fortalece.",a:"Friedrich Nietzsche"},{t:"Quem cuida dos pequenos detalhes faz grandes conquistas.",a:"Desconhecido"},{t:"A melhor hora para começar é agora.",a:"Desconhecido"}];
-function novaFrase(){var idx=Math.floor(Math.random()*frases.length);estado.fraseAtual=frases[idx];document.getElementById("fraseBox").textContent="\""+frases[idx].t+"\"";document.getElementById("fraseAutor").textContent="- "+frases[idx].a;salvar()}
-function favoritarFrase(){if(!estado.fraseAtual)return notificar("Veja uma frase primeiro!");var ja=estado.frasesFav.find(function(f){return f.t===estado.fraseAtual.t});if(ja)return notificar("Já está nos favoritos!");estado.frasesFav.push(estado.fraseAtual);salvar();renderFrasesFav();notificar("Frase favoritada!")}
-function delFraseFav(idx){estado.frasesFav.splice(idx,1);salvar();renderFrasesFav()}
-function renderFrasesFav(){var lista=document.getElementById("frasesFavLista");lista.innerHTML=estado.frasesFav.map(function(f,i){return'<li><span class="texto">\"+f.t+\" - '+f.a+'</span><button class="icone-btn" onclick="delFraseFav('+i+')">🗑️</button></li>'}).join("")}
-function atualizarStats(){var total=estado.tarefas.length;var feitas=estado.tarefas.filter(function(t){return t.feito}).length;var hoje=new Date();var hojeIdx=hoje.getDay()===0?6:hoje.getDay()-1;var s=chaveSemana();var habHoje=estado.habitos.filter(function(h){return h.semanas[s]&&h.semanas[s][hojeIdx]}).length;var pomoData=hoje.toISOString().slice(0,10);if(estado.pomodorosData!==pomoData){estado.pomodorosHoje=0;estado.pomodorosData=pomoData;salvar()}document.getElementById("statTarefas").textContent=total;document.getElementById("statFeitas").textContent=feitas;document.getElementById("statHabitos").textContent=habHoje;document.getElementById("statPomo").textContent=estado.pomodorosHoje;document.getElementById("statAgua").textContent=estado.aguaHoje}
+// ============================================================
+// OrganizaJá v2 — app.js
+// ============================================================
 
-/* === PAINEL DA VIDA === */
-function calcularVida(){
-  var hoje=new Date();
-  var hojeIdx=hoje.getDay()===0?6:hoje.getDay()-1;
-  var s=chaveSemana();
-  var pomoData=hoje.toISOString().slice(0,10);
-  var scores={};
+// ---- STATE ----
+var estado = {
+  tarefas: [],
+  compras: [],
+  habitos: [],
+  metas: [],
+  notas: [],
+  transacoes: [],
+  planejamento: {seg:[],ter:[],qua:[],qui:[],sex:[],sab:[],dom:[]},
+  gratidao: [],
+  humor: [],
+  leitura: [],
+  contagens: [],
+  exercicios: [],
+  lembretes: [],
+  decisorOpcoes: [],
+  revisao: {},
+  frasesFav: [],
+  aguaHoje: 0,
+  aguaData: '',
+  pomodorosHoje: 0,
+  pomodorosData: '',
+  pomodoroMin: 25,
+  tema: 'claro',
+  filtroTarefas: 'todas',
+  filtroLeitura: 'todos',
+  fraseAtual: 0,
+  fraseAtualIdx: 0,
+  // New v2 fields
+  estudos: { materias: [], provas: [], trabalhos: [] },
+  calView: 'mes',
+  calMes: null,
+  calAno: null,
+  calSemanaStart: null,
+  ordemTarefas: 'data',
+  senhas: [],
+  despesas: [],
+  orcamentoMes: 0,
+  humorHoje: 0,
+  humorData: '',
+  exerciciosHoje: [],
+  exerciciosData: ''
+};
 
-  // PRODUTIVIDADE (0-100)
-  var tTotal=estado.tarefas.length;
-  var tFeitas=estado.tarefas.filter(function(t){return t.feito}).length;
-  var tPrio=estado.tarefas.filter(function(t){return t.feito&&t.prio==="alta"}).length;
-  var tScore=tTotal>0?Math.round((tFeitas/tTotal)*60+(tPrio>0?15:0)):15;
-  var pomoScore=Math.min(30,estado.pomodorosHoje*8);
-  var metaScore=estado.metas.length>0?Math.round(estado.metas.reduce(function(s,m){return s+m.progresso},0)/estado.metas.length*0.25):5;
-  scores.produtividade=Math.min(100,tScore+pomoScore+metaScore);
+var modalCallback = null;
+var pomoInterval = null;
+var pomoSegundos = 25 * 60;
+var pomoRodando = false;
+var pomoPausa = false;
+var pomoFocoMin = 25;
+var pomoPausaMin = 5;
+var calcValor = '0';
+var calcOp = null;
+var calcAnterior = null;
+var calcReset = true;
+var refeicoesSemana = ['seg','ter','qua','qui','sex','sab','dom'];
+var refeicoesTipos = ['Café','Almoço','Lanche','Jantar'];
+var calInterval = null;
+var regressivaTimers = {};
+var notifPermission = 'default';
+var notifTimers = {};
 
-  // SAUDE (0-100)
-  var aguaScore=Math.round((estado.aguaHoje/8)*25);
-  var hSemana=estado.habitos.length>0?estado.habitos.filter(function(h){return h.semanas[s]&&h.semanas[s][hojeIdx]}).length:0;
-  var habScore=estado.habitos.length>0?Math.round((hSemana/estado.habitos.length)*30):5;
-  var exSemana=estado.exercicios.filter(function(e){var partes=e.data.split("/");var d=partes.length===3?new Date(partes[2]+"-"+partes[1]+"-"+partes[0]):new Date(e.data);if(isNaN(d))return false;var diff=Math.floor((hoje-d)/86400000);return diff>=0&&diff<7}).length;
-  var exScore=Math.min(25,exSemana*5);
-  var humData=hoje.toISOString().slice(0,10);
-  var humHoje=estado.humor.find(function(r){return r.data===humData});
-  var humScore=humHoje?((humHoje.humor.indexOf("Feliz")>=0||humHoje.humor.indexOf("Agradecido")>=0)?20:humHoje.humor.indexOf("Neutro")>=0?12:5):0;
-  scores.saude=Math.min(100,aguaScore+habScore+exScore+humScore);
+// ---- FRASES ----
+var frases = [
+  {t:"A disciplina é a ponte entre objetivos e realizações.",a:"Jim Rohn"},
+  {t:"O segredo de ir adiante é começar.",a:"Mark Twain"},
+  {t:"Tudo parece impossível até que seja feito.",a:"Nelson Mandela"},
+  {t:"A melhor hora para começar é agora.",a:"Provérbio"},
+  {t:"Pequenos passos todos os dias levam a grandes resultados.",a:"Desconhecido"},
+  {t:"Não espere por condições ideais. Faça com o que tem.",a:"Arthur Ashe"},
+  {t:"A consistência supera o talento quando o talento não é consistente.",a:"Desconhecido"},
+  {t:"Cada dia é uma nova chance de ser melhor do que ontem.",a:"Desconhecido"},
+  {t:"Você não precisa ser perfeito. Precisa começar.",a:"Desconhecido"},
+  {t:"A organização é a base da produtividade.",a:"Desconhecido"},
+  {t:"Foque no que você pode controlar.",a:"Estoicismo"},
+  {t:"O progresso, não a perfeição.",a:"Desconhecido"},
+  {t:"Uma mente organizada é uma mente poderosa.",a:"Desconhecido"},
+  {t:"A melhor forma de prever o futuro é criá-lo.",a:"Peter Drucker"},
+  {t:"Sucesso é a soma de pequenos esforços repetidos.",a:"Robert Collier"},
+  {t:"Não deixe para amanhã o que pode organizar hoje.",a:"Adaptação"},
+  {t:"Simplicidade é o máximo da sofisticação.",a:"Leonardo da Vinci"},
+  {t:"Planejar é poupar tempo.",a:"Desconhecido"},
+  {t:"A motivação te faz começar. O hábito te faz continuar.",a:"Desconhecido"},
+  {t:"A vida não acontece por acaso. Ela acontece por escolha.",a:"Desconhecido"}
+];
 
-  // FINANCAS (0-100)
-  var rec=0,des=0;
-  estado.transacoes.forEach(function(t){if(t.tipo==="receita")rec+=t.valor;else des+=t.valor});
-  var saldo=rec-des;
-  var finScore;
-  if(estado.transacoes.length===0){finScore=15}
-  else if(saldo>=0){finScore=Math.min(80,40+Math.round((saldo/(rec||1))*40))}
-  else{finScore=Math.max(5,30-Math.round(Math.abs(saldo)/(rec||1)*30))}
-  var planScore=Object.values(estado.planejamento||{}).filter(function(v){return v&&v.trim().length>0}).length>0?20:0;
-  scores.financas=Math.min(100,finScore+planScore);
+var dicas = [
+  "Divida tarefas grandes em pequenas etapas.",
+  "Use Pomodoro: 25 min de foco, 5 de pausa.",
+  "Revise suas metas toda semana.",
+  "Anote 3 prioridades ao começar o dia.",
+  "Beba água a cada Pomodoro completado.",
+  "Reserve 5 min para planejar o dia seguinte.",
+  "Menos apps, mais ação. Organize, não acumule.",
+  "Marque tarefas como feitas ao final do dia — dá satisfação!",
+  "Crie rotinas para tarefas repetitivas.",
+  "Use categorias nas tarefas para se organizar melhor.",
+  "Um hábito por vez. Não tude mudar tudo de uma vez.",
+  "Descanse. Produtividade sem descanso vira exaustão."
+];
 
-  // PLANEJAMENTO (0-100)
-  var mProg=estado.metas.length>0?Math.round(estado.metas.reduce(function(s,m){return s+m.progresso},0)/estado.metas.length):0;
-  var planDias=Object.values(estado.planejamento||{}).filter(function(v){return v&&v.trim().length>0}).length;
-  var planScore2=Math.round((planDias/7)*35);
-  var refDias=0;
-  if(estado.refeicoes){Object.values(estado.refeicoes).forEach(function(v){if(v&&v.trim().length>0)refDias++})}
-  var refScore=Math.min(25,refDias*2);
-  var compFeitas=estado.compras.filter(function(c){return c.comprado}).length;
-  var compTotal=estado.compras.length;
-  var compScore=compTotal>0?Math.round((compFeitas/compTotal)*20):5;
-  scores.planejamento=Math.min(100,mProg*0.35+planScore2+refScore+compScore);
+var motivacoes = [
+  "Você já fez mais do que imagina!",
+  "Cada tarefa riscada é uma vitória.",
+  "Se chegou até aqui, pode ir mais longe.",
+  "O progresso é silencioso, mas real.",
+  "Um passo de cada vez.",
+  "Disciplina > Motivação.",
+  "Hoje você escolhe tentar de novo."
+];
 
-  // BEM-ESTAR (0-100)
-  var gratHoje=estado.gratidao.length>0?Math.min(25,estado.gratidao.length*3):0;
-  var humScore2=humHoje?15:0;
-  var gratSemana=estado.gratidao.filter(function(g){var diff=Math.floor((hoje-new Date(g.data||g.id))/(86400000));return diff>=0&&diff<7}).length;
-  var gratScore2=Math.min(20,gratSemana*5);
-  var livLendo=estado.leitura.filter(function(l){return l.status==="lendo"}).length;
-  var livScore=Math.min(20,livLendo*8);
-  var revSemana=estado.revisao&&(estado.revisao.vitorias||estado.revisao.desafios||estado.revisao.aprendidos||estado.revisao.proxSemana)?20:0;
-  scores.bemestar=Math.min(100,gratScore2+humScore2+gratHoje+livScore+revSemana);
+var desafios = [
+  "Complete 3 tarefas hoje.",
+  "Faça um Pomodoro de 25 minutos.",
+  "Beba 8 copos de água.",
+  "Anote 1 coisa pela qual é grato.",
+  "Organize sua lista de compras.",
+  "Registre seus exercícios do dia.",
+  "Planeie as refeições de amanhã.",
+  "Faça a revisão semanal."
+];
 
-  // OVERALL (weighted)
-  var overall=Math.round(scores.produtividade*0.22+scores.saude*0.25+scores.financas*0.18+scores.planejamento*0.18+scores.bemestar*0.17);
+// ---- CATEGORIAS TAREFA ----
+var catEmojis = {estudo:'📖',trabalho:'💼',pessoal:'🏠',saude:'💚',financas:'💰',outros:'📦'};
+var catCores = {estudo:'#6c5ce7',trabalho:'#0984e3',pessoal:'#00b894',saude:'#e17055',financas:'#fdcb6e',outros:'#636e72'};
 
-  // Nivel
-  var nivel,nivelClass,nivelEmoji;
-  if(overall>=80){nivel="Brilhante";nivelClass="n4";nivelEmoji="🌟"}
-  else if(overall>=60){nivel="No caminho certo";nivelClass="n3";nivelEmoji="🚀"}
-  else if(overall>=40){nivel="Melhorando";nivelClass="n2";nivelEmoji="💪"}
-  else if(overall>=20){nivel="Começando";nivelClass="n1";nivelEmoji="🌱"}
-  else{nivel="Zona de oportunidade";nivelClass="n0";nivelEmoji="💡"}
+// ---- LOAD / SAVE ----
+function carregarEstado() {
+  try {
+    var raw = localStorage.getItem('organizaja');
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      // Merge with defaults
+      Object.keys(estado).forEach(function(k) {
+        if (parsed[k] !== undefined) estado[k] = parsed[k];
+      });
+    }
+  } catch(e) { console.warn('Erro ao carregar estado:', e); }
 
-  // Dicas contextuais
-  var dicas=[];
-  if(scores.produtividade<40)dicas.push({icon:"☑️",texto:"Conclua tarefas pendentes e use o Pomodoro para aumentar seu foco."});
-  if(scores.saude<40)dicas.push({icon:"💧",texto:"Beba mais água, marque seus hábitos e registre como está se sentindo."});
-  if(scores.financas<40)dicas.push({icon:"💰",texto:"Registre suas receitas e despesas no orçamento para ter controle financeiro."});
-  if(scores.planejamento<40)dicas.push({icon:"📅",texto:"Planeje sua semana e defina metas com prazos para organizar melhor."});
-  if(scores.bemestar<40)dicas.push({icon:"🙏",texto:"Escreva gratidões diárias e revise sua semana para aumentar bem-estar."});
-  if(dicas.length===0)dicas.push({icon:"🎉",texto:"Você está indo muito bem! Continue mantendo suas rotinas."});
+  // Migration: add missing fields
+  estado.tarefas.forEach(function(t) {
+    if (!t.data) t.data = '';
+    if (!t.hora) t.hora = '';
+    if (!t.categoria) t.categoria = '';
+    if (!t.prio) t.prio = 'media';
+    if (t.feito === undefined) t.feito = false;
+  });
+  estado.habitos.forEach(function(h) {
+    if (!h.semanas) h.semanas = {};
+  });
+  estado.lembretes.forEach(function(l) {
+    if (!l.data) l.data = '';
+  });
+  if (!estado.estudos) estado.estudos = { materias:[], provas:[], trabalhos:[] };
+  if (!estado.estudos.materias) estado.estudos.materias = [];
+  if (!estado.estudos.provas) estado.estudos.provas = [];
+  if (!estado.estudos.trabalhos) estado.estudos.trabalhos = [];
+  if (!estado.calView) estado.calView = 'mes';
+  if (!estado.ordemTarefas) estado.ordemTarefas = 'data';
 
-  // Streak: dias seguidos com pelo menos 1 acao
-  var streak=0;
-  var vidaHist=JSON.parse(localStorage.getItem("vidaHist")||"[]");
-  for(var i=vidaHist.length-1;i>=0;i--){
-    if(vidaHist[i].score>5)streak++;else break
+  // Visit counter
+  var v = parseInt(localStorage.getItem('oj_visits') || '0') + 1;
+  localStorage.setItem('oj_visits', v);
+  var d = new Date().toISOString().slice(0,10);
+  var dv = localStorage.getItem('oj_visits_d');
+  if (dv !== d) {
+    var dd = parseInt(localStorage.getItem('oj_visits_d_c')||'0') + 1;
+    localStorage.setItem('oj_visits_d', d);
+    localStorage.setItem('oj_visits_d_c', dd);
+  }
+  var el = document.getElementById('visitNum');
+  if (el) el.textContent = v;
+
+  // Apoie banner
+  if (localStorage.getItem('apoieBannerFechado') === 'sim') {
+    var b = document.getElementById('apoieBanner');
+    if (b) b.style.display = 'none';
   }
 
-  // Competencias (mini stats)
-  var tFeitasCount=estado.tarefas.filter(function(t){return t.feito}).length;
-  var habHojeCount=estado.habitos.filter(function(h){return h.semanas[s]&&h.semanas[s][hojeIdx]}).length;
-  var gratCount=estado.gratidao.length;
-
-  return{overall:overall,nivel:nivel,nivelClass:nivelClass,nivelEmoji:nivelEmoji,scores:scores,dicas:dicas,streak:streak,comp:{tarefasFeitas:tFeitasCount,habitosHoje:habHojeCount,gratidao:gratCount},hist:vidaHist}
+  salvarEstado();
 }
 
-function salvarVidaHist(score){
-  var hoje=new Date().toISOString().slice(0,10);
-  var vidaHist=JSON.parse(localStorage.getItem("vidaHist")||"[]");
-  if(vidaHist.length>0&&vidaHist[vidaHist.length-1].data===hoje){vidaHist[vidaHist.length-1].score=score}
-  else{vidaHist.push({data:hoje,score:score})}
-  if(vidaHist.length>60)vidaHist=vidaHist.slice(-60);
-  localStorage.setItem("vidaHist",JSON.stringify(vidaHist));
-  return vidaHist
+function salvarEstado() {
+  try {
+    localStorage.setItem('organizaja', JSON.stringify(estado));
+  } catch(e) { console.warn('Erro ao salvar:', e); }
 }
 
-function renderVida(){
-  var v=calcularVida();
-  salvarVidaHist(v.overall);
-  var circ=2*Math.PI*85;
-  var offset=circ-(v.overall/100)*circ;
-  var bar=document.getElementById("vidaScoreBar");
-  var cor;
-  if(v.overall>=80)cor="#00b894";
-  else if(v.overall>=60)cor="#0984e3";
-  else if(v.overall>=40)cor="#fdcb6e";
-  else if(v.overall>=20)cor="#e17055";
-  else cor="#636e72";
-  bar.setAttribute("stroke",cor);
-  bar.style.strokeDashoffset=offset;
+// ---- NAVIGATION ----
+var pageNames = {
+  inicio:'Início', tarefas:'Tarefas', calendario:'Calendário',
+  estudos:'Estudos', habitos:'Hábitos', pomodoro:'Pomodoro',
+  metas:'Metas', notas:'Notas', lembretes:'Lembretes',
+  decisor:'Decisor', agua:'Água', exercicios:'Exercícios',
+  humor:'Humor', gratidao:'Gratidão', refeicoes:'Refeições',
+  orcamento:'Orçamento', compras:'Compras', planejamento:'Semanal',
+  regressiva:'Regressiva', calculadora:'Calculadora', senhas:'Senhas',
+  leitura:'Leitura', revisao:'Revisão', frases:'Frases', vida:'Painel da Vida'
+};
 
-  // Animate number
-  var numEl=document.getElementById("vidaScoreNum");
-  var current=parseInt(numEl.textContent)||0;
-  var diff=v.overall-current;
-  var steps=30;
-  var step=0;
-  var interval=setInterval(function(){
-    step++;
-    var val=Math.round(current+(diff*(step/steps)));
-    numEl.textContent=val;
-    if(step>=steps){clearInterval(interval);numEl.textContent=v.overall}
-  },30);
+function navegarPara(pagina, btn) {
+  // Close any open sheets
+  fecharMoreSheet();
 
-  // Nivel
-  var nEl=document.getElementById("vidaNivel");
-  nEl.textContent=v.nivelEmoji+" "+v.nivel;
-  nEl.className="vida-nivel "+v.nivelClass;
+  // Switch page visibility
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('ativo'); });
+  var target = document.getElementById('page-' + pagina);
+  if (target) target.classList.add('ativo');
 
-  // Comp mini stats
-  var compEl=document.getElementById("vidaComp");
-  compEl.innerHTML='<div class="vida-comp-item"><div class="num">'+v.comp.tarefasFeitas+'</div><div class="lbl">Tarefas feitas</div></div><div class="vida-comp-item"><div class="num">'+v.comp.habitosHoje+'</div><div class="lbl">Hábitos hoje</div></div><div class="vida-comp-item"><div class="num">'+v.comp.gratidao+'</div><div class="lbl">Gratidões</div></div><div class="vida-comp-item"><div class="num">'+estado.pomodorosHoje+'</div><div class="lbl">Pomodoros</div></div>';
+  // Update sidebar
+  document.querySelectorAll('.sidebar-item').forEach(function(s) { s.classList.remove('ativo'); });
+  var si = document.querySelector('.sidebar-item[data-page="' + pagina + '"]');
+  if (si) si.classList.add('ativo');
 
-  // Categories
-  var cats=[
-    {key:"produtividade",icon:"🚀",nome:"Produtividade"},
-    {key:"saude",icon:"💚",nome:"Saúde e Hábitos"},
-    {key:"financas",icon:"💰",nome:"Finanças"},
-    {key:"planejamento",icon:"📅",nome:"Planejamento"},
-    {key:"bemestar",icon:"🙏",nome:"Bem-estar"}
-  ];
-  var catsEl=document.getElementById("vidaCats");
-  catsEl.innerHTML=cats.map(function(c){
-    var sc=v.scores[c.key];
-    var fillCor;
-    if(sc>=80)fillCor="#00b894";
-    else if(sc>=60)fillCor="#0984e3";
-    else if(sc>=40)fillCor="#fdcb6e";
-    else if(sc>=20)fillCor="#e17055";
-    else fillCor="#636e72";
-    return'<div class="vida-cat"><span class="vida-cat-icon">'+c.icon+'</span><div class="vida-cat-info"><div class="vida-cat-nome">'+c.nome+'</div><div class="vida-cat-barra"><div class="vida-cat-fill" style="width:0%;background:'+fillCor+'" data-w="'+sc+'%"></div></div></div><span class="vida-cat-score" style="color:'+fillCor+'">'+sc+'</span></div>'
-  }).join("");
+  // Update bottombar
+  document.querySelectorAll('.bottombar-item').forEach(function(b) { b.classList.remove('ativo'); });
+  var bi = document.querySelector('.bottombar-item[data-page="' + pagina + '"]');
+  if (bi) bi.classList.add('ativo');
 
-  // Animate bars after render
-  setTimeout(function(){document.querySelectorAll(".vida-cat-fill").forEach(function(el){el.style.width=el.getAttribute("data-w")})},100);
+  // Title
+  var t = document.getElementById('topbarTitle');
+  if (t) t.textContent = pageNames[pagina] || pagina;
+
+  // Scroll to top of main
+  var main = document.querySelector('.main-area');
+  if (main) main.scrollTop = 0;
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  // Render page content
+  renderPage(pagina);
+
+  // On mobile close sidebar if open
+  closeSidebarOverlay();
+}
+
+
+// ---- THEME ----
+function aplicarTema() {
+  document.documentElement.setAttribute('data-tema', estado.tema);
+  var btn = document.getElementById('temaBtn');
+  if (btn) btn.textContent = estado.tema === 'escuro' ? '☀️' : '🌙';
+}
+
+function toggleTema() {
+  estado.tema = estado.tema === 'escuro' ? 'claro' : 'escuro';
+  aplicarTema();
+  salvarEstado();
+}
+
+// ---- MODAL ----
+function confirmar(msg, cb) {
+  document.getElementById('modalMsg').textContent = msg;
+  modalCallback = cb;
+  document.getElementById('modalOverlay').classList.add('visivel');
+}
+
+function confirmarAcao() {
+  document.getElementById('modalOverlay').classList.remove('visivel');
+  if (modalCallback) modalCallback();
+  modalCallback = null;
+}
+
+function fecharModal() {
+  document.getElementById('modalOverlay').classList.remove('visivel');
+  modalCallback = null;
+}
+
+// ---- PIX ----
+function abrirPix() {
+  document.getElementById('pixModal').classList.add('ativo');
+}
+function fecharPix(e) {
+  if (e.target === document.getElementById('pixModal')) document.getElementById('pixModal').classList.remove('ativo');
+}
+function fecharPixBtn() {
+  document.getElementById('pixModal').classList.remove('ativo');
+}
+function copiarPix() {
+  navigator.clipboard.writeText('henriquehabitz@gmail.com').then(function(){
+    var b = document.querySelector('.pix-copiar');
+    b.textContent = '✅ Copiado!';
+    setTimeout(function(){ b.textContent = '📋 Copiar chave PIX'; }, 2000);
+  });
+}
+
+// ---- BANNER ----
+function fecharBannerApoie() {
+  document.getElementById('apoieBanner').style.display = 'none';
+  localStorage.setItem('apoieBannerFechado', 'sim');
+}
+
+// ---- INSTALL ----
+var installPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  installPrompt = e;
+  document.getElementById('instalarBanner').style.display = 'flex';
+});
+function instalarApp() {
+  if (installPrompt) { installPrompt.prompt(); }
+}
+
+// ---- SEARCH ----
+function abrirBusca() {
+  document.getElementById('buscaOverlay').classList.add('visivel');
+  document.getElementById('buscaInput').value = '';
+  document.getElementById('buscaInput').focus();
+}
+function fecharBusca(e) {
+  if (e.target === document.getElementById('buscaOverlay')) {
+    document.getElementById('buscaOverlay').classList.remove('visivel');
+  }
+}
+function buscarTudo(q) {
+  var res = document.getElementById('buscaResultados');
+  if (!q.trim()) { res.innerHTML = ''; return; }
+  q = q.toLowerCase();
+  var html = '';
+  // Search tools
+  Object.keys(pageNames).forEach(function(k) {
+    if (pageNames[k].toLowerCase().indexOf(q) >= 0) {
+      html += '<div class="busca-item" onclick="navegarPara(\''+esc(k)+'\');fecharBusca({target:document.getElementById(\'buscaOverlay\')})">' + esc(pageNames[k]) + '</div>';
+    }
+  });
+  // Search tasks
+  estado.tarefas.forEach(function(t) {
+    if (t.texto.toLowerCase().indexOf(q) >= 0) {
+      html += '<div class="busca-item" onclick="navegarPara(\'tarefas\');fecharBusca({target:document.getElementById(\'buscaOverlay\')})">✅ ' + esc(t.texto) + '</div>';
+    }
+  });
+  res.innerHTML = html || '<div style="padding:1rem;color:var(--txt3);font-size:.85rem">Nenhum resultado</div>';
+}
+
+// ---- SIDEBAR MOBILE TOGGLE ----
+function toggleSidebar() {
+  var sb = document.getElementById('sidebar');
+  if (sb.classList.contains('aberto')) {
+    closeSidebarOverlay();
+  } else {
+    sb.classList.add('aberto');
+    if (!document.getElementById('sidebarOverlay')) {
+      var ov = document.createElement('div');
+      ov.id = 'sidebarOverlay';
+      ov.className = 'sidebar-overlay';
+      ov.onclick = closeSidebarOverlay;
+      document.querySelector('.app-layout').appendChild(ov);
+    }
+    document.getElementById('sidebarOverlay').classList.add('visivel');
+  }
+}
+function closeSidebarOverlay() {
+  var sb = document.getElementById('sidebar');
+  if (sb) sb.classList.remove('aberto');
+  var ov = document.getElementById('sidebarOverlay');
+  if (ov) ov.classList.remove('visivel');
+}
+function toggleSidebarTools() {
+  var p = document.getElementById('sidebarTools');
+  if (p) p.classList.toggle('aberto');
+}
+
+// ---- MORE SHEET (mobile) ----
+function toggleMoreSheet() {
+  var s = document.getElementById('moreSheet');
+  if (s.classList.contains('aberto')) fecharMoreSheet();
+  else s.classList.add('aberto');
+}
+function fecharMoreSheet() {
+  var s = document.getElementById('moreSheet');
+  if (s) s.classList.remove('aberto');
+}
+
+// ---- NOTIFICATIONS ----
+function initNotificacoes() {
+  if ('Notification' in window) {
+    notifPermission = Notification.permission;
+    if (notifPermission === 'default') {
+      Notification.requestPermission().then(function(p) { notifPermission = p; });
+    }
+  }
+  scheduleAllNotificacoes();
+}
+
+function scheduleAllNotificacoes() {
+  // Clear existing timers
+  Object.keys(notifTimers).forEach(function(k) {
+    clearTimeout(notifTimers[k]);
+  });
+  notifTimers = {};
+
+  var agora = Date.now();
+
+  // Lembretes
+  estado.lembretes.forEach(function(l) {
+    if (!l.ativo) return;
+    var dtStr = (l.data ? l.data + 'T' : hojeStr() + 'T') + (l.hora || '09:00');
+    var dt = new Date(dtStr).getTime();
+    var diff = dt - agora;
+    if (diff > 0 && diff < 86400000) {
+      notifTimers['lembrete_' + l.id] = setTimeout(function() {
+        enviarNotificacao('Lembrete', l.texto);
+      }, diff);
+    }
+  });
+
+  // Tarefas with date/time
+  estado.tarefas.forEach(function(t) {
+    if (t.feito || !t.data) return;
+    var dtStr = t.data + 'T' + (t.hora || '09:00');
+    var dt = new Date(dtStr).getTime();
+    var diff = dt - agora;
+    if (diff > 0 && diff < 86400000) {
+      notifTimers['tarefa_' + t.id] = setTimeout(function() {
+        enviarNotificacao('Tarefa: ' + t.texto, 'Vence em breve!');
+      }, diff);
+    }
+  });
+
+  // Provas
+  if (estado.estudos && estado.estudos.provas) {
+    estado.estudos.provas.forEach(function(p) {
+      if (!p.data) return;
+      var dt = new Date(p.data + 'T09:00').getTime();
+      var diff = dt - agora;
+      if (diff > 0 && diff < 86400000 * 3) {
+        notifTimers['prova_' + p.id] = setTimeout(function() {
+          enviarNotificacao('Prova: ' + p.texto, 'Dia ' + p.data);
+        }, diff);
+      }
+    });
+  }
+}
+
+function scheduleLembretes() { scheduleAllNotificacoes(); }
+
+function enviarNotificacao(titulo, corpo) {
+  if (notifPermission === 'granted') {
+    new Notification(titulo, { body: corpo, icon: 'icon-192.png' });
+  }
+}
+
+// ---- HELPERS ----
+function hojeStr() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function dataLocal(str) {
+  if (!str) return '';
+  var pts = str.split('-');
+  if (pts.length !== 3) return str;
+  return pts[2] + '/' + pts[1] + '/' + pts[0];
+}
+
+function eAtrasada(t) {
+  if (t.feito || !t.data) return false;
+  var hoje = hojeStr();
+  return t.data < hoje;
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+}
+
+function esc(s) {
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function getSemanaKey() {
+  var d = new Date();
+  var onejan = new Date(d.getFullYear(),0,1);
+  var wk = Math.ceil(((d - onejan) / 86400000 + onejan.getDay() + 1) / 7);
+  return d.getFullYear() + '-S' + wk;
+}
+
+function getDiaSemana() {
+  return new Date().getDay(); // 0=dom ... 6=sab
+}
+
+function calcularStreak(habito) {
+  var streak = 0;
+  var d = new Date();
+  for (var i = 0; i < 365; i++) {
+    var onejan = new Date(d.getFullYear(), 0, 1);
+    var wk = Math.ceil(((d - onejan) / 86400000 + onejan.getDay() + 1) / 7);
+    var key = d.getFullYear() + '-S' + wk;
+    var diaIdx = d.getDay(); // 0=dom
+    var arr = habito.semanas[key];
+    if (arr && arr[diaIdx]) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+function progressoSemanaHabito(habito) {
+  var key = getSemanaKey();
+  var arr = habito.semanas[key] || [false,false,false,false,false,false,false];
+  var total = 0;
+  arr.forEach(function(v) { if (v) total++; });
+  return { feitos: total, total: 7, pct: Math.round(total/7*100) };
+}
+
+// ============================================================
+// PART 2: Dashboard, Tarefas, Calendário, Estudos, Hábitos
+// ============================================================
+
+// ---- DASHBOARD ----
+function renderDashboard() {
+  // Greeting
+  var h = new Date().getHours();
+  var greet = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+  document.getElementById('dashGreeting').textContent = greet + '! 👋';
+
+  // Date
+  var dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  var meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  var d = new Date();
+  document.getElementById('dashDate').textContent = dias[d.getDay()] + ', ' + d.getDate() + ' de ' + meses[d.getMonth()];
+
+  // Cards
+  var hoje = hojeStr();
+  var tarefasHoje = estado.tarefas.filter(function(t){return !t.feito && t.data === hoje}).length;
+  var atrasadas = estado.tarefas.filter(eAtrasada).length;
+  var feitasHoje = estado.tarefas.filter(function(t){return t.feito && t.data === hoje}).length;
+  var pomos = (estado.pomodorosData === hoje) ? estado.pomodorosHoje : 0;
+  var agua = (estado.aguaData === hoje) ? estado.aguaHoje : 0;
+
+  var cards = '';
+  cards += '<div class="dash-card dc-tarefas"><div class="dc-num">' + tarefasHoje + '</div><div class="dc-label">Tarefas hoje</div></div>';
+  if (atrasadas > 0) {
+    cards += '<div class="dash-card dc-atrasadas"><div class="dc-num">' + atrasadas + '</div><div class="dc-label">Atrasadas 🚨</div></div>';
+  }
+  cards += '<div class="dash-card dc-feitas"><div class="dc-num">' + feitasHoje + '</div><div class="dc-label">Concluídas</div></div>';
+  cards += '<div class="dash-card dc-pomo"><div class="dc-num">' + pomos + '</div><div class="dc-label">Pomodoros</div></div>';
+  cards += '<div class="dash-card dc-agua"><div class="dc-num">' + agua + '/8</div><div class="dc-label">Copos de água</div></div>';
+  document.getElementById('dashCards').innerHTML = cards;
+
+  // Tarefas de hoje
+  var th = estado.tarefas.filter(function(t){return !t.feito && t.data === hoje});
+  document.getElementById('dashTarefasCount').textContent = th.length ? '(' + th.length + ')' : '';
+  var htmlTh = '';
+  th.forEach(function(t) {
+    var catE = catEmojis[t.categoria] || '';
+    var prioC = t.prio === 'alta' ? 'prio-alta' : t.prio === 'baixa' ? 'prio-baixa' : '';
+    htmlTh += '<div class="dash-tarefa ' + prioC + '"><span>' + catE + '</span> ' + esc(t.texto) + (t.hora ? ' <small style="color:var(--txt3)">' + t.hora + '</small>' : '') + '</div>';
+  });
+  if (!htmlTh) htmlTh = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma tarefa para hoje. Adicione uma! 🎉</div>';
+  document.getElementById('dashTarefasHoje').innerHTML = htmlTh;
+
+  // Atrasadas
+  var atr = estado.tarefas.filter(eAtrasada);
+  document.getElementById('dashAtrasadasCount').textContent = atr.length ? '(' + atr.length + ')' : '';
+  var htmlAtr = '';
+  atr.forEach(function(t) {
+    htmlAtr += '<div class="dash-tarefa prio-alta"><span>🚨</span> ' + esc(t.texto) + ' <small style="color:var(--vermelho)">venceu ' + dataLocal(t.data) + '</small></div>';
+  });
+  if (!htmlAtr) htmlAtr = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma tarefa atrasada! 🎊</div>';
+  document.getElementById('dashAtrasadas').innerHTML = htmlAtr;
+
+  // Hábitos hoje
+  var diaIdx = getDiaSemana();
+  var sk = getSemanaKey();
+  var htmlHab = '';
+  estado.habitos.forEach(function(h) {
+    var arr = h.semanas[sk] || [false,false,false,false,false,false,false];
+    var feito = arr[diaIdx];
+    htmlHab += '<div class="dash-habito ' + (feito ? 'feito' : '') + '" onclick="toggleHabitoDash(\''+h.id+'\')"><span>' + (h.emoji||'✨') + '</span> ' + esc(h.nome) + (feito ? ' ✅' : '') + '</div>';
+  });
+  if (!htmlHab) htmlHab = '<div style="color:var(--txt3);font-size:.82rem">Nenhum hábito criado ainda.</div>';
+  document.getElementById('dashHabitosHoje').innerHTML = htmlHab;
+
+  // Próximos compromissos
+  var compromissos = [];
+  estado.tarefas.filter(function(t){return !t.feito && t.data}).forEach(function(t){compromissos.push({texto:t.texto,data:t.data,hora:t.hora,icon:catEmojis[t.categoria]||'📌'});});
+  estado.lembretes.filter(function(l){return l.ativo && l.data}).forEach(function(l){compromissos.push({texto:l.texto,data:l.data,hora:l.hora,icon:'🔔'});});
+  if (estado.estudos && estado.estudos.provas) {
+    estado.estudos.provas.forEach(function(p){compromissos.push({texto:'Prova: '+p.texto,data:p.data,hora:'',icon:'📝'});});
+  }
+  compromissos.sort(function(a,b){return (a.data+(a.hora||'')).localeCompare(b.data+(b.hora||''));});
+  var htmlComp = '';
+  compromissos.slice(0,5).forEach(function(c){
+    htmlComp += '<div class="dash-comp"><span>' + c.icon + '</span> ' + esc(c.texto) + ' <small>' + dataLocal(c.data) + (c.hora ? ' ' + c.hora : '') + '</small></div>';
+  });
+  if (!htmlComp) htmlComp = '<div style="color:var(--txt3);font-size:.82rem">Nenhum compromisso próximo.</div>';
+  document.getElementById('dashCompromissos').innerHTML = htmlComp;
+
+  // Resumo da semana
+  var totalTarefas = estado.tarefas.length;
+  var feitas = estado.tarefas.filter(function(t){return t.feito}).length;
+  var pct = totalTarefas ? Math.round(feitas/totalTarefas*100) : 0;
+  var habitosFeitosSemana = 0;
+  var habitosTotalSemana = estado.habitos.length * 7;
+  estado.habitos.forEach(function(h){
+    var arr = h.semanas[sk]||[];
+    arr.forEach(function(v){if(v)habitosFeitosSemana++;});
+  });
+  var habPct = habitosTotalSemana ? Math.round(habitosFeitosSemana/habitosTotalSemana*100) : 0;
+  var htmlRes = '';
+  htmlRes += '<div class="dash-resumo-item"><div class="dash-resumo-label">Tarefas concluídas</div><div class="dash-resumo-bar"><div class="dash-resumo-fill" style="width:'+pct+'%"></div></div><div class="dash-resumo-pct">'+pct+'%</div></div>';
+  htmlRes += '<div class="dash-resumo-item"><div class="dash-resumo-label">Hábitos da semana</div><div class="dash-resumo-bar"><div class="dash-resumo-fill" style="width:'+habPct+'%;background:var(--cor2)"></div></div><div class="dash-resumo-pct">'+habPct+'%</div></div>';
+  htmlRes += '<div class="dash-resumo-item"><div class="dash-resumo-label">Pomodoros hoje</div><div class="dash-resumo-val">' + pomos + '</div></div>';
+  htmlRes += '<div class="dash-resumo-item"><div class="dash-resumo-label">Água hoje</div><div class="dash-resumo-val">' + agua + '/8</div></div>';
+  document.getElementById('dashResumoSemana').innerHTML = htmlRes;
 
   // Dicas
-  var dicasEl=document.getElementById("vidaDicas");
-  dicasEl.innerHTML=v.dicas.map(function(d){return'<div class="vida-dica"><span class="vida-dica-icon">'+d.icon+'</span><span>'+d.texto+'</span></div>'}).join("");
+  novaDica(); novaMotivacao(); novoDesafio();
+}
 
-  // Streak
-  var streakEl=document.getElementById("vidaStreak");
-  streakEl.innerHTML=v.streak>0?'🔥 Sequência de <strong>'+v.streak+'</strong> dia'+(v.streak>1?"s":"")+" usando o app":'💡 Use o app todos os dias para criar uma sequência!';
+function toggleHabitoDash(id) {
+  var h = estado.habitos.find(function(x){return x.id===id;});
+  if (!h) return;
+  var sk = getSemanaKey();
+  var diaIdx = getDiaSemana();
+  if (!h.semanas[sk]) h.semanas[sk] = [false,false,false,false,false,false,false];
+  h.semanas[sk][diaIdx] = !h.semanas[sk][diaIdx];
+  salvarEstado();
+  renderDashboard();
+}
 
-  // History dots (last 30 days)
-  var histEl=document.getElementById("vidaHist");
-  var hist=v.hist.slice(-30);
-  if(hist.length>0){
-    histEl.innerHTML=hist.map(function(h){
-      var cor;
-      if(h.score>=80)cor="#00b894";
-      else if(h.score>=60)cor="#0984e3";
-      else if(h.score>=40)cor="#fdcb6e";
-      else if(h.score>=20)cor="#e17055";
-      else cor="#636e72";
-      return'<div class="vida-hist-dot" style="background:'+cor+'" title="'+h.data+': '+h.score+'"></div>'
-    }).join("")
-  }else{
-    histEl.innerHTML=''
+function addQuickTask() {
+  var inp = document.getElementById('quickTaskInput');
+  var txt = inp.value.trim();
+  if (!txt) return;
+  estado.tarefas.push({texto:txt, prio:'media', feito:false, id:uid(), data:hojeStr(), hora:'', categoria:''});
+  inp.value = '';
+  salvarEstado();
+  renderDashboard();
+}
+
+function novaDica() { document.getElementById('dicaTexto').textContent = dicas[Math.floor(Math.random()*dicas.length)]; }
+function novaMotivacao() { document.getElementById('motivacaoTexto').textContent = motivacoes[Math.floor(Math.random()*motivacoes.length)]; }
+function novoDesafio() { document.getElementById('desafioTexto').textContent = desafios[Math.floor(Math.random()*desafios.length)]; }
+
+// ---- TAREFAS ----
+function addTarefa() {
+  var txt = document.getElementById('tarefaInput').value.trim();
+  if (!txt) return;
+  estado.tarefas.push({
+    texto: txt,
+    prio: document.getElementById('tarefaPrio').value,
+    feito: false,
+    id: uid(),
+    data: document.getElementById('tarefaData').value || '',
+    hora: document.getElementById('tarefaHora').value || '',
+    categoria: document.getElementById('tarefaCat').value || ''
+  });
+  document.getElementById('tarefaInput').value = '';
+  document.getElementById('tarefaData').value = '';
+  document.getElementById('tarefaHora').value = '';
+  document.getElementById('tarefaCat').value = '';
+  salvarEstado();
+  renderTarefas();
+}
+
+function toggleTarefa(id) {
+  var t = estado.tarefas.find(function(x){return x.id===id;});
+  if (t) { t.feito = !t.feito; salvarEstado(); renderTarefas(); }
+}
+
+function delTarefa(id) {
+  estado.tarefas = estado.tarefas.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderTarefas();
+}
+
+function filtroTarefa(f) {
+  estado.filtroTarefas = f;
+  salvarEstado();
+  renderTarefas();
+}
+
+function ordenarTarefas(o) {
+  estado.ordemTarefas = o;
+  salvarEstado();
+  renderTarefas();
+}
+
+function renderTarefas() {
+  var pesquisa = (document.getElementById('tarefaPesquisa') || {}).value || '';
+  var filtro = estado.filtroTarefas;
+  var ordem = estado.ordemTarefas;
+  var hoje = hojeStr();
+
+  var lista = estado.tarefas.slice();
+
+  // Filter
+  if (filtro === 'ativas') lista = lista.filter(function(t){return !t.feito;});
+  else if (filtro === 'feitas') lista = lista.filter(function(t){return t.feito;});
+  else if (filtro === 'atrasadas') lista = lista.filter(eAtrasada);
+
+  // Search
+  if (pesquisa.trim()) {
+    var q = pesquisa.toLowerCase();
+    lista = lista.filter(function(t){return t.texto.toLowerCase().indexOf(q) >= 0;});
+  }
+
+  // Sort
+  if (ordem === 'data') {
+    lista.sort(function(a,b) {
+      if (!a.data && !b.data) return 0;
+      if (!a.data) return 1;
+      if (!b.data) return -1;
+      return (a.data + (a.hora||'')).localeCompare(b.data + (b.hora||''));
+    });
+  } else if (ordem === 'prio') {
+    var prioVal = {alta:0,media:1,baixa:2};
+    lista.sort(function(a,b){return (prioVal[a.prio]||1) - (prioVal[b.prio]||1);});
+  } else if (ordem === 'cat') {
+    lista.sort(function(a,b){return (a.categoria||'zzz').localeCompare(b.categoria||'zzz');});
+  }
+
+  var html = '';
+  lista.forEach(function(t) {
+    var catE = catEmojis[t.categoria] || '';
+    var catC = catCores[t.categoria] || 'var(--txt2)';
+    var prioC = t.prio === 'alta' ? 'prio-alta' : t.prio === 'baixa' ? 'prio-baixa' : '';
+    var atrasada = eAtrasada(t);
+    var classe = 'tarefa-item' + (t.feito ? ' feito' : '') + (atrasada ? ' atrasada' : '') + (prioC ? ' ' + prioC : '');
+    html += '<li class="' + classe + '">';
+    html += '<div class="tarefa-check" onclick="toggleTarefa(\''+t.id+'\')">' + (t.feito ? '✅' : '⬜') + '</div>';
+    html += '<div class="tarefa-info">';
+    html += '<div class="tarefa-texto">' + (catE ? '<span style="margin-right:.3rem">'+catE+'</span>' : '') + esc(t.texto) + '</div>';
+    if (t.data) html += '<div class="tarefa-meta"><span style="color:'+catC+'">📅 ' + dataLocal(t.data) + '</span>' + (t.hora ? ' <span style="color:var(--txt3)">🕐 '+t.hora+'</span>' : '') + (t.categoria ? ' <span style="color:'+catC+'">'+t.categoria+'</span>' : '') + (atrasada ? ' <span style="color:var(--vermelho)">🚨 atrasada</span>' : '') + '</div>';
+    html += '</div>';
+    html += '<button class="tarefa-del" onclick="delTarefa(\''+t.id+'\')" title="Excluir">🗑️</button>';
+    html += '</li>';
+  });
+  if (!html) html = '<div style="padding:1rem;color:var(--txt3);font-size:.85rem;text-align:center">Nenhuma tarefa encontrada</div>';
+  document.getElementById('tarefasLista').innerHTML = html;
+}
+
+function limparTarefas() {
+  estado.tarefas = estado.tarefas.filter(function(t){return !t.feito;});
+  salvarEstado(); renderTarefas();
+}
+
+// ---- CALENDARIO ----
+function renderCalendario() {
+  if (!estado.calMes && !estado.calAno) {
+    var d = new Date();
+    estado.calMes = d.getMonth();
+    estado.calAno = d.getFullYear();
+  }
+  if (estado.calView === 'mes') renderCalMes();
+  else renderCalSemana();
+}
+
+function setCalView(v, btn) {
+  estado.calView = v;
+  document.querySelectorAll('.cal-view-toggle button').forEach(function(b){b.classList.remove('ativo');});
+  if (btn) btn.classList.add('ativo');
+  renderCalendario();
+}
+
+function calNav(dir) {
+  if (estado.calView === 'mes') {
+    estado.calMes += dir;
+    if (estado.calMes > 11) { estado.calMes = 0; estado.calAno++; }
+    if (estado.calMes < 0) { estado.calMes = 11; estado.calAno--; }
+  } else {
+    if (!estado.calSemanaStart) estado.calSemanaStart = new Date();
+    var d = new Date(estado.calSemanaStart);
+    d.setDate(d.getDate() + dir * 7);
+    estado.calSemanaStart = d;
+  }
+  renderCalendario();
+}
+
+function calHoje() {
+  var d = new Date();
+  estado.calMes = d.getMonth();
+  estado.calAno = d.getFullYear();
+  estado.calSemanaStart = d;
+  renderCalendario();
+}
+
+function getCalEvents(dateStr) {
+  var evts = [];
+  estado.tarefas.forEach(function(t) {
+    if (t.data === dateStr) evts.push({texto: t.texto, cor: catCores[t.categoria] || 'var(--cor)', tipo: 'tarefa'});
+  });
+  estado.lembretes.forEach(function(l) {
+    if (l.data === dateStr) evts.push({texto: l.texto, cor: 'var(--amarelo)', tipo: 'lembrete'});
+  });
+  if (estado.estudos && estado.estudos.provas) {
+    estado.estudos.provas.forEach(function(p) {
+      if (p.data === dateStr) evts.push({texto: 'Prova: ' + p.texto, cor: '#e17055', tipo: 'prova'});
+    });
+  }
+  if (estado.estudos && estado.estudos.trabalhos) {
+    estado.estudos.trabalhos.forEach(function(tr) {
+      if (tr.data === dateStr) evts.push({texto: 'Trabalho: ' + tr.texto, cor: '#0984e3', tipo: 'trabalho'});
+    });
+  }
+  return evts;
+}
+
+function renderCalMes() {
+  var m = estado.calMes;
+  var y = estado.calAno;
+  var meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  document.getElementById('calTitulo').textContent = meses[m] + ' ' + y;
+
+  var primeiro = new Date(y, m, 1);
+  var ultimo = new Date(y, m+1, 0);
+  var startDay = primeiro.getDay();
+  var totalDays = ultimo.getDate();
+  var hoje = hojeStr();
+
+  var diasSem = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  var html = '<div class="cal-grid">';
+  diasSem.forEach(function(d){ html += '<div class="cal-dia-header">' + d + '</div>'; });
+
+  for (var i = 0; i < startDay; i++) html += '<div class="cal-dia empty"></div>';
+
+  for (var dia = 1; dia <= totalDays; dia++) {
+    var dateStr = y + '-' + String(m+1).padStart(2,'0') + '-' + String(dia).padStart(2,'0');
+    var evts = getCalEvents(dateStr);
+    var isHoje = dateStr === hoje;
+    var cls = 'cal-dia' + (isHoje ? ' hoje' : '') + (evts.length ? ' has-events' : '');
+    html += '<div class="' + cls + '">';
+    html += '<div class="cal-dia-num">' + dia + '</div>';
+    if (evts.length) {
+      html += '<div class="cal-dia-eventos">';
+      evts.slice(0,3).forEach(function(e){
+        html += '<div class="cal-evento" style="background:' + e.cor + '" title="' + esc(e.texto) + '"></div>';
+      });
+      if (evts.length > 3) html += '<div class="cal-evento-mais">+' + (evts.length-3) + '</div>';
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  document.getElementById('calCorpo').innerHTML = html;
+}
+
+function renderCalSemana() {
+  if (!estado.calSemanaStart) estado.calSemanaStart = new Date();
+  var start = new Date(estado.calSemanaStart);
+  var day = start.getDay();
+  start.setDate(start.getDate() - day); // Go to Sunday
+
+  var diasSem = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  var meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  var end = new Date(start); end.setDate(end.getDate()+6);
+  document.getElementById('calTitulo').textContent = diasSem[start.getDay()] + ' ' + start.getDate() + ' ' + meses[start.getMonth()] + ' – ' + end.getDate() + ' ' + meses[end.getMonth()];
+
+  var hoje = hojeStr();
+  var html = '<div class="cal-semana-grid">';
+  for (var i = 0; i < 7; i++) {
+    var d = new Date(start); d.setDate(d.getDate()+i);
+    var dateStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    var isHoje = dateStr === hoje;
+    var evts = getCalEvents(dateStr);
+    html += '<div class="cal-semana-dia' + (isHoje ? ' hoje' : '') + '">';
+    html += '<div class="csd-header"><span class="csd-nome">' + diasSem[i].slice(0,3) + '</span><span class="csd-num">' + d.getDate() + '</span></div>';
+    html += '<div class="csd-eventos">';
+    evts.forEach(function(e){
+      html += '<div class="csd-evt" style="border-left:3px solid ' + e.cor + '">' + esc(e.texto) + '</div>';
+    });
+    if (!evts.length) html += '<div class="csd-evt-empty">—</div>';
+    html += '</div></div>';
+  }
+  html += '</div>';
+  document.getElementById('calCorpo').innerHTML = html;
+}
+
+// ---- ESTUDOS ----
+function renderEstudos() {
+  renderMaterias();
+  renderProvas();
+  renderTrabalhos();
+}
+
+function addMateria() {
+  var nome = document.getElementById('materiaInput').value.trim();
+  if (!nome) return;
+  var cor = document.getElementById('materiaCor').value;
+  estado.estudos.materias.push({nome:nome, cor:cor, id:uid()});
+  document.getElementById('materiaInput').value = '';
+  salvarEstado(); renderMaterias();
+}
+
+function delMateria(id) {
+  estado.estudos.materias = estado.estudos.materias.filter(function(m){return m.id!==id;});
+  salvarEstado(); renderMaterias();
+}
+
+function renderMaterias() {
+  var html = '';
+  estado.estudos.materias.forEach(function(m) {
+    var provas = estado.estudos.provas.filter(function(p){return p.materia===m.nome}).length;
+    var trabs = estado.estudos.trabalhos.filter(function(t){return t.materia===m.nome}).length;
+    html += '<div class="materia-card" style="border-left:4px solid ' + m.cor + '">';
+    html += '<div class="materia-nome">' + esc(m.nome) + '</div>';
+    html += '<div class="materia-info">📝 ' + provas + ' provas · 📄 ' + trabs + ' trabalhos</div>';
+    html += '<button class="btn btn-d" style="font-size:.65rem;padding:.2rem .5rem" onclick="delMateria(\''+m.id+'\')">Excluir</button>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma matéria adicionada.</div>';
+  document.getElementById('materiasGrid').innerHTML = html;
+}
+
+function addProva() {
+  var txt = document.getElementById('provaInput').value.trim();
+  if (!txt) return;
+  estado.estudos.provas.push({
+    texto: txt,
+    materia: document.getElementById('provaMateria').value || '',
+    data: document.getElementById('provaData').value || '',
+    id: uid()
+  });
+  document.getElementById('provaInput').value = '';
+  document.getElementById('provaMateria').value = '';
+  document.getElementById('provaData').value = '';
+  salvarEstado(); renderProvas();
+}
+
+function delProva(id) {
+  estado.estudos.provas = estado.estudos.provas.filter(function(p){return p.id!==id;});
+  salvarEstado(); renderProvas();
+}
+
+function renderProvas() {
+  var html = '';
+  estado.estudos.provas.sort(function(a,b){return (a.data||'z').localeCompare(b.data||'z');});
+  estado.estudos.provas.forEach(function(p) {
+    var diasRestantes = p.data ? Math.ceil((new Date(p.data) - new Date()) / 86400000) : null;
+    var urgente = diasRestantes !== null && diasRestantes <= 3 && diasRestantes >= 0;
+    var corMateria = (estado.estudos.materias.find(function(m){return m.nome===p.materia})||{}).cor;
+    html += '<div class="prova-item' + (urgente ? ' urgente' : '') + '" style="border-left:3px solid ' + (corMateria || 'var(--cor2)') + '">';
+    html += '<div class="prova-texto">📝 ' + esc(p.texto) + (p.materia ? ' <small style="color:var(--txt3)">(' + esc(p.materia) + ')</small>' : '') + '</div>';
+    html += '<div class="prova-data">📅 ' + (p.data ? dataLocal(p.data) : 'sem data') + (diasRestantes !== null ? ' <small style="color:' + (urgente ? 'var(--vermelho)' : 'var(--txt3)') + '">(em ' + diasRestantes + ' dias)</small>' : '') + '</div>';
+    html += '<button class="btn btn-d" style="font-size:.65rem;padding:.2rem .5rem" onclick="delProva(\''+p.id+'\')">Excluir</button>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma prova registrada.</div>';
+  document.getElementById('provasLista').innerHTML = html;
+}
+
+function addTrabalho() {
+  var txt = document.getElementById('trabInput').value.trim();
+  if (!txt) return;
+  estado.estudos.trabalhos.push({
+    texto: txt,
+    materia: document.getElementById('trabMateria').value || '',
+    data: document.getElementById('trabData').value || '',
+    id: uid()
+  });
+  document.getElementById('trabInput').value = '';
+  document.getElementById('trabMateria').value = '';
+  document.getElementById('trabData').value = '';
+  salvarEstado(); renderTrabalhos();
+}
+
+function delTrabalho(id) {
+  estado.estudos.trabalhos = estado.estudos.trabalhos.filter(function(t){return t.id!==id;});
+  salvarEstado(); renderTrabalhos();
+}
+
+function renderTrabalhos() {
+  var html = '';
+  estado.estudos.trabalhos.sort(function(a,b){return (a.data||'z').localeCompare(b.data||'z');});
+  estado.estudos.trabalhos.forEach(function(tr) {
+    var diasRestantes = tr.data ? Math.ceil((new Date(tr.data) - new Date()) / 86400000) : null;
+    html += '<div class="trabalho-item" style="border-left:3px solid var(--cor3)">';
+    html += '<div class="trab-texto">📄 ' + esc(tr.texto) + (tr.materia ? ' <small style="color:var(--txt3)">(' + esc(tr.materia) + ')</small>' : '') + '</div>';
+    html += '<div class="trab-data">📅 ' + (tr.data ? dataLocal(tr.data) : 'sem data') + (diasRestantes !== null ? ' <small>(em ' + diasRestantes + ' dias)</small>' : '') + '</div>';
+    html += '<button class="btn btn-d" style="font-size:.65rem;padding:.2rem .5rem" onclick="delTrabalho(\''+tr.id+'\')">Excluir</button>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhum trabalho registrado.</div>';
+  document.getElementById('trabalhosLista').innerHTML = html;
+}
+
+// ---- HABITOS ----
+function addHabito() {
+  var nome = document.getElementById('habitoInput').value.trim();
+  if (!nome) return;
+  var emoji = document.getElementById('habitoEmoji').value.trim() || '✨';
+  estado.habitos.push({nome:nome, emoji:emoji, id:uid(), semanas:{}});
+  document.getElementById('habitoInput').value = '';
+  document.getElementById('habitoEmoji').value = '';
+  salvarEstado(); renderHabitos();
+}
+
+function delHabito(id) {
+  estado.habitos = estado.habitos.filter(function(h){return h.id!==id;});
+  salvarEstado(); renderHabitos();
+}
+
+function toggleHabitoDia(hid, diaIdx) {
+  var h = estado.habitos.find(function(x){return x.id===hid;});
+  if (!h) return;
+  var sk = getSemanaKey();
+  if (!h.semanas[sk]) h.semanas[sk] = [false,false,false,false,false,false,false];
+  h.semanas[sk][diaIdx] = !h.semanas[sk][diaIdx];
+  salvarEstado(); renderHabitos();
+}
+
+function renderHabitos() {
+  var sk = getSemanaKey();
+  var diasNomes = ['D','S','T','Q','Q','S','S'];
+  var html = '';
+  estado.habitos.forEach(function(h) {
+    var streak = calcularStreak(h);
+    var prog = progressoSemanaHabito(h);
+    var arr = h.semanas[sk] || [false,false,false,false,false,false,false];
+    html += '<div class="habito-card">';
+    html += '<div class="habito-header">';
+    html += '<div class="habito-emoji">' + (h.emoji||'✨') + '</div>';
+    html += '<div class="habito-nome">' + esc(h.nome) + '</div>';
+    html += '<div class="habito-streak">🔥 ' + streak + '</div>';
+    html += '<button class="habito-del" onclick="delHabito(\''+h.id+'\')">✕</button>';
+    html += '</div>';
+    html += '<div class="habito-progresso"><div class="habito-progresso-bar" style="width:'+prog.pct+'%"></div><span class="habito-progresso-txt">'+prog.feitos+'/'+prog.total+'</span></div>';
+    html += '<div class="habito-dias">';
+    for (var i = 0; i < 7; i++) {
+      html += '<div class="habito-dia' + (arr[i] ? ' feito' : '') + '" onclick="toggleHabitoDia(\''+h.id+'\','+i+')"><span class="hd-letra">' + diasNomes[i] + '</span><span class="hd-icon">' + (arr[i] ? '✅' : '⬜') + '</span></div>';
+    }
+    html += '</div>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem;text-align:center">Nenhum hábito criado. Adicione o primeiro!</div>';
+  document.getElementById('habitosGrid').innerHTML = html;
+}
+
+// ============================================================
+// PART 3: Ferramentas Extras
+// ============================================================
+
+// ---- POMODORO ----
+function startPomodoro() {
+  if (pomoInterval) clearInterval(pomoInterval);
+  pomoSegundos = estado.pomodoroMin * 60;
+  pomoRodando = true;
+  pomoPausa = false;
+  pomoInterval = setInterval(function() {
+    if (pomoPausa) return;
+    pomoSegundos--;
+    if (pomoSegundos <= 0) {
+      clearInterval(pomoInterval);
+      pomoRodando = false;
+      estado.pomodorosHoje = (estado.pomodorosData === hojeStr()) ? (estado.pomodorosHoje + 1) : 1;
+      estado.pomodorosData = hojeStr();
+      salvarEstado();
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('OrganizaJá', {body:'Pomodoro concluído! Hora da pausa 🎉', icon:'/favicon.ico'});
+      }
+      playBeep();
+      renderPomodoro();
+      return;
+    }
+    renderPomodoroTimer();
+  }, 1000);
+  renderPomodoro();
+}
+
+function pausarPomodoro() {
+  pomoPausa = !pomoPausa;
+  renderPomodoro();
+}
+
+function resetPomodoro() {
+  if (pomoInterval) clearInterval(pomoInterval);
+  pomoRodando = false;
+  pomoPausa = false;
+  pomoSegundos = estado.pomodoroMin * 60;
+  renderPomodoro();
+}
+
+function setPomoMin(v) {
+  estado.pomodoroMin = parseInt(v) || 25;
+  if (!pomoRodando) pomoSegundos = estado.pomodoroMin * 60;
+  salvarEstado();
+  renderPomodoro();
+}
+
+function renderPomodoro() {
+  var hoje = hojeStr();
+  var total = (estado.pomodorosData === hoje) ? estado.pomodorosHoje : 0;
+  document.getElementById('pomoCiclos').textContent = total;
+  var btn = document.getElementById('pomoStart');
+  if (btn) btn.textContent = pomoRodando ? (pomoPausa ? '▶ Continuar' : '⏸ Pausar') : '▶ Iniciar';
+  renderPomodoroTimer();
+}
+
+function renderPomodoroTimer() {
+  var m = Math.floor(pomoSegundos / 60);
+  var s = pomoSegundos % 60;
+  var el = document.getElementById('pomoTempo');
+  if (el) el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+function playBeep() {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var osc = ctx.createOscillator();
+    osc.type = 'sine'; osc.frequency.value = 800;
+    osc.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.3);
+  } catch(e){}
+}
+
+// ---- METAS ----
+function addMeta() {
+  var txt = document.getElementById('metaInput').value.trim();
+  if (!txt) return;
+  estado.metas.push({texto:txt, feito:false, id:uid()});
+  document.getElementById('metaInput').value = '';
+  salvarEstado(); renderMetas();
+}
+
+function toggleMeta(id) {
+  var m = estado.metas.find(function(x){return x.id===id;});
+  if (m) { m.feito = !m.feito; salvarEstado(); renderMetas(); }
+}
+
+function delMeta(id) {
+  estado.metas = estado.metas.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderMetas();
+}
+
+function renderMetas() {
+  var html = '';
+  estado.metas.forEach(function(m) {
+    html += '<div class="meta-item' + (m.feito ? ' feito' : '') + '">';
+    html += '<span class="meta-check" onclick="toggleMeta(\''+m.id+'\')">' + (m.feito ? '🎯' : '⬜') + '</span>';
+    html += '<span class="meta-texto">' + esc(m.texto) + '</span>';
+    html += '<button class="btn btn-d" style="font-size:.65rem" onclick="delMeta(\''+m.id+'\')">✕</button>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma meta adicionada.</div>';
+  document.getElementById('metasLista').innerHTML = html;
+}
+
+// ---- NOTAS ----
+function addNota() {
+  var titulo = document.getElementById('notaTitulo').value.trim();
+  var texto = document.getElementById('notaTexto').value.trim();
+  if (!titulo && !texto) return;
+  estado.notas.push({titulo:titulo, texto:texto, id:uid(), data:new Date().toISOString()});
+  document.getElementById('notaTitulo').value = '';
+  document.getElementById('notaTexto').value = '';
+  salvarEstado(); renderNotas();
+}
+
+function delNota(id) {
+  estado.notas = estado.notas.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderNotas();
+}
+
+function renderNotas() {
+  var html = '';
+  estado.notas.forEach(function(n) {
+    html += '<div class="nota-card">';
+    html += '<div class="nota-titulo">' + esc(n.titulo || 'Sem título') + '</div>';
+    html += '<div class="nota-texto">' + esc(n.texto).replace(/\n/g,'<br>') + '</div>';
+    html += '<div class="nota-meta">' + dataLocal(n.data.slice(0,10)) + '</div>';
+    html += '<button class="btn btn-d" style="font-size:.65rem" onclick="delNota(\''+n.id+'\')">Excluir</button>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma nota salva.</div>';
+  document.getElementById('notasGrid').innerHTML = html;
+}
+
+// ---- LEMBRETES ----
+function addLembrete() {
+  var txt = document.getElementById('lembreteInput').value.trim();
+  if (!txt) return;
+  estado.lembretes.push({
+    texto: txt,
+    hora: document.getElementById('lembreteHora').value || '',
+    data: document.getElementById('lembreteData').value || '',
+    id: uid(),
+    ativo: true
+  });
+  document.getElementById('lembreteInput').value = '';
+  document.getElementById('lembreteHora').value = '';
+  document.getElementById('lembreteData').value = '';
+  salvarEstado(); renderLembretes(); scheduleLembretes();
+}
+
+function toggleLembrete(id) {
+  var l = estado.lembretes.find(function(x){return x.id===id;});
+  if (l) { l.ativo = !l.ativo; salvarEstado(); renderLembretes(); scheduleLembretes(); }
+}
+
+function delLembrete(id) {
+  estado.lembretes = estado.lembretes.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderLembretes(); scheduleLembretes();
+}
+
+function renderLembretes() {
+  var html = '';
+  estado.lembretes.forEach(function(l) {
+    html += '<div class="lembrete-item' + (l.ativo ? '' : ' inativo') + '">';
+    html += '<span class="lembrete-check" onclick="toggleLembrete(\''+l.id+'\')">' + (l.ativo ? '🔔' : '🔕') + '</span>';
+    html += '<span class="lembrete-texto">' + esc(l.texto) + '</span>';
+    html += '<span class="lembrete-hora">' + (l.hora || '') + (l.data ? ' ' + dataLocal(l.data) : '') + '</span>';
+    html += '<button class="btn btn-d" style="font-size:.65rem" onclick="delLembrete(\''+l.id+'\')">✕</button>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhum lembrete.</div>';
+  document.getElementById('lembretesLista').innerHTML = html;
+}
+
+// ---- DECISOR ----
+function addOpcao() {
+  var txt = document.getElementById('decisorInput').value.trim();
+  if (!txt) return;
+  estado.decisorOpcoes.push(txt);
+  document.getElementById('decisorInput').value = '';
+  salvarEstado(); renderDecisor();
+}
+
+function delOpcao(idx) {
+  estado.decisorOpcoes.splice(idx, 1);
+  salvarEstado(); renderDecisor();
+}
+
+function decidir() {
+  if (estado.decisorOpcoes.length < 2) return;
+  var idx = Math.floor(Math.random() * estado.decisorOpcoes.length);
+  document.getElementById('decisorResultado').textContent = '👉 ' + estado.decisorOpcoes[idx];
+  document.getElementById('decisorResultado').style.display = 'block';
+}
+
+function limparDecisor() {
+  estado.decisorOpcoes = [];
+  salvarEstado(); renderDecisor();
+}
+
+function renderDecisor() {
+  var html = '';
+  estado.decisorOpcoes.forEach(function(o, i) {
+    html += '<div class="opcao-item">' + esc(o) + ' <button class="btn btn-d" style="font-size:.6rem" onclick="delOpcao('+i+')">✕</button></div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Adicione pelo menos 2 opções.</div>';
+  document.getElementById('opcoesLista').innerHTML = html;
+  var res = document.getElementById('decisorResultado');
+  if (res && estado.decisorOpcoes.length < 2) res.style.display = 'none';
+}
+
+// ---- AGUA ----
+function addAgua() {
+  var hoje = hojeStr();
+  if (estado.aguaData !== hoje) { estado.aguaHoje = 0; estado.aguaData = hoje; }
+  if (estado.aguaHoje < 8) estado.aguaHoje++;
+  salvarEstado(); renderAgua();
+}
+
+function removeAgua() {
+  if (estado.aguaHoje > 0) estado.aguaHoje--;
+  salvarEstado(); renderAgua();
+}
+
+function resetAgua() {
+  estado.aguaHoje = 0;
+  estado.aguaData = hojeStr();
+  salvarEstado(); renderAgua();
+}
+
+function renderAgua() {
+  var hoje = hojeStr();
+  var qtd = (estado.aguaData === hoje) ? estado.aguaHoje : 0;
+  if (estado.aguaData !== hoje) { estado.aguaHoje = 0; estado.aguaData = hoje; salvarEstado(); }
+  var html = '';
+  for (var i = 0; i < 8; i++) {
+    html += '<div class="agua-copo' + (i < qtd ? ' cheio' : '') + '" onclick="' + (i < qtd ? '' : 'addAgua()') + '">' + (i < qtd ? '💧' : '🥛') + '</div>';
+  }
+  document.getElementById('aguaGrid').innerHTML = html;
+  document.getElementById('aguaInfo').textContent = qtd + '/8 copos';
+  document.getElementById('aguaPct').style.width = Math.round(qtd/8*100) + '%';
+}
+
+// ---- EXERCICIOS ----
+function addExercicio() {
+  var txt = document.getElementById('exercicioInput').value.trim();
+  if (!txt) return;
+  var hoje = hojeStr();
+  if (!estado.exerciciosHoje) estado.exerciciosHoje = [];
+  if (estado.exerciciosData !== hoje) { estado.exerciciosHoje = []; estado.exerciciosData = hoje; }
+  estado.exerciciosHoje.push({texto:txt, id:uid()});
+  document.getElementById('exercicioInput').value = '';
+  salvarEstado(); renderExercicios();
+}
+
+function delExercicio(id) {
+  estado.exerciciosHoje = estado.exerciciosHoje.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderExercicios();
+}
+
+function renderExercicios() {
+  var hoje = hojeStr();
+  var lista = (estado.exerciciosData === hoje) ? (estado.exerciciosHoje || []) : [];
+  var html = '';
+  lista.forEach(function(e) {
+    html += '<div class="exercicio-item">💪 ' + esc(e.texto) + ' <button class="btn btn-d" style="font-size:.6rem" onclick="delExercicio(\''+e.id+'\')">✕</button></div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhum exercício registrado hoje.</div>';
+  document.getElementById('exerciciosLista').innerHTML = html;
+  document.getElementById('exerciciosCount').textContent = lista.length + ' exercícios hoje';
+}
+
+// ---- HUMOR ----
+function setHumor(nivel) {
+  estado.humorHoje = nivel;
+  estado.humorData = hojeStr();
+  if (!estado.humorHist) estado.humorHist = [];
+  estado.humorHist.push({nivel:nivel, data:hojeStr()});
+  // Keep last 30
+  if (estado.humorHist.length > 30) estado.humorHist = estado.humorHist.slice(-30);
+  salvarEstado(); renderHumor();
+}
+
+function renderHumor() {
+  var hoje = hojeStr();
+  var nivel = (estado.humorData === hoje) ? estado.humorHoje : 0;
+  var emojis = ['😢','😟','😐','🙂','😄'];
+  var labels = ['Muito mal','Mal','Normal','Bem','Muito bem'];
+  var html = '';
+  for (var i = 1; i <= 5; i++) {
+    html += '<div class="humor-btn' + (nivel === i ? ' ativo' : '') + '" onclick="setHumor('+i+')">' + emojis[i-1] + '<small>' + labels[i-1] + '</small></div>';
+  }
+  document.getElementById('humorOpcoes').innerHTML = html;
+  document.getElementById('humorRegistro').textContent = nivel ? 'Seu humor hoje: ' + emojis[nivel-1] + ' ' + labels[nivel-1] : 'Como você está hoje?';
+  // History
+  var hhtml = '';
+  if (estado.humorHist && estado.humorHist.length) {
+    estado.humorHist.slice(-7).forEach(function(h) {
+      hhtml += '<div class="humor-hist-item"><small>' + dataLocal(h.data) + '</small> ' + emojis[h.nivel-1] + '</div>';
+    });
+  }
+  document.getElementById('humorHistorico').innerHTML = hhtml || '<div style="color:var(--txt3);font-size:.82rem">Sem histórico.</div>';
+}
+
+// ---- GRATIDAO ----
+function addGratidao() {
+  var txt = document.getElementById('gratidaoInput').value.trim();
+  if (!txt) return;
+  if (!estado.gratidoes) estado.gratidoes = [];
+  estado.gratidoes.push({texto:txt, data:hojeStr(), id:uid()});
+  document.getElementById('gratidaoInput').value = '';
+  salvarEstado(); renderGratidao();
+}
+
+function delGratidao(id) {
+  estado.gratidoes = estado.gratidoes.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderGratidao();
+}
+
+function renderGratidao() {
+  var html = '';
+  (estado.gratidoes || []).forEach(function(g) {
+    html += '<div class="gratidao-item">🙏 ' + esc(g.texto) + ' <small style="color:var(--txt3)">' + dataLocal(g.data) + '</small> <button class="btn btn-d" style="font-size:.6rem" onclick="delGratidao(\''+g.id+'\')">✕</button></div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Comece registrando algo pelo qual é grato.</div>';
+  document.getElementById('gratidaoLista').innerHTML = html;
+}
+
+// ---- REFEICOES ----
+function addRefeicao(tipo) {
+  var txt = document.getElementById('refeicao_' + tipo).value.trim();
+  if (!txt) return;
+  if (!estado.refeicoes) estado.refeicoes = {};
+  var hoje = hojeStr();
+  if (!estado.refeicoes[hoje]) estado.refeicoes[hoje] = {};
+  estado.refeicoes[hoje][tipo] = txt;
+  document.getElementById('refeicao_' + tipo).value = '';
+  salvarEstado(); renderRefeicoes();
+}
+
+function renderRefeicoes() {
+  var hoje = hojeStr();
+  var ref = (estado.refeicoes && estado.refeicoes[hoje]) || {};
+  var tipos = [{k:'cafe',l:'Café da manhã',e:'☕'},{k:'almoco',l:'Almoço',e:'🍽️'},{k:'lanche',l:'Lanche',e:'🥪'},{k:'jantar',l:'Jantar',e:'🌙'}];
+  var html = '';
+  tipos.forEach(function(t) {
+    var val = ref[t.k] || '';
+    html += '<div class="refeicao-tipo">';
+    html += '<div class="rt-label">' + t.e + ' ' + t.l + '</div>';
+    html += '<input id="refeicao_'+t.k+'" placeholder="O que comeu?" value="' + esc(val) + '" class="input" />';
+    html += '<button class="btn btn-p" onclick="addRefeicao(\''+t.k+'\')">Salvar</button>';
+    html += '</div>';
+  });
+  document.getElementById('refeicoesGrid').innerHTML = html;
+}
+
+// ---- ORCAMENTO ----
+function addDespesa() {
+  var desc = document.getElementById('despesaDesc').value.trim();
+  var val = parseFloat(document.getElementById('despesaVal').value);
+  if (!desc || isNaN(val)) return;
+  var cat = document.getElementById('despesaCat').value || 'outros';
+  if (!estado.despesas) estado.despesas = [];
+  estado.despesas.push({descricao:desc, valor:val, categoria:cat, data:hojeStr(), id:uid()});
+  document.getElementById('despesaDesc').value = '';
+  document.getElementById('despesaVal').value = '';
+  salvarEstado(); renderOrcamento();
+}
+
+function delDespesa(id) {
+  estado.despesas = estado.despesas.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderOrcamento();
+}
+
+function setOrcamento() {
+  var val = parseFloat(document.getElementById('orcamentoMesInput').value);
+  if (isNaN(val)) return;
+  estado.orcamentoMes = val;
+  salvarEstado(); renderOrcamento();
+}
+
+function renderOrcamento() {
+  var mes = new Date().getMonth();
+  var ano = new Date().getFullYear();
+  var despesasMes = (estado.despesas||[]).filter(function(d) {
+    var dt = new Date(d.data);
+    return dt.getMonth() === mes && dt.getFullYear() === ano;
+  });
+  var total = despesasMes.reduce(function(s,d){return s+d.valor;},0);
+  var orc = estado.orcamentoMes || 0;
+  var pct = orc ? Math.min(100, Math.round(total/orc*100)) : 0;
+  var cor = pct > 90 ? 'var(--vermelho)' : pct > 70 ? 'var(--amarelo)' : 'var(--verde)';
+
+  document.getElementById('orcTotal').textContent = 'R$ ' + total.toFixed(2);
+  document.getElementById('orcLimite').textContent = orc ? 'R$ ' + orc.toFixed(2) : 'Defina um orçamento';
+  document.getElementById('orcSaldo').style.width = pct + '%';
+  document.getElementById('orcSaldo').style.background = cor;
+  document.getElementById('orcPct').textContent = pct + '%';
+
+  var html = '';
+  despesasMes.forEach(function(d) {
+    var catE = {alimentacao:'🍔',transporte:'🚌',educacao:'📚',lazer:'🎮',saude:'💊',moradia:'🏠',outros:'📦'};
+    html += '<div class="despesa-item">';
+    html += '<span>' + (catE[d.categoria]||'📦') + '</span> ';
+    html += '<span class="despesa-desc">' + esc(d.descricao) + '</span> ';
+    html += '<span class="despesa-val" style="color:var(--vermelho)">-R$' + d.valor.toFixed(2) + '</span> ';
+    html += '<button class="btn btn-d" style="font-size:.6rem" onclick="delDespesa(\''+d.id+'\')">✕</button>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma despesa este mês.</div>';
+  document.getElementById('despesasLista').innerHTML = html;
+}
+
+// ---- COMPRAS ----
+function addCompra() {
+  var txt = document.getElementById('compraInput').value.trim();
+  if (!txt) return;
+  if (!estado.listaCompras) estado.listaCompras = [];
+  estado.listaCompras.push({texto:txt, feito:false, id:uid()});
+  document.getElementById('compraInput').value = '';
+  salvarEstado(); renderCompras();
+}
+
+function toggleCompra(id) {
+  var c = estado.listaCompras.find(function(x){return x.id===id;});
+  if (c) { c.feito = !c.feito; salvarEstado(); renderCompras(); }
+}
+
+function delCompra(id) {
+  estado.listaCompras = estado.listaCompras.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderCompras();
+}
+
+function limparCompras() {
+  estado.listaCompras = estado.listaCompras.filter(function(c){return !c.feito;});
+  salvarEstado(); renderCompras();
+}
+
+function renderCompras() {
+  var html = '';
+  (estado.listaCompras||[]).forEach(function(c) {
+    html += '<div class="compra-item' + (c.feito ? ' feito' : '') + '">';
+    html += '<span onclick="toggleCompra(\''+c.id+'\')">' + (c.feito ? '✅' : '⬜') + '</span> ';
+    html += '<span class="compra-texto">' + esc(c.texto) + '</span> ';
+    html += '<button class="btn btn-d" style="font-size:.6rem" onclick="delCompra(\''+c.id+'\')">✕</button>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Lista vazia.</div>';
+  document.getElementById('comprasLista').innerHTML = html;
+}
+
+// ---- PLANEJAMENTO ----
+function addPlanejamento() {
+  var txt = document.getElementById('planejamentoInput').value.trim();
+  var data = document.getElementById('planejamentoData').value || '';
+  if (!txt) return;
+  if (!estado.planejamentos) estado.planejamentos = [];
+  estado.planejamentos.push({texto:txt, data:data, feito:false, id:uid()});
+  document.getElementById('planejamentoInput').value = '';
+  document.getElementById('planejamentoData').value = '';
+  salvarEstado(); renderPlanejamento();
+}
+
+function togglePlanejamento(id) {
+  var p = estado.planejamentos.find(function(x){return x.id===id;});
+  if (p) { p.feito = !p.feito; salvarEstado(); renderPlanejamento(); }
+}
+
+function delPlanejamento(id) {
+  estado.planejamentos = estado.planejamentos.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderPlanejamento();
+}
+
+function renderPlanejamento() {
+  var html = '';
+  (estado.planejamentos||[]).sort(function(a,b){return (a.data||'z').localeCompare(b.data||'z');}).forEach(function(p) {
+    html += '<div class="planejamento-item' + (p.feito ? ' feito' : '') + '">';
+    html += '<span onclick="togglePlanejamento(\''+p.id+'\')">' + (p.feito ? '✅' : '⬜') + '</span> ';
+    html += '<span class="pl-texto">' + esc(p.texto) + '</span> ';
+    if (p.data) html += '<small style="color:var(--txt3)">📅 ' + dataLocal(p.data) + '</small> ';
+    html += '<button class="btn btn-d" style="font-size:.6rem" onclick="delPlanejamento(\''+p.id+'\')">✕</button>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhum planejamento.</div>';
+  document.getElementById('planejamentosLista').innerHTML = html;
+}
+
+// ---- REGRESSIVA ----
+function addRegressiva() {
+  var nome = document.getElementById('regressivaNome').value.trim();
+  var data = document.getElementById('regressivaData').value;
+  if (!nome || !data) return;
+  if (!estado.regressivas) estado.regressivas = [];
+  estado.regressivas.push({nome:nome, data:data, id:uid()});
+  document.getElementById('regressivaNome').value = '';
+  document.getElementById('regressivaData').value = '';
+  salvarEstado(); renderRegressivas();
+}
+
+function delRegressiva(id) {
+  estado.regressivas = estado.regressivas.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderRegressivas();
+}
+
+function renderRegressivas() {
+  var html = '';
+  (estado.regressivas||[]).forEach(function(r) {
+    var diff = Math.ceil((new Date(r.data) - new Date()) / 86400000);
+    html += '<div class="regressiva-item">';
+    html += '<div class="reg-nome">🎉 ' + esc(r.nome) + '</div>';
+    html += '<div class="reg-dias" style="color:' + (diff <= 7 ? 'var(--vermelho)' : diff <= 30 ? 'var(--amarelo)' : 'var(--verde)') + '">' + (diff > 0 ? diff + ' dias' : 'Hoje! 🎊') + '</div>';
+    html += '<div class="reg-data">📅 ' + dataLocal(r.data) + '</div>';
+    html += '<button class="btn btn-d" style="font-size:.6rem" onclick="delRegressiva(\''+r.id+'\')">✕</button>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma contagem regressiva.</div>';
+  document.getElementById('regressivaLista').innerHTML = html;
+}
+
+// ---- CALCULADORA ----
+function calcInput(val) {
+  var el = document.getElementById('calcTela');
+  if (!el) return;
+  var cur = el.textContent || '';
+  if (val === 'C') { el.textContent = '0'; calcValor = '0'; return; }
+  if (val === '=') {
+    try { var res = Function('return ' + calcValor)(); el.textContent = String(res); calcValor = String(res); } catch(e) { el.textContent = 'Erro'; calcValor = '0'; }
+    return;
+  }
+  if (val === '⌫') { calcValor = calcValor.slice(0,-1); if (!calcValor) calcValor = '0'; el.textContent = calcValor; return; }
+  if (calcValor === '0' && val !== '.') calcValor = val; else calcValor += val;
+  el.textContent = calcValor;
+}
+
+// ---- SENHAS ----
+function addSenha() {
+  var site = document.getElementById('senhaSite').value.trim();
+  var user = document.getElementById('senhaUser').value.trim();
+  var pw = document.getElementById('senhaPw').value;
+  if (!site || !pw) return;
+  if (!estado.senhas) estado.senhas = [];
+  estado.senhas.push({site:site, user:user, pw:pw, id:uid()});
+  document.getElementById('senhaSite').value = '';
+  document.getElementById('senhaUser').value = '';
+  document.getElementById('senhaPw').value = '';
+  salvarEstado(); renderSenhas();
+}
+
+function delSenha(id) {
+  estado.senhas = estado.senhas.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderSenhas();
+}
+
+function toggleVisSenha(id) {
+  var inp = document.getElementById('spw_'+id);
+  if (inp) inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function renderSenhas() {
+  var html = '';
+  (estado.senhas||[]).forEach(function(s) {
+    html += '<div class="senha-item">';
+    html += '<div class="senha-site">🔒 ' + esc(s.site) + '</div>';
+    html += '<div class="senha-user">👤 ' + esc(s.user || '-') + '</div>';
+    html += '<div class="senha-pw"><input id="spw_'+s.id+'" type="password" value="' + esc(s.pw) + '" readonly class="input" style="width:60%"/><button class="btn btn-p" style="font-size:.6rem;padding:.2rem .4rem" onclick="toggleVisSenha(\''+s.id+'\')">👁️</button></div>';
+    html += '<button class="btn btn-d" style="font-size:.6rem" onclick="delSenha(\''+s.id+'\')">Excluir</button>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma senha salva. ⚠️ Use com cautela — dados ficam no navegador.</div>';
+  document.getElementById('senhasLista').innerHTML = html;
+}
+
+// ---- LEITURA ----
+function addLeitura() {
+  var titulo = document.getElementById('leituraTitulo').value.trim();
+  var autor = document.getElementById('leituraAutor').value.trim();
+  var pag = parseInt(document.getElementById('leituraPag').value) || 0;
+  var status = document.getElementById('leituraStatus') ? document.getElementById('leituraStatus').value : 'quero';
+  if (!titulo) return;
+  if (!estado.leituras) estado.leituras = [];
+  estado.leituras.push({titulo:titulo, autor:autor, totalPag:pag, pagLidas:0, status:status, id:uid()});
+  document.getElementById('leituraTitulo').value = '';
+  document.getElementById('leituraAutor').value = '';
+  document.getElementById('leituraPag').value = '';
+  salvarEstado(); renderLeitura();
+}
+
+function attPagLidas(id, val) {
+  var l = estado.leituras.find(function(x){return x.id===id;});
+  if (l) { l.pagLidas = Math.min(parseInt(val)||0, l.totalPag); salvarEstado(); renderLeitura(); }
+}
+
+function delLeitura(id) {
+  estado.leituras = estado.leituras.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderLeitura();
+}
+
+function renderLeitura() {
+  var filtro = estado.filtroLeitura || 'todos';
+  var lista = (estado.leituras||[]).filter(function(l) {
+    if (filtro === 'todos') return true;
+    var st = l.status || 'quero';
+    return st === filtro;
+  });
+  var html = '';
+  lista.forEach(function(l) {
+    var pct = l.totalPag ? Math.round(l.pagLidas/l.totalPag*100) : 0;
+    var stBadge = {quero:'🔖 Quero ler',lendo:'📖 Lendo',lido:'✅ Lido'};
+    var st = l.status || 'quero';
+    html += '<div class="leitura-item">';
+    html += '<div class="lei-titulo">' + (stBadge[st]||'') + ' ' + esc(l.titulo) + (l.autor ? ' <small>por ' + esc(l.autor) + '</small>' : '') + '</div>';
+    html += '<div class="lei-progresso">';
+    html += '<div class="lei-bar" style="width:'+pct+'%"></div>';
+    html += '<span class="lei-pct">' + l.pagLidas + '/' + l.totalPag + ' (' + pct + '%)</span>';
+    html += '</div>';
+    html += '<select class="select" style="font-size:.75rem;width:auto" onchange="attStatusLeitura(\''+l.id+'\',this.value)">';
+    html += '<option value="quero"' + (st==='quero'?' selected':'') + '>Quero ler</option>';
+    html += '<option value="lendo"' + (st==='lendo'?' selected':'') + '>Lendo</option>';
+    html += '<option value="lido"' + (st==='lido'?' selected':'') + '>Lido</option>';
+    html += '</select> ';
+    html += '<input type="number" min="0" max="'+l.totalPag+'" value="'+l.pagLidas+'" class="input" style="width:80px;font-size:.8rem" onchange="attPagLidas(\''+l.id+'\',this.value)" />';
+    html += '<button class="btn btn-d" style="font-size:.6rem" onclick="delLeitura(\''+l.id+'\')">✕</button>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhum livro ' + (filtro==='todos'?'':'com filtro "'+filtro+'"') + ' na lista.</div>';
+  document.getElementById('leiturasLista').innerHTML = html;
+}
+
+// ---- REVISAO (Spaced Repetition) ----
+function addRevisao() {
+  var txt = document.getElementById('revisaoNotas').value.trim();
+  if (!txt) return;
+  if (!estado.revisoes) estado.revisoes = [];
+  estado.revisoes.push({texto:txt, data:hojeStr(), intervalo:1, id:uid()});
+  document.getElementById('revisaoNotas').value = '';
+  salvarEstado(); renderRevisao();
+}
+
+function marcarRevisao(id, lembrou) {
+  var r = estado.revisoes.find(function(x){return x.id===id;});
+  if (!r) return;
+  if (lembrou) {
+    r.intervalo = Math.min(r.intervalo * 2, 30);
+  } else {
+    r.intervalo = 1;
+  }
+  var prox = new Date();
+  prox.setDate(prox.getDate() + r.intervalo);
+  r.data = prox.toISOString().slice(0,10);
+  salvarEstado(); renderRevisao();
+}
+
+function delRevisao(id) {
+  estado.revisoes = estado.revisoes.filter(function(x){return x.id!==id;});
+  salvarEstado(); renderRevisao();
+}
+
+function renderRevisao() {
+  var hoje = hojeStr();
+  var html = '';
+  var pendentes = (estado.revisoes||[]).filter(function(r){return r.data <= hoje;}).sort(function(a,b){return a.data.localeCompare(b.data);});
+  var futuras = (estado.revisoes||[]).filter(function(r){return r.data > hoje;}).sort(function(a,b){return a.data.localeCompare(b.data);});
+  if (pendentes.length) {
+    html += '<div class="rev-section-title" style="color:var(--cor);margin-bottom:.5rem">📚 Revisar agora (' + pendentes.length + ')</div>';
+    pendentes.forEach(function(r) {
+      html += '<div class="revisao-item urgente">';
+      html += '<div class="rev-texto">' + esc(r.texto) + '</div>';
+      html += '<div class="rev-botoes"><button class="btn btn-p" style="font-size:.7rem" onclick="marcarRevisao(\''+r.id+'\',true)">✅ Lembrei</button><button class="btn btn-d" style="font-size:.7rem" onclick="marcarRevisao(\''+r.id+'\',false)">🔄 Esqueci</button></div>';
+      html += '</div>';
+    });
+  }
+  if (futuras.length) {
+    html += '<div class="rev-section-title" style="color:var(--txt3);margin:.8rem 0 .5rem">📅 Próximas revisões</div>';
+    futuras.forEach(function(r) {
+      html += '<div class="revisao-item">';
+      html += '<div class="rev-texto">' + esc(r.texto) + '</div>';
+      html += '<small style="color:var(--txt3)">em ' + dataLocal(r.data) + ' (intervalo: ' + r.intervalo + 'd)</small>';
+      html += ' <button class="btn btn-d" style="font-size:.6rem" onclick="delRevisao(\''+r.id+'\')">✕</button>';
+      html += '</div>';
+    });
+  }
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma revisão. Adicione um tema para revisar!</div>';
+  document.getElementById('revisaoBlocos').innerHTML = html;
+}
+
+// ---- FRASES ----
+function novaFrase() {
+  var idx = Math.floor(Math.random() * frases.length);
+  estado.fraseAtualIdx = idx;
+  document.getElementById('fraseBox').textContent = '"' + frases[idx].t + '"';
+  var autorEl = document.getElementById('fraseAutor');
+  if (autorEl) autorEl.textContent = '— ' + frases[idx].a;
+  renderFrasesFav();
+}
+
+// ---- PAINEL DA VIDA ----
+function calcularVida() {
+  var hoje = hojeStr();
+  var cats = {
+    saude: {label:'Saúde',emoji:'💪',max:25},
+    estudos: {label:'Estudos',emoji:'📚',max:25},
+    organizacao: {label:'Organização',emoji:'📋',max:20},
+    bemEstar: {label:'Bem-estar',emoji:'😊',max:15},
+    financas: {label:'Finanças',emoji:'💰',max:15}
+  };
+
+  var scores = {};
+  // Saúde
+  var agua = (estado.aguaData === hoje) ? estado.aguaHoje : 0;
+  var exCount = (estado.exerciciosData === hoje) ? (estado.exerciciosHoje||[]).length : 0;
+  scores.saude = Math.min(25, Math.round(agua/8*10 + exCount*3 + (estado.humorData===hoje && estado.humorHoje>=3 ? 5 : 0) + 7));
+  // Estudos
+  var pomos = (estado.pomodorosData === hoje) ? estado.pomodorosHoje : 0;
+  var revPend = (estado.revisoes||[]).filter(function(r){return r.data<=hoje;}).length;
+  scores.estudos = Math.min(25, Math.round(pomos*3 + (revPend===0?5:2) + 8));
+  // Organização
+  var atrasadas = estado.tarefas.filter(eAtrasada).length;
+  var feitas = estado.tarefas.filter(function(t){return t.feito;}).length;
+  var total = estado.tarefas.length || 1;
+  scores.organizacao = Math.min(20, Math.round((feitas/total)*12 + (atrasadas===0?5:0) + 5));
+  // Bem-estar
+  var humorVal = (estado.humorData===hoje) ? estado.humorHoje : 3;
+  var gratHoje = (estado.gratidoes||[]).filter(function(g){return g.data===hoje;}).length;
+  scores.bemEstar = Math.min(15, Math.round(humorVal*2 + gratHoje + 4));
+  // Finanças
+  var mesAtual = new Date().getMonth();
+  var despMes = (estado.despesas||[]).filter(function(d){var dt=new Date(d.data);return dt.getMonth()===mesAtual;});
+  var gastoTotal = despMes.reduce(function(s,d){return s+d.valor;},0);
+  var orc = estado.orcamentoMes || 0;
+  scores.financas = orc ? Math.min(15, Math.round((1 - gastoTotal/orc)*12 + 5)) : 7;
+
+  var totalScore = 0;
+  for (var k in scores) totalScore += scores[k];
+  var nivel = totalScore >= 80 ? 'Excelente 🌟' : totalScore >= 60 ? 'Bom 👍' : totalScore >= 40 ? 'Regular 📊' : 'Precisa melhorar 💪';
+
+  // Update individual elements instead of destroying innerHTML
+  var bar = document.getElementById('vidaScoreBar');
+  if (bar) {
+    var circ = 2 * Math.PI * 85; // ~534
+    var offset = circ - (totalScore / 100) * circ;
+    bar.setAttribute('stroke-dashoffset', String(offset));
+  }
+  var numEl = document.getElementById('vidaScoreNum');
+  if (numEl) numEl.textContent = String(totalScore);
+
+  var nivelEl = document.getElementById('vidaNivel');
+  if (nivelEl) {
+    nivelEl.textContent = nivel;
+    nivelEl.className = 'vida-nivel n' + (totalScore >= 80 ? 4 : totalScore >= 60 ? 3 : totalScore >= 40 ? 2 : totalScore >= 20 ? 1 : 0);
+  }
+
+  // Completion message
+  var compEl = document.getElementById('vidaComp');
+  if (compEl) {
+    var msg = totalScore >= 80 ? 'Incrível! Você está mandando muito bem! 🌟' : totalScore >= 60 ? 'Bom trabalho! Continue assim! 👍' : totalScore >= 40 ? 'Tá no caminho. Continue se organizando! 📊' : 'Vamos melhorar juntos! Um passo de cada vez. 💪';
+    compEl.textContent = msg;
+  }
+
+  // Categories bars
+  var catsEl = document.getElementById('vidaCats');
+  if (catsEl) {
+    var chtml = '';
+    for (var k in cats) {
+      var c = cats[k];
+      var s = scores[k] || 0;
+      var pct = Math.round(s / c.max * 100);
+      chtml += '<div class="vida-cat">';
+      chtml += '<div class="vida-cat-header">' + c.emoji + ' ' + c.label + '</div>';
+      chtml += '<div class="vida-cat-bar"><div class="vida-cat-fill" style="width:'+pct+'%"></div></div>';
+      chtml += '<div class="vida-cat-score">' + s + '/' + c.max + '</div>';
+      chtml += '</div>';
+    }
+    catsEl.innerHTML = chtml;
+  }
+
+  // Tips based on weakest area
+  var dicasEl = document.getElementById('vidaDicas');
+  if (dicasEl) {
+    var weakest = '';
+    var lowest = 999;
+    for (var k in scores) { if (scores[k] < lowest) { lowest = scores[k]; weakest = k; } }
+    var tips = {
+      saude: 'Beba mais água e tente fazer exercício! 💧',
+      estudos: 'Use Pomodoro e revise conteúdo regularmente! 🍅',
+      organizacao: 'Organize suas tarefas e evite atrasos! ✅',
+      bemEstar: 'Registre gratidão e cuide do seu humor! 🙏',
+      financas: 'Acompanhe seus gastos e respeite o orçamento! 💰'
+    };
+    dicasEl.innerHTML = '<div class="vida-dica" style="font-size:.8rem;color:var(--txt2);margin-top:.5rem;padding:.5rem;background:var(--card2);border-radius:var(--raio)">💡 Dica: ' + (tips[weakest]||'') + '</div>';
+  }
+
+  // Streak (days with humor registered)
+  var streakEl = document.getElementById('vidaStreak');
+  if (streakEl) {
+    var streak = 0;
+    var h = estado.humorHist || [];
+    for (var i = h.length - 1; i >= 0; i--) {
+      var d = new Date();
+      d.setDate(d.getDate() - streak);
+      var ds = d.toISOString().slice(0,10);
+      if (h[i] && h[i].data === ds) streak++; else break;
+    }
+    streakEl.innerHTML = streak > 0 ? '🔥 ' + streak + ' dia' + (streak > 1 ? 's' : '') + ' seguido' + (streak > 1 ? 's' : '') + ' registrando humor!' : '';
+  }
+
+  // History mini chart
+  var histEl = document.getElementById('vidaHist');
+  if (histEl) {
+    try {
+      var hist = JSON.parse(localStorage.getItem('vidaHist') || '[]');
+      if (hist.length > 1) {
+        var hhtml = '<div style="display:flex;align-items:flex-end;gap:2px;height:40px;margin-top:.5rem">';
+        var maxH = Math.max.apply(null, hist.map(function(x){return x.score;}));
+        hist.slice(-30).forEach(function(h) {
+          var pctH = Math.round(h.score / (maxH || 100) * 100);
+          hhtml += '<div style="width:8px;height:'+Math.max(4,pctH*0.4)+'px;background:var(--cor);border-radius:2px" title="'+h.data+': '+h.score+'"></div>';
+        });
+        hhtml += '</div>';
+        histEl.innerHTML = hhtml;
+      } else {
+        histEl.innerHTML = '';
+      }
+    } catch(e) { histEl.innerHTML = ''; }
+  }
+
+  // Save to vidaHist
+  try {
+    var hist = JSON.parse(localStorage.getItem('vidaHist') || '[]');
+    if (!hist.length || hist[hist.length-1].data !== hoje) {
+      hist.push({data:hoje, score:totalScore});
+      if (hist.length > 90) hist = hist.slice(-90);
+      localStorage.setItem('vidaHist', JSON.stringify(hist));
+    }
+  } catch(e){}
+
+  // Re-attach renderVida onclick on refresh button
+  var refreshBtn = vidaPainel.querySelector('.vida-refresh');
+  if (refreshBtn) refreshBtn.onclick = function(){ calcularVida(); };
+}
+
+// ============================================================
+// PART 4: Init/Bootstrap, Notificações, Search
+// ============================================================
+
+// ---- SEARCH ----
+function toggleSearch() {
+  var overlay = document.getElementById('buscaOverlay');
+  if (!overlay) return;
+  var vis = overlay.classList.contains('ativo');
+  if (vis) {
+    overlay.classList.remove('ativo');
+    return;
+  }
+  overlay.classList.add('ativo');
+  document.getElementById('buscaInput').focus();
+}
+
+function searchPages() {
+  var q = (document.getElementById('buscaInput').value || '').toLowerCase().trim();
+  var results = document.getElementById('buscaResultados');
+  if (!q) { results.innerHTML = ''; return; }
+
+  var pages = [
+    {slug:'inicio', nome:'Início', icon:'🏠'},
+    {slug:'tarefas', nome:'Tarefas', icon:'✅'},
+    {slug:'calendario', nome:'Calendário', icon:'📅'},
+    {slug:'estudos', nome:'Estudos', icon:'📚'},
+    {slug:'habitos', nome:'Hábitos', icon:'🔥'},
+    {slug:'pomodoro', nome:'Pomodoro', icon:'🍅'},
+    {slug:'metas', nome:'Metas', icon:'🎯'},
+    {slug:'notas', nome:'Notas', icon:'📝'},
+    {slug:'lembretes', nome:'Lembretes', icon:'🔔'},
+    {slug:'decisor', nome:'Decisor', icon:'🎲'},
+    {slug:'agua', nome:'Água', icon:'💧'},
+    {slug:'exercicios', nome:'Exercícios', icon:'💪'},
+    {slug:'humor', nome:'Humor', icon:'😊'},
+    {slug:'gratidao', nome:'Gratidão', icon:'🙏'},
+    {slug:'refeicoes', nome:'Refeições', icon:'🍽️'},
+    {slug:'orcamento', nome:'Orçamento', icon:'💰'},
+    {slug:'compras', nome:'Compras', icon:'🛒'},
+    {slug:'planejamento', nome:'Planejamento', icon:'📋'},
+    {slug:'regressiva', nome:'Contagem Regressiva', icon:'⏳'},
+    {slug:'calculadora', nome:'Calculadora', icon:'🧮'},
+    {slug:'senhas', nome:'Senhas', icon:'🔒'},
+    {slug:'leitura', nome:'Leitura', icon:'📖'},
+    {slug:'revisao', nome:'Revisão', icon:'🔄'},
+    {slug:'frases', nome:'Frases', icon:'💬'},
+    {slug:'vida', nome:'Painel da Vida', icon:'🌟'}
+  ];
+
+  var html = '';
+  pages.forEach(function(p) {
+    if (p.nome.toLowerCase().indexOf(q) >= 0) {
+      html += '<div class="search-result" onclick="navegarPara(\''+p.slug+'\');toggleSearch()">' + p.icon + ' ' + p.nome + '</div>';
+    }
+  });
+  if (!html) html = '<div style="color:var(--txt3);padding:.5rem">Nenhum resultado</div>';
+  results.innerHTML = html;
+}
+
+// ---- PIX MODAL ----
+function openPix() {
+  var m = document.getElementById('pixModal');
+  if (m) m.classList.add('ativo');
+}
+function closePix() {
+  var m = document.getElementById('pixModal');
+  if (m) m.classList.remove('ativo');
+}
+
+// ---- CONFIRM MODAL ----
+function showConfirm(msg, onOk) {
+  document.getElementById('confirmMsg').textContent = msg;
+  document.getElementById('modalConfirmar').classList.add('ativo');
+  document.getElementById('modalConfirmar').onclick = function() {
+    document.getElementById('modalConfirmar').classList.remove('ativo');
+    if (onOk) onOk();
+  };
+}
+function closeConfirm() {
+  document.getElementById('modalConfirmar').classList.remove('ativo');
+}
+
+// ---- APOIE BANNER ----
+function fecharApoie() {
+  document.getElementById('apoieBanner').style.display = 'none';
+  localStorage.setItem('apoieBannerFechado', '1');
+}
+
+// ---- INSTALL BANNER ----
+function fecharInstall() {
+  document.getElementById('instalarBanner').style.display = 'none';
+}
+
+// ---- SCROLL TOP ----
+function scrollTop() {
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ---- SIDEBAR MOBILE ----
+function toggleMaisFerramentas() {
+  var panel = document.getElementById('sidebarTools');
+  if (panel) panel.classList.toggle('aberto');
+}
+
+function toggleMaisBottom() {
+  var sheet = document.getElementById('moreSheet');
+  if (sheet) sheet.classList.toggle('aberto');
+}
+
+// ---- RENDER ALL FOR PAGE ----
+function renderPage(slug) {
+  switch(slug) {
+    case 'inicio': renderDashboard(); break;
+    case 'tarefas': renderTarefas(); break;
+    case 'calendario': renderCalendario(); break;
+    case 'estudos': renderEstudos(); break;
+    case 'habitos': renderHabitos(); break;
+    case 'pomodoro': renderPomodoro(); break;
+    case 'metas': renderMetas(); break;
+    case 'notas': renderNotas(); break;
+    case 'lembretes': renderLembretes(); break;
+    case 'decisor': renderDecisor(); break;
+    case 'agua': renderAgua(); break;
+    case 'exercicios': renderExercicios(); break;
+    case 'humor': renderHumor(); break;
+    case 'gratidao': renderGratidao(); break;
+    case 'refeicoes': renderRefeicoes(); break;
+    case 'orcamento': renderOrcamento(); break;
+    case 'compras': renderCompras(); break;
+    case 'planejamento': renderPlanejamento(); break;
+    case 'regressiva': renderRegressivas(); break;
+    case 'calculadora': break;
+    case 'senhas': renderSenhas(); break;
+    case 'leitura': renderLeitura(); break;
+    case 'revisao': renderRevisao(); break;
+    case 'frases': novaFrase(); break;
+    case 'vida': calcularVida(); break;
   }
 }
-function renderTudo(){renderTarefas();renderCompras();renderPomo();renderHabitos();renderMetas();renderNotas();renderOrcamento();renderAgua();renderRefeicoes();renderPlanejamento();renderGratidao();renderHumor();renderLeitura();renderExercicios();renderRegressiva();renderLembretes();renderDecisor();renderRevisao();renderFrasesFav();renderVida();atualizarStats();if(estado.fraseAtual){document.getElementById("fraseBox").textContent="\""+estado.fraseAtual.t+"\"";document.getElementById("fraseAutor").textContent="- "+estado.fraseAtual.a}}
-carregar();aplicarTema();renderTudo();
-if(estado.abaAtual&&estado.abaAtual!=="tarefas"){var abas=document.querySelectorAll(".aba");abas.forEach(function(b){b.classList.remove("ativa")});var paineis=document.querySelectorAll(".painel");paineis.forEach(function(p){p.classList.remove("ativo")});abas.forEach(function(b){if(b.textContent.toLowerCase().indexOf(estado.abaAtual)>=0||b.getAttribute("onclick")&&b.getAttribute("onclick").indexOf(estado.abaAtual)>=0){b.classList.add("ativa")}});var p=document.getElementById("p-"+estado.abaAtual);if(p)p.classList.add("ativo")}
-(function(){
-try{
-var abasValidas=["vida","tarefas","pomodoro","metas","notas","lembretes","decisor","habitos","agua","exercicios","humor","gratidao","refeicoes","orcamento","compras","planejamento","regressiva","calculadora","senhas","leitura","revisao","frases"];
-var alvo="";
-var m=window.location.search.match(/[?&]aba=([a-z]+)/i);
-if(m)alvo=m[1].toLowerCase();
-if(!alvo&&window.location.hash)alvo=window.location.hash.replace("#","").toLowerCase();
-if(alvo&&abasValidas.indexOf(alvo)>=0){
-var btn=document.querySelector('[data-aba="'+alvo+'"]');
-trocarAba(alvo,btn);
+
+// ---- INIT / BOOTSTRAP ----
+document.addEventListener('DOMContentLoaded', function() {
+  // Load state
+  carregarEstado();
+
+  // Apply theme
+  aplicarTema();
+
+  // Navigate to last page or inicio
+  var hash = location.hash.replace('#','') || 'inicio';
+  navegarPara(hash);
+
+  // Init notifications
+  initNotificacoes();
+
+  // Close sidebar on mobile click outside
+  document.addEventListener('click', function(e) {
+    var sb = document.getElementById('sidebar');
+    if (sb && sb.classList.contains('aberto')) {
+      if (!sb.contains(e.target) && !e.target.closest('[onclick*="toggleSidebar"]')) {
+        closeSidebarOverlay();
+      }
+    }
+  });
+
+  // Close bottom sheet on click outside
+  document.addEventListener('click', function(e) {
+    var bs = document.getElementById('moreSheet');
+    if (bs && bs.classList.contains('aberto')) {
+      if (!bs.contains(e.target) && !e.target.closest('[onclick*="toggleMaisBottom"]')) {
+        bs.classList.remove('aberto');
+      }
+    }
+  });
+
+  // Close search on Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      var so = document.getElementById('buscaOverlay');
+      if (so && so.classList.contains('ativo')) so.classList.remove('ativo');
+      var pm = document.getElementById('pixModal');
+      if (pm && pm.classList.contains('ativo')) pm.classList.remove('ativo');
+      var cm = document.getElementById('modalConfirmar');
+      if (cm && cm.classList.contains('ativo')) cm.classList.remove('ativo');
+    }
+  });
+
+  // Apoie banner
+  if (localStorage.getItem('apoieBannerFechado')) {
+    var ab = document.getElementById('apoieBanner');
+    if (ab) ab.style.display = 'none';
+  }
+
+  // Register service worker if available
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  }
+
+  // Update regressivas every minute
+  setInterval(function() {
+    if (estado.paginaAtual === 'regressiva') renderRegressivas();
+  }, 60000);
+
+  // Track visit
+  try {
+    var v = parseInt(localStorage.getItem('oj_visits') || '0') + 1;
+    localStorage.setItem('oj_visits', v);
+    var today = hojeStr();
+    var dv = parseInt(localStorage.getItem('oj_visits_d') || '0');
+    if (dv < 3) {
+      localStorage.setItem('oj_visits_d', dv + 1);
+      setTimeout(function() {
+        var ab = document.getElementById('apoieBanner');
+        if (ab && !localStorage.getItem('apoieBannerFechado')) ab.style.display = '';
+      }, 30000);
+    }
+  } catch(e){}
+});
+
+// Handle hash navigation
+window.addEventListener('hashchange', function() {
+  var hash = location.hash.replace('#','') || 'inicio';
+  navegarPara(hash);
+});
+
+// ============================================================
+// ALIASES & WRAPPER FUNCTIONS (referenced by onclick in HTML)
+// ============================================================
+
+// Decisor aliases
+function addDecisorOpcao() { addOpcao(); }
+function sortearDecisor() { decidir(); }
+
+// Pomodoro aliases/wrappers
+function pomoToggle() {
+  if (pomoRodando) { pausarPomodoro(); }
+  else { startPomodoro(); }
 }
-}catch(e){}
-})();
-setInterval(function(){renderRegressiva()},60000);
-if("Notification" in window&&Notification.permission==="default")Notification.requestPermission();
-(function(){var manifest={name:"OrganizaJá",short_name:"OrganizaJá",description:"Organize toda a sua vida: tarefas, hábitos, metas e muito mais.",start_url:"./",display:"standalone",background_color:"#f6f7fb",theme_color:"#6c5ce7",orientation:"portrait",icons:[{src:"data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><rect fill=\"%236c5ce7\" width=\"100\" height=\"100\" rx=\"20\"/><text x=\"50\" y=\"65\" font-size=\"45\" text-anchor=\"middle\" fill=\"white\">📋</text></svg>",sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};var mBlob=new Blob([JSON.stringify(manifest)],{type:"application/json"});var mUrl=URL.createObjectURL(mBlob);var link=document.createElement("link");link.rel="manifest";link.href=mUrl;document.head.appendChild(link)})();
-/* Service worker desabilitado neste modo de arquivo unico */
+function pomoReset() { resetPomodoro(); }
 
-var dicas=[
-"A regra dos 2 minutos: se algo leva menos de 2 min, faça agora mesmo!",
-"Antes de dormir, escreva as 3 prioridades do dia seguinte.",
-"Divida tarefas grandes em passos pequenos e comemore cada um.",
-"Use a técnica Pomodoro: 25 min de foco, 5 min de pausa.",
-"Comece pelo mais difícil quando sua energia está no topo.",
-"Reserve 10 min para organizar sua mesa antes de trabalhar.",
-"Faça uma coisa de cada vez. Multitarefa é ilusão.",
-"Revise suas metas toda semana para manter o rumo.",
-"Anote ideias logo que surgem. A memória é falha.",
-"Elimine distrações: celular silencioso, notificações off.",
-"Planeje suas refeições no domingo e economize tempo na semana.",
-"Beba um copo de água ao acordar. Seu corpo agradece.",
-"Faça pausas para alongar. Seu corpo não foi feito para ficar parado.",
-"Gratidão diária muda como você vê o mundo. Experimente 7 dias.",
-"Delegue o que não precisa ser feito por você.",
-"Cada hábito novo começa com um dia. Depois são dois, três...",
-"Use listas de compras para evitar compras por impulso.",
-"Defina um limite de tela antes de dormir. Sono é prioridade.",
-"Organize por categorias: trabalho, casa, saúde, lazer.",
-"Comece o dia com a tarefa que mais te dá preguiça. Depois fica fácil.",
-"Um caderno ou app de notas salva mais ideias que a memória.",
-"5 min de meditação reduzem ansiedade e melhoram foco.",
-"Marque compromissos consigo mesmo na agenda. É prioridade também.",
-"Menos é mais: foque no essencial e solte o resto.",
-"Semear disciplina hoje colhe liberdade amanhã."
-];
-var motivacoes=[
-"Você não precisa ser perfeito. Precisa começar.",
-"Cada passo, por menor que seja, te leva mais longe.",
-"O progresso não é linear, mas é progresso.",
-"Você já superou 100% dos seus dias difíceis.",
-"Disciplina é escolher entre o que você quer agora e o que mais quer.",
-"Ninguém constrói uma vida incrível em um dia. Seja paciente.",
-"Seu futuro é construído pelo que você faz hoje, não amanhã.",
-"Erro não é fracasso. É dado. Aprenda e siga.",
-"Você é capaz de mais do que imagina. Só faltava tentar.",
-"O momento perfeito não existe. O momento é agora.",
-"Não compare seu começo com o meio de outra pessoa.",
-"Consistência vence talento quando talento não é consistente.",
-"Cada tarefa riscada da lista é uma vitória. Celebre.",
-"Descanso também é produtivo. Não se sinta culpado.",
-"Seu potencial mora do lado de fora da zona de conforto.",
-"Grandes mudanças começam com pequenos hábitos.",
-"Organizar sua vida é um ato de cuidado consigo mesmo.",
-"Não espere motivação. Crie rotina. A motivação segue.",
-"Hoje é um novo dia. O que você faz dele é com você.",
-"O difícil não é começar. É não desistir. E você não vai."
-];
-var desafios=[
-"Hoje, beba 8 copos de água. Marque cada um no app!",
-"Escreva 3 coisas pelas quais você é grato agora.",
-"Foque por 25 min em uma tarefa usando o Pomodoro.",
-"Caminhe por 15 minutos. Sem celular, só você e seus pensamentos.",
-"Organize um espaço: gaveta, mesa, pasta digital. Qualquer um.",
-"Fique 10 min sem olhar o celular. De verdade.",
-"Faça uma refeição saudável hoje. Anote no app.",
-"Leia 10 páginas de um livro. Qualquer livro.",
-"Escreva como quer estar daqui a 6 meses. Guarde nas notas.",
-"Durma 30 min mais cedo hoje. Sério.",
-"Ligue ou mande mensagem para alguém que faz bem.",
-"Cancele uma inscrição ou app que não usa mais.",
-"Prepare o amanhã: roupas, mochila, lista de tarefas.",
-"Passe 5 min meditando. Inspire, expire. Só isso.",
-"Tire uma foto de algo que te fez sorrir hoje.",
-"Faça um elogio sincero a alguém.",
-"Escreva sua maior prioridade da semana nas metas.",
-"Organize suas finanças: anote tudo no orçamento.",
-"Desligue notificações por 2 horas. Veja como se sente.",
-"Planeje as refeições da semana. Depois me agradeça."
-];
-function novaDica(){document.getElementById("dicaTexto").textContent=dicas[Math.floor(Math.random()*dicas.length)]}
-function novaMotivacao(){document.getElementById("motivacaoTexto").textContent=motivacoes[Math.floor(Math.random()*motivacoes.length)]}
-function novoDesafio(){document.getElementById("desafioTexto").textContent=desafios[Math.floor(Math.random()*desafios.length)]}
-novaDica();novaMotivacao();novoDesafio();
+function pomoPausaCurta() {
+  if (pomoInterval) clearInterval(pomoInterval);
+  pomoRodando = true;
+  pomoPausa = false;
+  pomoSegundos = 5 * 60;
+  document.getElementById('pomoLabel').textContent = '☕ Pausa curta';
+  pomoInterval = setInterval(function() {
+    if (pomoPausa) return;
+    pomoSegundos--;
+    if (pomoSegundos <= 0) {
+      clearInterval(pomoInterval);
+      pomoRodando = false;
+      document.getElementById('pomoLabel').textContent = 'Foco';
+      playBeep();
+      renderPomodoro();
+      return;
+    }
+    renderPomodoroTimer();
+  }, 1000);
+  renderPomodoro();
+}
 
-function abrirPix(){document.getElementById("pixModal").classList.add("ativo")}
-function fecharPix(){document.getElementById("pixModal").classList.remove("ativo")}
-function copiarPix(){navigator.clipboard.writeText("henriquehabitz2014@gmail.com").then(function(){notificar("Chave Pix copiada! Obrigado pelo apoio! 💖")}).catch(function(){var t=document.createElement("textarea");t.value="henriquehabitz2014@gmail.com";document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);notificar("Chave Pix copiada! Obrigado pelo apoio! 💖")})}
+function pomoPausaLonga() {
+  if (pomoInterval) clearInterval(pomoInterval);
+  pomoRodando = true;
+  pomoPausa = false;
+  pomoSegundos = 15 * 60;
+  document.getElementById('pomoLabel').textContent = '🌴 Pausa longa';
+  pomoInterval = setInterval(function() {
+    if (pomoPausa) return;
+    pomoSegundos--;
+    if (pomoSegundos <= 0) {
+      clearInterval(pomoInterval);
+      pomoRodando = false;
+      document.getElementById('pomoLabel').textContent = 'Foco';
+      playBeep();
+      renderPomodoro();
+      return;
+    }
+    renderPomodoroTimer();
+  }, 1000);
+  renderPomodoro();
+}
 
-function fecharBanner(){var b=document.getElementById("apoieBanner");b.classList.add("hide");localStorage.setItem("apoieBannerFechado","1")}
-function mostrarBannerSeNaoFechado(){if(localStorage.getItem("apoieBannerFechado")!=="1"){document.getElementById("apoieBanner").classList.remove("hide")}else{document.getElementById("apoieBanner").classList.add("hide")}}
-mostrarBannerSeNaoFechado();
+function pomoConfigurar() {
+  var foco = parseInt(document.getElementById('pomoFocoMin').value) || 25;
+  var pausa = parseInt(document.getElementById('pomoPausaMin').value) || 5;
+  estado.pomodoroMin = foco;
+  pomoFocoMin = foco;
+  pomoPausaMin = pausa;
+  if (!pomoRodando) {
+    pomoSegundos = foco * 60;
+    renderPomodoroTimer();
+  }
+  salvarEstado();
+  renderPomodoro();
+}
 
-(function(){
-try{
-var k="oj_visits",d=new Date().toISOString().slice(0,10);
-var n=parseInt(localStorage.getItem(k)||"0",10);
-var last=localStorage.getItem(k+"_d")||"";
-if(last!==d){n++;localStorage.setItem(k,String(n));localStorage.setItem(k+"_d",d)}
-var el=document.getElementById("visitNum");
-if(el){
-var start=0,dur=1200,t0=null;
-function anim(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/dur,1);var ease=1-Math.pow(1-p,3);el.textContent=Math.floor(ease*n);if(p<1)requestAnimationFrame(anim);else el.textContent=n}
-requestAnimationFrame(anim)}
-}catch(e){}
-})();
+// Calculator aliases/wrappers
+function calcLimpar() { calcInput('C'); }
+function calcDigito(val) { calcInput(val); }
+function calcIgual() { calcInput('='); }
+
+// Gerador de senhas
+function gerarSenha() {
+  var tam = parseInt(document.getElementById('senhaTam').value) || 16;
+  var maius = document.getElementById('senhaMaius').checked;
+  var minus = document.getElementById('senhaMinus').checked;
+  var nums = document.getElementById('senhaNum').checked;
+  var simb = document.getElementById('senhaSimb').checked;
+  var chars = '';
+  if (maius) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (minus) chars += 'abcdefghijklmnopqrstuvwxyz';
+  if (nums) chars += '0123456789';
+  if (simb) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  if (!chars) chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  var senha = '';
+  var arr = new Uint32Array(tam);
+  crypto.getRandomValues(arr);
+  for (var i = 0; i < tam; i++) {
+    senha += chars[arr[i] % chars.length];
+  }
+  document.getElementById('senhaDisplay').textContent = senha;
+}
+
+function copiarSenha() {
+  var txt = document.getElementById('senhaDisplay').textContent;
+  if (!txt || txt === 'Clique para gerar') return;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(function() {
+      var el = document.getElementById('senhaDisplay');
+      var orig = el.textContent;
+      el.textContent = '✅ Copiado!';
+      setTimeout(function(){ el.textContent = orig; }, 1200);
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = txt;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch(e){}
+    document.body.removeChild(ta);
+  }
+}
+
+// Frases favoritas
+function favoritarFrase() {
+  if (!estado.frasesFav) estado.frasesFav = [];
+  var idx = estado.fraseAtualIdx || 0;
+  var f = frases[idx];
+  if (!f) return;
+  var jaExiste = estado.frasesFav.some(function(x){return x.t === f.t;});
+  if (jaExiste) return; // já favoritada
+  estado.frasesFav.push({t: f.t, a: f.a});
+  salvarEstado();
+  renderFrasesFav();
+}
+
+function renderFrasesFav() {
+  var el = document.getElementById('frasesFavLista');
+  if (!el) return;
+  var html = '';
+  (estado.frasesFav||[]).forEach(function(f, i) {
+    html += '<div class="frase-item" style="padding:.4rem .6rem;margin:.3rem 0;background:var(--card2);border-radius:var(--raio);font-size:.82rem">';
+    html += '"' + esc(f.t) + '" <small style="color:var(--txt3)">— ' + esc(f.a) + '</small>';
+    html += ' <button class="btn btn-d" style="font-size:.55rem;padding:.1rem .3rem" onclick="delFraseFav('+i+')">✕</button>';
+    html += '</div>';
+  });
+  if (!html) html = '<div style="color:var(--txt3);font-size:.78rem">Nenhuma frase favoritada ainda.</div>';
+  el.innerHTML = html;
+}
+
+function delFraseFav(idx) {
+  if (estado.frasesFav) estado.frasesFav.splice(idx, 1);
+  salvarEstado();
+  renderFrasesFav();
+}
+
+// Leitura - filtro
+function filtroLeitura(filtro) {
+  estado.filtroLeitura = filtro;
+  salvarEstado();
+  renderLeitura();
+}
+
+// Leitura - atualizar status
+function attStatusLeitura(id, novoStatus) {
+  var l = estado.leituras.find(function(x){return x.id===id;});
+  if (l) {
+    l.status = novoStatus;
+    if (novoStatus === 'lido') l.pagLidas = l.totalPag;
+    salvarEstado();
+    renderLeitura();
+  }
+}
+
+// Humor wrapper - extrai nível 1-5 do texto do botão
+function registrarHumor(texto) {
+  var nivel = 3; // default
+  if (texto.indexOf('péssimo') >= 0 || texto.indexOf('😢') >= 0) nivel = 1;
+  else if (texto.indexOf('mal') >= 0 || texto.indexOf('😟') >= 0) nivel = 2;
+  else if (texto.indexOf('mais ou menos') >= 0 || texto.indexOf('😐') >= 0) nivel = 3;
+  else if (texto.indexOf('bem') >= 0 || texto.indexOf('🙂') >= 0) nivel = 4;
+  else if (texto.indexOf('ótimo') >= 0 || texto.indexOf('😄') >= 0) nivel = 5;
+  setHumor(nivel);
+}
+
+// Vida alias
+function renderVida() { calcularVida(); }
+
+// Revisão alias
+function salvarRevisao() { addRevisao(); }
+
+// Limpar despesas
+function limparDespesas() {
+  estado.despesas = [];
+  salvarEstado();
+  renderOrcamento();
+}
+
