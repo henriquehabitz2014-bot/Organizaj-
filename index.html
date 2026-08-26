@@ -258,42 +258,109 @@
   <div class="content-wrap">
     <div class="secao">
       <h2 class="secao-titulo">✅ Tarefas</h2>
-      <div class="tarefas-pesquisa">
-        <input type="text" id="tarefaPesquisa" placeholder="Pesquisar tarefas..." oninput="renderTarefas()">
+
+      <!-- CRIACAO RAPIDA -->
+      <div class="tk-quick">
+        <input class="tk-quick-input" id="tarefaInput" placeholder="O que você precisa fazer? (Enter para salvar)" onkeydown="tarefaQuickKey(event)" autocomplete="off">
+        <button class="tk-quick-add" onclick="addTarefa()" title="Adicionar tarefa">+</button>
       </div>
-      <div class="tarefas-form">
-        <input class="campo" id="tarefaInput" placeholder="Nova tarefa...">
-        <input class="campo" id="tarefaData" type="date" style="width:130px">
-        <input class="campo" id="tarefaHora" type="time" style="width:90px">
-        <select class="select" id="tarefaPrio">
-          <option value="media">Média</option>
-          <option value="alta">Alta</option>
-          <option value="baixa">Baixa</option>
+      <div class="tk-quick-row">
+        <button class="tk-chip-day ativo" id="tkDayHoje" onclick="tarefaSetDia('hoje')">Hoje</button>
+        <button class="tk-chip-day" id="tkDayAmanha" onclick="tarefaSetDia('amanha')">Amanhã</button>
+        <button class="tk-chip-day" id="tkDaySem" onclick="tarefaSetDia('sem')">Sem data</button>
+        <input class="campo tk-mini" id="tarefaData" type="date" onchange="tarefaSetDia('custom')">
+        <select class="select tk-mini" id="tarefaPrio" title="Prioridade">
+          <option value="media">🟡 Média</option>
+          <option value="alta">🔴 Alta</option>
+          <option value="baixa">🟢 Baixa</option>
         </select>
-        <select class="select" id="tarefaCat">
-          <option value="">Categoria</option>
-          <option value="estudo">📖 Estudo</option>
-          <option value="trabalho">💼 Trabalho</option>
-          <option value="pessoal">🏠 Pessoal</option>
-          <option value="saude">💚 Saúde</option>
-          <option value="financas">💰 Finanças</option>
-          <option value="outros">📦 Outros</option>
+        <button class="tk-more-btn" id="tkMoreBtn" onclick="toggleTarefaAvancado()">⚙️ Mais campos</button>
+      </div>
+
+      <!-- CAMPOS AVANCADOS -->
+      <div class="tk-adv" id="tarefaAvancado">
+        <div class="tk-adv-grid">
+          <div class="tk-field">
+            <label class="tk-lbl" for="tarefaMateria">📚 Matéria</label>
+            <input class="campo" id="tarefaMateria" list="tarefaMateriaList" placeholder="Ex: Matemática">
+            <datalist id="tarefaMateriaList"></datalist>
+          </div>
+          <div class="tk-field">
+            <label class="tk-lbl" for="tarefaHora">🕐 Horário (opcional)</label>
+            <input class="campo" id="tarefaHora" type="time">
+          </div>
+          <div class="tk-field">
+            <label class="tk-lbl" for="tarefaCat">🏷️ Categoria</label>
+            <select class="select" id="tarefaCat">
+              <option value="">Sem categoria</option>
+              <option value="estudo">📖 Estudo</option>
+              <option value="trabalho">💼 Trabalho</option>
+              <option value="pessoal">🏠 Pessoal</option>
+              <option value="saude">💚 Saúde</option>
+              <option value="financas">💰 Finanças</option>
+              <option value="outros">📦 Outros</option>
+            </select>
+          </div>
+          <div class="tk-field">
+            <label class="tk-lbl" for="tarefaStatus">📊 Status</label>
+            <select class="select" id="tarefaStatus">
+              <option value="pendente">⏳ Pendente</option>
+              <option value="fazendo">🔄 Fazendo</option>
+              <option value="concluida">✅ Concluída</option>
+            </select>
+          </div>
+        </div>
+        <div class="tk-field">
+          <label class="tk-lbl" for="tarefaDesc">📝 Descrição</label>
+          <textarea class="campo tk-ta" id="tarefaDesc" rows="2" placeholder="Detalhe o que precisa ser feito..."></textarea>
+        </div>
+        <div class="tk-field">
+          <label class="tk-lbl" for="tarefaObs">📌 Observações</label>
+          <textarea class="campo tk-ta" id="tarefaObs" rows="2" placeholder="Anotações extras, materiais, links..."></textarea>
+        </div>
+        <div class="tk-adv-actions">
+          <button class="btn btn-s" onclick="limparFormTarefa()">Limpar campos</button>
+          <button class="btn btn-p" onclick="addTarefa()">Adicionar tarefa</button>
+        </div>
+      </div>
+
+      <!-- PESQUISA -->
+      <div class="tk-search">
+        <span class="tk-search-ico">🔍</span>
+        <input type="text" id="tarefaPesquisa" placeholder="Pesquisar por título, descrição, matéria ou observação..." oninput="renderTarefas()">
+        <button class="tk-search-clear" onclick="limparPesquisaTarefa()" title="Limpar pesquisa">✕</button>
+      </div>
+
+      <!-- FILTROS -->
+      <div class="tk-filtros" id="tarefaFiltros">
+        <button class="tk-chip" data-f="todas" onclick="filtroTarefa('todas')">Todas <span class="tk-chip-n" id="tkfN-todas">0</span></button>
+        <button class="tk-chip" data-f="hoje" onclick="filtroTarefa('hoje')">📅 Hoje <span class="tk-chip-n" id="tkfN-hoje">0</span></button>
+        <button class="tk-chip" data-f="amanha" onclick="filtroTarefa('amanha')">➡️ Amanhã <span class="tk-chip-n" id="tkfN-amanha">0</span></button>
+        <button class="tk-chip" data-f="semana" onclick="filtroTarefa('semana')">🗓️ Esta semana <span class="tk-chip-n" id="tkfN-semana">0</span></button>
+        <button class="tk-chip tk-chip-alert" data-f="atrasadas" onclick="filtroTarefa('atrasadas')">🚨 Atrasadas <span class="tk-chip-n" id="tkfN-atrasadas">0</span></button>
+        <button class="tk-chip" data-f="concluidas" onclick="filtroTarefa('concluidas')">✅ Concluídas <span class="tk-chip-n" id="tkfN-concluidas">0</span></button>
+      </div>
+
+      <!-- ORDENACAO -->
+      <div class="tk-ordem">
+        <span class="tk-ordem-lbl">Ordenar:</span>
+        <select class="select tk-ordem-sel" id="tarefaOrdem" onchange="ordenarTarefas(this.value)">
+          <option value="data">📅 Data de entrega</option>
+          <option value="prio">🔥 Prioridade</option>
+          <option value="cat">🏷️ Categoria</option>
+          <option value="materia">📚 Matéria</option>
+          <option value="status">📊 Status</option>
+          <option value="titulo">🔤 Título (A-Z)</option>
+          <option value="criacao">🆕 Mais recentes</option>
         </select>
-        <button class="btn btn-p" onclick="addTarefa()">Adicionar</button>
+        <button class="tk-ordem-dir" id="tarefaOrdemDir" onclick="inverterOrdemTarefas()" title="Inverter ordem">↑↓</button>
       </div>
-      <div class="tarefas-filtros">
-        <button class="btn btn-s" onclick="filtroTarefa('todas')">Todas</button>
-        <button class="btn btn-s" onclick="filtroTarefa('ativas')">Ativas</button>
-        <button class="btn btn-s" onclick="filtroTarefa('feitas')">Concluídas</button>
-        <button class="btn btn-s" onclick="filtroTarefa('atrasadas')" style="color:var(--vermelho)">🚨 Atrasadas</button>
+
+      <div class="tk-resumo" id="tarefaResumo"></div>
+      <ul class="lista tk-lista" id="tarefasLista"></ul>
+      <div class="tk-footer-actions">
+        <button class="btn btn-d" onclick="confirmar('Excluir todas as tarefas concluídas?',limparTarefas)">🗑️ Limpar concluídas</button>
       </div>
-      <div style="display:flex;gap:.3rem;margin-bottom:.5rem;flex-wrap:wrap">
-        <button class="btn btn-s" onclick="ordenarTarefas('data')">📅 Data</button>
-        <button class="btn btn-s" onclick="ordenarTarefas('prio')">🔥 Prioridade</button>
-        <button class="btn btn-s" onclick="ordenarTarefas('cat')">🏷️ Categoria</button>
-      </div>
-      <ul class="lista" id="tarefasLista"></ul>
-      <div style="margin-top:.5rem"><button class="btn btn-d" style="font-size:.72rem" onclick="confirmar('Limpar tarefas concluídas?',limparTarefas)">Limpar concluídas</button></div>
     </div>
   </div>
 </div>
@@ -873,6 +940,76 @@
       <span class="pix-email">henriquehabitz@gmail.com</span>
     </div>
     <button class="pix-copiar" onclick="copiarPix()">📋 Copiar chave PIX</button>
+  </div>
+</div>
+
+<!-- Modal Editar Tarefa -->
+<div class="tk-modal-bg" id="tarefaEditModal" onclick="fecharEdicaoTarefa(event)">
+  <div class="tk-modal" onclick="event.stopPropagation()">
+    <div class="tk-modal-head">
+      <h3>✏️ Editar tarefa</h3>
+      <button class="tk-modal-x" onclick="fecharEdicaoTarefa()" title="Fechar">✕</button>
+    </div>
+    <div class="tk-modal-body">
+      <div class="tk-field">
+        <label class="tk-lbl" for="edTarefaTitulo">✅ Título *</label>
+        <input class="campo" id="edTarefaTitulo" placeholder="Título da tarefa">
+      </div>
+      <div class="tk-field">
+        <label class="tk-lbl" for="edTarefaDesc">📝 Descrição</label>
+        <textarea class="campo tk-ta" id="edTarefaDesc" rows="3" placeholder="Detalhes da tarefa"></textarea>
+      </div>
+      <div class="tk-adv-grid">
+        <div class="tk-field">
+          <label class="tk-lbl" for="edTarefaMateria">📚 Matéria</label>
+          <input class="campo" id="edTarefaMateria" list="tarefaMateriaList" placeholder="Ex: História">
+        </div>
+        <div class="tk-field">
+          <label class="tk-lbl" for="edTarefaData">📅 Data de entrega</label>
+          <input class="campo" id="edTarefaData" type="date">
+        </div>
+        <div class="tk-field">
+          <label class="tk-lbl" for="edTarefaHora">🕐 Horário (opcional)</label>
+          <input class="campo" id="edTarefaHora" type="time">
+        </div>
+        <div class="tk-field">
+          <label class="tk-lbl" for="edTarefaPrio">🔥 Prioridade</label>
+          <select class="select" id="edTarefaPrio">
+            <option value="alta">🔴 Alta</option>
+            <option value="media">🟡 Média</option>
+            <option value="baixa">🟢 Baixa</option>
+          </select>
+        </div>
+        <div class="tk-field">
+          <label class="tk-lbl" for="edTarefaCat">🏷️ Categoria</label>
+          <select class="select" id="edTarefaCat">
+            <option value="">Sem categoria</option>
+            <option value="estudo">📖 Estudo</option>
+            <option value="trabalho">💼 Trabalho</option>
+            <option value="pessoal">🏠 Pessoal</option>
+            <option value="saude">💚 Saúde</option>
+            <option value="financas">💰 Finanças</option>
+            <option value="outros">📦 Outros</option>
+          </select>
+        </div>
+        <div class="tk-field">
+          <label class="tk-lbl" for="edTarefaStatus">📊 Status</label>
+          <select class="select" id="edTarefaStatus">
+            <option value="pendente">⏳ Pendente</option>
+            <option value="fazendo">🔄 Fazendo</option>
+            <option value="concluida">✅ Concluída</option>
+          </select>
+        </div>
+      </div>
+      <div class="tk-field">
+        <label class="tk-lbl" for="edTarefaObs">📌 Observações</label>
+        <textarea class="campo tk-ta" id="edTarefaObs" rows="2" placeholder="Anotações extras"></textarea>
+      </div>
+    </div>
+    <div class="tk-modal-foot">
+      <button class="btn btn-s" onclick="fecharEdicaoTarefa()">Cancelar</button>
+      <button class="btn btn-p" onclick="salvarEdicaoTarefa()">💾 Salvar alterações</button>
+    </div>
   </div>
 </div>
 
