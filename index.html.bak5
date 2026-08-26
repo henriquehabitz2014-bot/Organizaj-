@@ -399,16 +399,22 @@
       <div class="estudos-materias" id="materiasGrid"></div>
     </div>
     <div class="secao">
-      <div class="secao-header">
-        <h3 style="font-size:1rem;font-weight:700;margin:0">📝 Provas</h3>
-        <button class="btn btn-p secao-add-btn" onclick="abrirProvaModal()">＋ Adicionar</button>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:.5rem">📝 Provas</h3>
+      <div class="linha">
+        <input class="campo" id="provaInput" placeholder="Prova de...">
+        <input class="campo" id="provaMateria" placeholder="Matéria" style="width:100px">
+        <input class="campo" id="provaData" type="date" style="width:130px">
+        <button class="btn btn-p" onclick="addProva()">Adicionar</button>
       </div>
       <div class="estudos-provas" id="provasLista"></div>
     </div>
     <div class="secao">
-      <div class="secao-header">
-        <h3 style="font-size:1rem;font-weight:700;margin:0">📄 Trabalhos</h3>
-        <button class="btn btn-p secao-add-btn" onclick="abrirTrabalhoModal()">＋ Adicionar</button>
+      <h3 style="font-size:1rem;font-weight:700;margin-bottom:.5rem">📄 Trabalhos</h3>
+      <div class="linha">
+        <input class="campo" id="trabInput" placeholder="Trabalho...">
+        <input class="campo" id="trabMateria" placeholder="Matéria" style="width:100px">
+        <input class="campo" id="trabData" type="date" style="width:130px">
+        <button class="btn btn-p" onclick="addTrabalho()">Adicionar</button>
       </div>
       <div class="estudos-trabalhos" id="trabalhosLista"></div>
     </div>
@@ -1052,88 +1058,6 @@
     <div class="tk-modal-foot">
       <button class="btn btn-s" onclick="fecharCalEventoModal()">Cancelar</button>
       <button class="btn btn-p" onclick="salvarCalEvento()">💾 Salvar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Prova Modal -->
-<div class="tk-modal-bg" id="provaModal" onclick="fecharProvaModal(event)">
-  <div class="tk-modal" onclick="event.stopPropagation()">
-    <div class="tk-modal-head">
-      <h3 id="provaModalTitle">＋ Nova prova</h3>
-      <button class="tk-modal-x" onclick="fecharProvaModal()" title="Fechar">✕</button>
-    </div>
-    <div class="tk-modal-body">
-      <div class="tk-field">
-        <label class="tk-lbl" for="prvTitulo">📝 Nome da prova *</label>
-        <input class="campo" id="prvTitulo" placeholder="Ex: Prova de Matemática">
-      </div>
-      <div class="tk-adv-grid">
-        <div class="tk-field">
-          <label class="tk-lbl" for="prvMateria">📚 Matéria</label>
-          <input class="campo" id="prvMateria" list="provaMateriaList" placeholder="Ex: História">
-          <datalist id="provaMateriaList"></datalist>
-        </div>
-        <div class="tk-field">
-          <label class="tk-lbl" for="prvData">📅 Data</label>
-          <input class="campo" id="prvData" type="date">
-        </div>
-        <div class="tk-field">
-          <label class="tk-lbl" for="prvHora">🕐 Horário</label>
-          <input class="campo" id="prvHora" type="time">
-        </div>
-      </div>
-      <div class="tk-field">
-        <label class="tk-lbl" for="prvConteudo">📋 Conteúdo</label>
-        <textarea class="campo tk-ta" id="prvConteudo" rows="3" placeholder="O que cai na prova?"></textarea>
-      </div>
-    </div>
-    <div class="tk-modal-foot">
-      <button class="btn btn-s" onclick="fecharProvaModal()">Cancelar</button>
-      <button class="btn btn-p" onclick="salvarProva()">💾 Salvar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Trabalho Modal -->
-<div class="tk-modal-bg" id="trabalhoModal" onclick="fecharTrabalhoModal(event)">
-  <div class="tk-modal" onclick="event.stopPropagation()">
-    <div class="tk-modal-head">
-      <h3 id="trabModalTitle">＋ Novo trabalho</h3>
-      <button class="tk-modal-x" onclick="fecharTrabalhoModal()" title="Fechar">✕</button>
-    </div>
-    <div class="tk-modal-body">
-      <div class="tk-field">
-        <label class="tk-lbl" for="trbTitulo">📄 Nome do trabalho *</label>
-        <input class="campo" id="trbTitulo" placeholder="Ex: Redação sobre Meio Ambiente">
-      </div>
-      <div class="tk-adv-grid">
-        <div class="tk-field">
-          <label class="tk-lbl" for="trbMateria">📚 Matéria</label>
-          <input class="campo" id="trbMateria" list="trabMateriaList" placeholder="Ex: Português">
-          <datalist id="trabMateriaList"></datalist>
-        </div>
-        <div class="tk-field">
-          <label class="tk-lbl" for="trbPrazo">📅 Prazo</label>
-          <input class="campo" id="trbPrazo" type="date">
-        </div>
-        <div class="tk-field">
-          <label class="tk-lbl" for="trbStatus">🏷️ Status</label>
-          <select class="select" id="trbStatus">
-            <option value="pendente">⏳ Pendente</option>
-            <option value="fazendo">🔄 Fazendo</option>
-            <option value="concluido">✅ Concluído</option>
-          </select>
-        </div>
-      </div>
-      <div class="tk-field">
-        <label class="tk-lbl" for="trbDescricao">📋 Descrição</label>
-        <textarea class="campo tk-ta" id="trbDescricao" rows="3" placeholder="Detalhes do trabalho"></textarea>
-      </div>
-    </div>
-    <div class="tk-modal-foot">
-      <button class="btn btn-s" onclick="fecharTrabalhoModal()">Cancelar</button>
-      <button class="btn btn-p" onclick="salvarTrabalho()">💾 Salvar</button>
     </div>
   </div>
 </div>

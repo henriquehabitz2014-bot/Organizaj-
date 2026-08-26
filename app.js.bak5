@@ -162,17 +162,6 @@ function carregarEstado() {
   if (!estado.estudos.materias) estado.estudos.materias = [];
   if (!estado.estudos.provas) estado.estudos.provas = [];
   if (!estado.estudos.trabalhos) estado.estudos.trabalhos = [];
-  // Migration: add hora/conteudo to existing provas
-  estado.estudos.provas.forEach(function(p) {
-    if (!p.hora) p.hora = '';
-    if (!p.conteudo) p.conteudo = '';
-  });
-  // Migration: add descricao/status/hora to existing trabalhos
-  estado.estudos.trabalhos.forEach(function(tr) {
-    if (!tr.descricao) tr.descricao = '';
-    if (!tr.status) tr.status = 'pendente';
-    if (!tr.hora) tr.hora = '';
-  });
   if (!estado.calView) estado.calView = 'mes';
   if (!estado.calEventos) estado.calEventos = [];
   if (estado.calDiaSel === undefined) estado.calDiaSel = null;
@@ -620,13 +609,11 @@ function renderDashboard() {
   var htmlProva = '';
   if (provasFuturas.length > 0) {
     var p = provasFuturas[0];
-    var diasRest = Math.ceil((new Date(p.data + 'T12:00:00') - new Date()) / 86400000);
+    var diasRest = Math.ceil((new Date(p.data) - new Date()) / 86400000);
     var corMat = (estado.estudos.materias.find(function(m){return m.nome===p.materia})||{}).cor || 'var(--cor2)';
     var urgente = diasRest <= 3;
     htmlProva += '<div class="duc-evento' + (urgente ? ' duc-urgente' : '') + '" style="border-left:3px solid ' + corMat + '">';
     htmlProva += '<div class="duce-nome">' + esc(p.texto) + (p.materia ? ' <small>(' + esc(p.materia) + ')</small>' : '') + '</div>';
-    if (p.hora) htmlProva += '<div class="duce-hora">🕐 ' + esc(p.hora) + '</div>';
-    if (p.conteudo) htmlProva += '<div class="duce-extra">📋 ' + esc(p.conteudo) + '</div>';
     htmlProva += '<div class="duce-data' + (urgente ? ' duce-data-alert' : '') + '">em ' + diasRest + ' dia' + (diasRest !== 1 ? 's' : '') + ' · ' + dataLocal(p.data) + '</div>';
     htmlProva += '</div>';
     if (provasFuturas.length > 1) {
@@ -638,25 +625,21 @@ function renderDashboard() {
   document.getElementById('dashProximaProvaBody').innerHTML = htmlProva;
 
   // === PRÓXIMO TRABALHO ===
-  var trabsFuturos = (estado.estudos && estado.estudos.trabalhos) ? estado.estudos.trabalhos.filter(function(tr){return tr.data && tr.data >= hoje && tr.status !== 'concluido'}).sort(function(a,b){return a.data.localeCompare(b.data)}) : [];
+  var trabsFuturos = (estado.estudos && estado.estudos.trabalhos) ? estado.estudos.trabalhos.filter(function(tr){return tr.data && tr.data >= hoje}).sort(function(a,b){return a.data.localeCompare(b.data)}) : [];
   var htmlTrab = '';
   if (trabsFuturos.length > 0) {
     var tr = trabsFuturos[0];
-    var diasTr = Math.ceil((new Date(tr.data + 'T12:00:00') - new Date()) / 86400000);
+    var diasTr = Math.ceil((new Date(tr.data) - new Date()) / 86400000);
     var urgTr = diasTr <= 3;
-    var corMatTr = (estado.estudos.materias.find(function(m){return m.nome===tr.materia})||{}).cor || 'var(--azul)';
-    var statusIcon = statusTrabIcons[tr.status] || '⏳';
-    htmlTrab += '<div class="duc-evento' + (urgTr ? ' duc-urgente' : '') + '" style="border-left:3px solid ' + corMatTr + '">';
+    htmlTrab += '<div class="duc-evento' + (urgTr ? ' duc-urgente' : '') + '" style="border-left:3px solid var(--cor3)">';
     htmlTrab += '<div class="duce-nome">' + esc(tr.texto) + (tr.materia ? ' <small>(' + esc(tr.materia) + ')</small>' : '') + '</div>';
-    htmlTrab += '<div class="duce-status">' + statusIcon + ' ' + esc(tr.status.charAt(0).toUpperCase() + tr.status.slice(1)) + '</div>';
-    if (tr.descricao) htmlTrab += '<div class="duce-extra">📋 ' + esc(tr.descricao) + '</div>';
     htmlTrab += '<div class="duce-data' + (urgTr ? ' duce-data-alert' : '') + '">em ' + diasTr + ' dia' + (diasTr !== 1 ? 's' : '') + ' · ' + dataLocal(tr.data) + '</div>';
     htmlTrab += '</div>';
     if (trabsFuturos.length > 1) {
       htmlTrab += '<div class="duc-mais">+' + (trabsFuturos.length - 1) + ' mais</div>';
     }
   } else {
-    htmlTrab = '<div class="duc-empty">Nenhum trabalho pendente</div>';
+    htmlTrab = '<div class="duc-empty">Nenhum trabalho registrado</div>';
   }
   document.getElementById('dashProximoTrabalhoBody').innerHTML = htmlTrab;
 
@@ -1360,12 +1343,12 @@ function getCalEvents(dateStr) {
   });
   if (estado.estudos && estado.estudos.provas) {
     estado.estudos.provas.forEach(function(p) {
-      if (p.data === dateStr) evts.push({id: p.id, texto: p.texto, cor: '#e17055', tipo: 'prova', hora: p.hora || '', materia: p.materia || '', origem: 'prova'});
+      if (p.data === dateStr) evts.push({id: p.id, texto: p.texto, cor: '#e17055', tipo: 'prova', hora: '', materia: p.materia || '', origem: 'prova'});
     });
   }
   if (estado.estudos && estado.estudos.trabalhos) {
     estado.estudos.trabalhos.forEach(function(tr) {
-      if (tr.data === dateStr) evts.push({id: tr.id, texto: tr.texto, cor: '#0984e3', tipo: 'trabalho', hora: tr.hora || '', materia: tr.materia || '', origem: 'trabalho'});
+      if (tr.data === dateStr) evts.push({id: tr.id, texto: tr.texto, cor: '#0984e3', tipo: 'trabalho', hora: '', materia: tr.materia || '', origem: 'trabalho'});
     });
   }
   (estado.calEventos || []).forEach(function(c) {
@@ -1658,264 +1641,75 @@ function renderMaterias() {
   document.getElementById('materiasGrid').innerHTML = html;
 }
 
-// ---- PROVAS: CRUD ----
-var provaEditId = null;
-
-function abrirProvaModal(editId) {
-  provaEditId = editId || null;
-  var modal = document.getElementById('provaModal');
-  if (!modal) return;
-  modal.classList.add('ativo');
-  // Populate materias datalist
-  var dl = document.getElementById('provaMateriaList');
-  if (dl) {
-    var items = '';
-    (estado.estudos.materias || []).forEach(function(m) {
-      items += '<option value="' + esc(m.nome) + '">';
-    });
-    dl.innerHTML = items;
-  }
-  if (provaEditId) {
-    var p = estado.estudos.provas.find(function(x){ return x.id === provaEditId; });
-    if (p) {
-      document.getElementById('provaModalTitle').textContent = '✏️ Editar prova';
-      document.getElementById('prvTitulo').value = p.texto || '';
-      document.getElementById('prvMateria').value = p.materia || '';
-      document.getElementById('prvData').value = p.data || '';
-      document.getElementById('prvHora').value = p.hora || '';
-      document.getElementById('prvConteudo').value = p.conteudo || '';
-      return;
-    }
-  }
-  document.getElementById('provaModalTitle').textContent = '＋ Nova prova';
-  document.getElementById('prvTitulo').value = '';
-  document.getElementById('prvMateria').value = '';
-  document.getElementById('prvData').value = '';
-  document.getElementById('prvHora').value = '';
-  document.getElementById('prvConteudo').value = '';
-}
-
-function fecharProvaModal(e) {
-  if (e && e.target && !e.target.classList.contains('tk-modal-bg')) return;
-  var modal = document.getElementById('provaModal');
-  if (modal) modal.classList.remove('ativo');
-  provaEditId = null;
-}
-
-function salvarProva() {
-  var titulo = document.getElementById('prvTitulo').value.trim();
-  var materia = document.getElementById('prvMateria').value.trim();
-  var data = document.getElementById('prvData').value;
-  var hora = document.getElementById('prvHora').value;
-  var conteudo = document.getElementById('prvConteudo').value.trim();
-  if (!titulo) return;
-  if (provaEditId) {
-    var p = estado.estudos.provas.find(function(x){ return x.id === provaEditId; });
-    if (p) {
-      p.texto = titulo;
-      p.materia = materia;
-      p.data = data;
-      p.hora = hora;
-      p.conteudo = conteudo;
-    }
-  } else {
-    estado.estudos.provas.push({
-      id: uid(),
-      texto: titulo,
-      materia: materia,
-      data: data,
-      hora: hora,
-      conteudo: conteudo
-    });
-  }
-  salvarEstado();
-  fecharProvaModal();
-  renderProvas();
-  renderCalendario();
-  renderDashboard();
+function addProva() {
+  var txt = document.getElementById('provaInput').value.trim();
+  if (!txt) return;
+  estado.estudos.provas.push({
+    texto: txt,
+    materia: document.getElementById('provaMateria').value || '',
+    data: document.getElementById('provaData').value || '',
+    id: uid()
+  });
+  document.getElementById('provaInput').value = '';
+  document.getElementById('provaMateria').value = '';
+  document.getElementById('provaData').value = '';
+  salvarEstado(); renderProvas();
 }
 
 function delProva(id) {
-  showConfirm('Excluir esta prova?', function() {
-    estado.estudos.provas = estado.estudos.provas.filter(function(p){ return p.id !== id; });
-    salvarEstado(); renderProvas(); renderCalendario(); renderDashboard();
-  });
+  estado.estudos.provas = estado.estudos.provas.filter(function(p){return p.id!==id;});
+  salvarEstado(); renderProvas();
 }
 
 function renderProvas() {
   var html = '';
-  var hoje = hojeStr();
-  estado.estudos.provas.sort(function(a,b){ return (a.data||'z').localeCompare(b.data||'z'); });
+  estado.estudos.provas.sort(function(a,b){return (a.data||'z').localeCompare(b.data||'z');});
   estado.estudos.provas.forEach(function(p) {
-    var dias = p.data ? Math.ceil((new Date(p.data + 'T12:00:00') - new Date()) / 86400000) : null;
-    var passou = dias !== null && dias < 0;
-    var urgente = dias !== null && dias >= 0 && dias <= 3;
-    var corMat = (estado.estudos.materias.find(function(m){ return m.nome === p.materia; }) || {}).cor;
-    var corBorda = corMat || 'var(--cor2)';
-    html += '<div class="pv-card' + (urgente ? ' pv-urgente' : '') + (passou ? ' pv-passou' : '') + '" style="border-left:4px solid ' + corBorda + '">';
-    html += '<div class="pv-top">';
-    html += '<span class="pv-mat" style="background:' + corBorda + ';color:#fff">' + (p.materia ? esc(p.materia) : '—') + '</span>';
-    if (p.hora) html += '<span class="pv-hora">🕐 ' + esc(p.hora) + '</span>';
-    html += '</div>';
-    html += '<div class="pv-titulo">📝 ' + esc(p.texto) + '</div>';
-    if (p.conteudo) html += '<div class="pv-conteudo">📋 ' + esc(p.conteudo) + '</div>';
-    html += '<div class="pv-footer">';
-    html += '<span class="pv-data">📅 ' + (p.data ? dataLocal(p.data) : 'sem data') + '</span>';
-    if (dias !== null && !passou) {
-      html += '<span class="pv-countdown' + (urgente ? ' pv-count-urg' : '') + '">' + dias + ' dia' + (dias !== 1 ? 's' : '') + '</span>';
-    } else if (passou) {
-      html += '<span class="pv-countdown pv-count-passou">passou</span>';
-    }
-    html += '</div>';
-    html += '<div class="pv-acoes">';
-    html += '<button class="btn btn-s pv-btn-edit" onclick="abrirProvaModal(\'' + p.id + '\')">✏️ Editar</button>';
-    html += '<button class="btn btn-d pv-btn-del" onclick="delProva(\'' + p.id + '\')">🗑️ Excluir</button>';
-    html += '</div>';
+    var diasRestantes = p.data ? Math.ceil((new Date(p.data) - new Date()) / 86400000) : null;
+    var urgente = diasRestantes !== null && diasRestantes <= 3 && diasRestantes >= 0;
+    var corMateria = (estado.estudos.materias.find(function(m){return m.nome===p.materia})||{}).cor;
+    html += '<div class="prova-item' + (urgente ? ' urgente' : '') + '" style="border-left:3px solid ' + (corMateria || 'var(--cor2)') + '">';
+    html += '<div class="prova-texto">📝 ' + esc(p.texto) + (p.materia ? ' <small style="color:var(--txt3)">(' + esc(p.materia) + ')</small>' : '') + '</div>';
+    html += '<div class="prova-data">📅 ' + (p.data ? dataLocal(p.data) : 'sem data') + (diasRestantes !== null ? ' <small style="color:' + (urgente ? 'var(--vermelho)' : 'var(--txt3)') + '">(em ' + diasRestantes + ' dias)</small>' : '') + '</div>';
+    html += '<button class="btn btn-d" style="font-size:.65rem;padding:.2rem .5rem" onclick="delProva(\''+p.id+'\')">Excluir</button>';
     html += '</div>';
   });
-  if (!html) html = '<div class="pv-empty"><div class="pv-empty-icon">📭</div><div class="pv-empty-text">Nenhuma prova registrada</div></div>';
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma prova registrada.</div>';
   document.getElementById('provasLista').innerHTML = html;
 }
 
-// ---- TRABALHOS: CRUD ----
-var trabalhoEditId = null;
-
-var statusTrabIcons = {
-  pendente: '⏳',
-  fazendo: '🔄',
-  concluido: '✅'
-};
-var statusTrabCores = {
-  pendente: 'var(--cor3)',
-  fazendo: 'var(--amarelo)',
-  concluido: 'var(--verde)'
-};
-
-function abrirTrabalhoModal(editId) {
-  trabalhoEditId = editId || null;
-  var modal = document.getElementById('trabalhoModal');
-  if (!modal) return;
-  modal.classList.add('ativo');
-  // Populate materias datalist
-  var dl = document.getElementById('trabMateriaList');
-  if (dl) {
-    var items = '';
-    (estado.estudos.materias || []).forEach(function(m) {
-      items += '<option value="' + esc(m.nome) + '">';
-    });
-    dl.innerHTML = items;
-  }
-  if (trabalhoEditId) {
-    var tr = estado.estudos.trabalhos.find(function(x){ return x.id === trabalhoEditId; });
-    if (tr) {
-      document.getElementById('trabModalTitle').textContent = '✏️ Editar trabalho';
-      document.getElementById('trbTitulo').value = tr.texto || '';
-      document.getElementById('trbMateria').value = tr.materia || '';
-      document.getElementById('trbPrazo').value = tr.data || '';
-      document.getElementById('trbDescricao').value = tr.descricao || '';
-      document.getElementById('trbStatus').value = tr.status || 'pendente';
-      return;
-    }
-  }
-  document.getElementById('trabModalTitle').textContent = '＋ Novo trabalho';
-  document.getElementById('trbTitulo').value = '';
-  document.getElementById('trbMateria').value = '';
-  document.getElementById('trbPrazo').value = '';
-  document.getElementById('trbDescricao').value = '';
-  document.getElementById('trbStatus').value = 'pendente';
-}
-
-function fecharTrabalhoModal(e) {
-  if (e && e.target && !e.target.classList.contains('tk-modal-bg')) return;
-  var modal = document.getElementById('trabalhoModal');
-  if (modal) modal.classList.remove('ativo');
-  trabalhoEditId = null;
-}
-
-function salvarTrabalho() {
-  var titulo = document.getElementById('trbTitulo').value.trim();
-  var materia = document.getElementById('trbMateria').value.trim();
-  var prazo = document.getElementById('trbPrazo').value;
-  var descricao = document.getElementById('trbDescricao').value.trim();
-  var status = document.getElementById('trbStatus').value;
-  if (!titulo) return;
-  if (trabalhoEditId) {
-    var tr = estado.estudos.trabalhos.find(function(x){ return x.id === trabalhoEditId; });
-    if (tr) {
-      tr.texto = titulo;
-      tr.materia = materia;
-      tr.data = prazo;
-      tr.descricao = descricao;
-      tr.status = status;
-    }
-  } else {
-    estado.estudos.trabalhos.push({
-      id: uid(),
-      texto: titulo,
-      materia: materia,
-      data: prazo,
-      descricao: descricao,
-      status: status
-    });
-  }
-  salvarEstado();
-  fecharTrabalhoModal();
-  renderTrabalhos();
-  renderCalendario();
-  renderDashboard();
-}
-
-function concluirTrabalho(id) {
-  var tr = estado.estudos.trabalhos.find(function(x){ return x.id === id; });
-  if (tr) {
-    tr.status = tr.status === 'concluido' ? 'pendente' : 'concluido';
-    salvarEstado(); renderTrabalhos(); renderCalendario(); renderDashboard();
-  }
+function addTrabalho() {
+  var txt = document.getElementById('trabInput').value.trim();
+  if (!txt) return;
+  estado.estudos.trabalhos.push({
+    texto: txt,
+    materia: document.getElementById('trabMateria').value || '',
+    data: document.getElementById('trabData').value || '',
+    id: uid()
+  });
+  document.getElementById('trabInput').value = '';
+  document.getElementById('trabMateria').value = '';
+  document.getElementById('trabData').value = '';
+  salvarEstado(); renderTrabalhos();
 }
 
 function delTrabalho(id) {
-  showConfirm('Excluir este trabalho?', function() {
-    estado.estudos.trabalhos = estado.estudos.trabalhos.filter(function(t){ return t.id !== id; });
-    salvarEstado(); renderTrabalhos(); renderCalendario(); renderDashboard();
-  });
+  estado.estudos.trabalhos = estado.estudos.trabalhos.filter(function(t){return t.id!==id;});
+  salvarEstado(); renderTrabalhos();
 }
 
 function renderTrabalhos() {
   var html = '';
-  var hoje = hojeStr();
-  estado.estudos.trabalhos.sort(function(a,b){ return (a.data||'z').localeCompare(b.data||'z'); });
+  estado.estudos.trabalhos.sort(function(a,b){return (a.data||'z').localeCompare(b.data||'z');});
   estado.estudos.trabalhos.forEach(function(tr) {
-    var dias = tr.data ? Math.ceil((new Date(tr.data + 'T12:00:00') - new Date()) / 86400000) : null;
-    var passou = dias !== null && dias < 0;
-    var urgente = dias !== null && dias >= 0 && dias <= 3;
-    var corMat = (estado.estudos.materias.find(function(m){ return m.nome === tr.materia; }) || {}).cor;
-    var corBorda = corMat || 'var(--azul)';
-    var statusIcon = statusTrabIcons[tr.status] || '⏳';
-    var statusCor = statusTrabCores[tr.status] || 'var(--cor3)';
-    var concluido = tr.status === 'concluido';
-    html += '<div class="tb-card' + (concluido ? ' tb-concluido' : '') + (urgente && !concluido ? ' tb-urgente' : '') + '" style="border-left:4px solid ' + corBorda + '">';
-    html += '<div class="tb-top">';
-    html += '<span class="tb-mat" style="background:' + corBorda + ';color:#fff">' + (tr.materia ? esc(tr.materia) : '—') + '</span>';
-    html += '<span class="tb-status" style="background:' + statusCor + ';color:#fff">' + statusIcon + ' ' + esc(tr.status.charAt(0).toUpperCase() + tr.status.slice(1)) + '</span>';
-    html += '</div>';
-    html += '<div class="tb-titulo">' + esc(tr.texto) + '</div>';
-    if (tr.descricao) html += '<div class="tb-desc">📋 ' + esc(tr.descricao) + '</div>';
-    html += '<div class="tb-footer">';
-    html += '<span class="tb-prazo">📅 ' + (tr.data ? dataLocal(tr.data) : 'sem prazo') + '</span>';
-    if (dias !== null && !passou && !concluido) {
-      html += '<span class="tb-countdown' + (urgente ? ' tb-count-urg' : '') + '">' + dias + ' dia' + (dias !== 1 ? 's' : '') + '</span>';
-    } else if (passou && !concluido) {
-      html += '<span class="tb-countdown tb-count-atrasado">atrasado</span>';
-    }
-    html += '</div>';
-    html += '<div class="tb-acoes">';
-    html += '<button class="btn btn-s tb-btn-check" onclick="concluirTrabalho(\'' + tr.id + '\')">' + (concluido ? '↩️ Reabrir' : '✅ Concluir') + '</button>';
-    html += '<button class="btn btn-s tb-btn-edit" onclick="abrirTrabalhoModal(\'' + tr.id + '\')">✏️ Editar</button>';
-    html += '<button class="btn btn-d tb-btn-del" onclick="delTrabalho(\'' + tr.id + '\')">🗑️ Excluir</button>';
-    html += '</div>';
+    var diasRestantes = tr.data ? Math.ceil((new Date(tr.data) - new Date()) / 86400000) : null;
+    html += '<div class="trabalho-item" style="border-left:3px solid var(--cor3)">';
+    html += '<div class="trab-texto">📄 ' + esc(tr.texto) + (tr.materia ? ' <small style="color:var(--txt3)">(' + esc(tr.materia) + ')</small>' : '') + '</div>';
+    html += '<div class="trab-data">📅 ' + (tr.data ? dataLocal(tr.data) : 'sem data') + (diasRestantes !== null ? ' <small>(em ' + diasRestantes + ' dias)</small>' : '') + '</div>';
+    html += '<button class="btn btn-d" style="font-size:.65rem;padding:.2rem .5rem" onclick="delTrabalho(\''+tr.id+'\')">Excluir</button>';
     html += '</div>';
   });
-  if (!html) html = '<div class="tb-empty"><div class="tb-empty-icon">📭</div><div class="tb-empty-text">Nenhum trabalho registrado</div></div>';
+  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhum trabalho registrado.</div>';
   document.getElementById('trabalhosLista').innerHTML = html;
 }
 

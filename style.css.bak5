@@ -250,9 +250,6 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
 .duce-nome{font-weight:600;display:block;margin-bottom:.15rem}
 .duce-data{font-size:.75rem;color:var(--txt3)}
 .duce-data-alert{color:var(--vermelho);font-weight:600}
-.duce-hora{font-size:.72rem;color:var(--txt3)}
-.duce-status{font-size:.72rem;font-weight:600;margin-bottom:.15rem}
-.duce-extra{font-size:.72rem;color:var(--txt3);line-height:1.3;margin-bottom:.15rem}
 .duc-evento{font-size:.82rem;display:flex;align-items:center;gap:.4rem;padding:.35rem 0;border-bottom:1px solid var(--borda)}
 .duc-evento:last-child{border:none}
 .duc-empty{font-size:.78rem;color:var(--txt3);font-style:italic;padding:.3rem 0}
@@ -372,63 +369,23 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
 .materia-fill{height:100%;background:linear-gradient(90deg,var(--cor),var(--cor2));border-radius:4px;transition:width .5s}
 .materia-info{font-size:.75rem;color:var(--txt3);display:flex;justify-content:space-between}
 .estudos-provas{margin-bottom:1rem}
-/* ---- PROVAS cards ---- */
-.pv-card{
-  background:var(--card);border-radius:var(--raio);padding:.8rem;margin-bottom:.6rem;
-  border:1px solid var(--borda);border-left:4px solid var(--cat-fin);
-  transition:var(--transition)
+.prova-card{
+  background:var(--card);border-radius:var(--raio);padding:.7rem;margin-bottom:.5rem;
+  border:1px solid var(--borda);border-left:3px solid var(--cat-fin);
+  display:flex;justify-content:space-between;align-items:center;transition:var(--transition)
 }
-.pv-card:hover{box-shadow:var(--sombra1)}
-.pv-urgente{border-color:var(--vermelho);background:rgba(214,48,49,.04)}
-.pv-passou{opacity:.6}
-.pv-top{display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem;flex-wrap:wrap}
-.pv-mat{font-size:.65rem;font-weight:600;padding:.15rem .5rem;border-radius:20px;white-space:nowrap}
-.pv-hora{font-size:.72rem;color:var(--txt3)}
-.pv-titulo{font-size:.88rem;font-weight:600;margin-bottom:.25rem}
-.pv-conteudo{font-size:.76rem;color:var(--txt3);margin-bottom:.25rem;line-height:1.3}
-.pv-footer{display:flex;align-items:center;gap:.6rem;margin-bottom:.35rem;flex-wrap:wrap}
-.pv-data{font-size:.74rem;color:var(--txt3)}
-.pv-countdown{
-  font-size:.7rem;font-weight:700;padding:.12rem .5rem;border-radius:20px;
-  background:var(--cat-fin);color:#fff;white-space:nowrap
+.prova-card:hover{box-shadow:var(--sombra1)}
+.prova-card .pv-info{flex:1}
+.prova-card .pv-info h4{font-size:.85rem;font-weight:600}
+.prova-card .pv-info p{font-size:.72rem;color:var(--txt3)}
+.prova-card .pv-dias{text-align:center}
+.prova-card .pv-dias .pv-num{font-size:1.3rem;font-weight:800;color:var(--cat-fin)}
+.prova-card .pv-dias .pv-lbl{font-size:.6rem;color:var(--txt3)}
+.estudos-trabalhos .trab-card{
+  background:var(--card);border-radius:var(--raio);padding:.7rem;margin-bottom:.5rem;
+  border:1px solid var(--borda);border-left:3px solid var(--azul);
+  display:flex;justify-content:space-between;align-items:center
 }
-.pv-count-urg{background:var(--vermelho);animation:pv-pulse 1.5s infinite}
-.pv-count-passou{background:var(--txt3)}
-@keyframes pv-pulse{0%,100%{opacity:1}50%{opacity:.6}}
-.pv-acoes{display:flex;gap:.4rem;flex-wrap:wrap}
-.pv-btn-edit,.pv-btn-del{font-size:.68rem;padding:.2rem .55rem;border-radius:var(--raio)}
-.pv-empty,.tb-empty{text-align:center;padding:1.5rem;color:var(--txt3)}
-.pv-empty-icon,.tb-empty-icon{font-size:2rem;margin-bottom:.3rem}
-.pv-empty-text,.tb-empty-text{font-size:.8rem}
-
-/* ---- TRABALHOS cards ---- */
-.tb-card{
-  background:var(--card);border-radius:var(--raio);padding:.8rem;margin-bottom:.6rem;
-  border:1px solid var(--borda);border-left:4px solid var(--azul);
-  transition:var(--transition)
-}
-.tb-card:hover{box-shadow:var(--sombra1)}
-.tb-concluido{opacity:.7;border-left-style:dashed}
-.tb-urgente{border-color:var(--vermelho);background:rgba(214,48,49,.04)}
-.tb-top{display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem;flex-wrap:wrap}
-.tb-mat{font-size:.65rem;font-weight:600;padding:.15rem .5rem;border-radius:20px;white-space:nowrap}
-.tb-status{font-size:.62rem;font-weight:600;padding:.15rem .5rem;border-radius:20px;white-space:nowrap}
-.tb-titulo{font-size:.88rem;font-weight:600;margin-bottom:.25rem}
-.tb-desc{font-size:.76rem;color:var(--txt3);margin-bottom:.25rem;line-height:1.3}
-.tb-footer{display:flex;align-items:center;gap:.6rem;margin-bottom:.35rem;flex-wrap:wrap}
-.tb-prazo{font-size:.74rem;color:var(--txt3)}
-.tb-countdown{
-  font-size:.7rem;font-weight:700;padding:.12rem .5rem;border-radius:20px;
-  background:var(--azul);color:#fff;white-space:nowrap
-}
-.tb-count-urg{background:var(--vermelho);animation:pv-pulse 1.5s infinite}
-.tb-count-atrasado{background:var(--vermelho)}
-.tb-acoes{display:flex;gap:.4rem;flex-wrap:wrap}
-.tb-btn-check,.tb-btn-edit,.tb-btn-del{font-size:.68rem;padding:.2rem .55rem;border-radius:var(--raio)}
-
-/* secao header with add btn */
-.secao-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
-.secao-add-btn{font-size:.75rem;padding:.25rem .7rem}
 
 /* ---- HABITOS ---- */
 .habitos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.7rem}
@@ -879,6 +836,14 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
 .planejamento-item{padding:.5rem .7rem;border-bottom:1px solid var(--borda);font-size:.85rem}
 .planejamento-item:last-child{border:none}
 .pl-texto{flex:1;word-break:break-word}
+
+/* Provas/Trabalhos - extras */
+.prova-item{background:var(--card);border-radius:var(--raio);padding:.7rem;margin-bottom:.5rem;border:1px solid var(--borda);border-left:3px solid var(--cat-fin)}
+.prova-texto{font-weight:600;font-size:.88rem}
+.prova-data{font-size:.75rem;color:var(--txt3)}
+.trabalho-item{background:var(--card);border-radius:var(--raio);padding:.7rem;margin-bottom:.5rem;border:1px solid var(--borda);border-left:3px solid var(--azul)}
+.trab-texto{font-weight:600;font-size:.88rem}
+.trab-data{font-size:.75rem;color:var(--txt3)}
 
 /* Refeições */
 .refeicao-tipo{font-size:.72rem;color:var(--txt3);font-weight:600;text-transform:uppercase}
