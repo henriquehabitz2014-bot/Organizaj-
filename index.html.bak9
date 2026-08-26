@@ -66,9 +66,6 @@
   <div class="sidebar-item" data-page="progresso" onclick="navegarPara('progresso',this)">
     <div class="s-icon">📊</div><span>Meu Progresso</span>
   </div>
-  <div class="sidebar-item" onclick="abrirOrganizaIA()">
-    <div class="s-icon">🧠</div><span>OrganizaIA</span>
-  </div>
   <div class="sidebar-divider"></div>
   <div class="sidebar-section">Ferramentas</div>
   <div class="sidebar-more-btn" onclick="toggleSidebarTools()">
@@ -95,7 +92,6 @@
     <div class="sidebar-tool-mini" onclick="navegarPara('revisao')">📊 Revisão</div>
     <div class="sidebar-tool-mini" onclick="navegarPara('frases')">💭 Frases</div>
     <div class="sidebar-tool-mini" onclick="navegarPara('vida')">🌟 Painel da Vida</div>
-    <div class="sidebar-tool-mini" onclick="abrirOrganizaIA()">🧠 OrganizaIA</div>
   </div>
 </nav>
 
@@ -1101,7 +1097,6 @@
     <div class="sheet-tool" onclick="navegarPara('revisao');fecharMoreSheet()"><div class="st-icon">📊</div>Revisão</div>
     <div class="sheet-tool" onclick="navegarPara('frases');fecharMoreSheet()"><div class="st-icon">💭</div>Frases</div>
     <div class="sheet-tool" onclick="navegarPara('vida');fecharMoreSheet()"><div class="st-icon">🌟</div>Painel da Vida</div>
-    <div class="sheet-tool" onclick="abrirOrganizaIA();fecharMoreSheet()"><div class="st-icon">🧠</div>OrganizaIA</div>
   </div>
 </div>
 
@@ -1331,47 +1326,6 @@
       <button class="btn btn-s" onclick="fecharModal()">Cancelar</button>
       <button class="btn btn-d" id="modalConfirmar" onclick="confirmarAcao()">Confirmar</button>
     </div>
-  </div>
-</div>
-
-<!-- OrganizaIA FAB -->
-<button class="oia-fab" id="oiaFab" onclick="abrirOrganizaIA()" title="OrganizaIA">
-  <span class="oia-fab-icon">🧠</span>
-  <span class="oia-fab-label">OrganizaIA</span>
-</button>
-
-<!-- OrganizaIA Panel -->
-<div class="oia-overlay" id="oiaOverlay" onclick="fecharOrganizaIA(event)"></div>
-<div class="oia-panel" id="oiaPanel">
-  <div class="oia-head">
-    <div class="oia-head-left">
-      <div class="oia-avatar">🧠</div>
-      <div class="oia-head-info">
-        <div class="oia-head-title">OrganizaIA</div>
-        <div class="oia-head-sub">Seu assistente de organização</div>
-      </div>
-    </div>
-    <button class="oia-close" onclick="fecharOrganizaIABtn()" title="Fechar">✕</button>
-  </div>
-  <div class="oia-suggestions" id="oiaSuggestions">
-    <button class="oia-chip" onclick="oiaEnviarSugestao('Organize minhas tarefas de hoje')">📋 Organizar tarefas de hoje</button>
-    <button class="oia-chip" onclick="oiaEnviarSugestao('Quais tarefas devo fazer primeiro?')">🔥 O que fazer primeiro?</button>
-    <button class="oia-chip" onclick="oiaEnviarSugestao('Me ajude a montar um plano de estudos')">📚 Plano de estudos</button>
-    <button class="oia-chip" onclick="oiaEnviarSugestao('Organize minha semana')">📅 Organizar minha semana</button>
-  </div>
-  <div class="oia-messages" id="oiaMessages">
-    <div class="oia-msg oia-msg-ai">
-      <div class="oia-msg-avatar">🧠</div>
-      <div class="oia-msg-bubble">Olá! Sou o <strong>OrganizaIA</strong>, seu assistente de organização dentro do OrganizaJá. 🚀<br><br>Posso te ajudar a:<br>• Organizar tarefas e prioridades<br>• Montar planos de estudo<br>• Planejar sua semana<br>• Decidir o que fazer primeiro<br><br>Me pergunte algo ou use as sugestões abaixo!</div>
-    </div>
-  </div>
-  <div class="oia-typing" id="oiaTyping">
-    <div class="oia-typing-dots"><span></span><span></span><span></span></div>
-    <span class="oia-typing-text">OrganizaIA está pensando...</span>
-  </div>
-  <div class="oia-input-bar">
-    <input class="campo oia-input" id="oiaInput" type="text" placeholder="Pergunte como se organizar..." onkeydown="if(event.key==='Enter')oiaEnviar()">
-    <button class="oia-send" onclick="oiaEnviar()" title="Enviar">➤</button>
   </div>
 </div>
 
