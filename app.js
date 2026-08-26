@@ -357,24 +357,148 @@ function fecharBusca(e) {
     document.getElementById('buscaOverlay').classList.remove('visivel');
   }
 }
+// ---- PESQUISA GLOBAL ----
+var buscaScrollId = null; // id do item para scroll após navegação
+var buscaHighlightTimer = null;
+
 function buscarTudo(q) {
   var res = document.getElementById('buscaResultados');
   if (!q.trim()) { res.innerHTML = ''; return; }
-  q = q.toLowerCase();
-  var html = '';
-  // Search tools
+  q = q.toLowerCase().trim();
+  var categorias = [];
+
+  // 1) Páginas / Ferramentas
+  var paginas = [];
   Object.keys(pageNames).forEach(function(k) {
     if (pageNames[k].toLowerCase().indexOf(q) >= 0) {
-      html += '<div class="busca-item" onclick="navegarPara(\''+esc(k)+'\');fecharBusca({target:document.getElementById(\'buscaOverlay\')})">' + esc(pageNames[k]) + '</div>';
+      paginas.push({ slug: k, nome: pageNames[k] });
     }
   });
-  // Search tasks
-  estado.tarefas.forEach(function(t) {
-    if (t.texto.toLowerCase().indexOf(q) >= 0) {
-      html += '<div class="busca-item" onclick="navegarPara(\'tarefas\');fecharBusca({target:document.getElementById(\'buscaOverlay\')})">✅ ' + esc(t.texto) + '</div>';
-    }
+  if (paginas.length) categorias.push({ icon: '🧭', titulo: 'Páginas', items: paginas.map(function(p) {
+    return { id: '__page__' + p.slug, texto: p.nome, acao: "navegarPara('" + esc(p.slug) + "')" };
+  })});
+
+  // 2) Tarefas
+  var tarefas = estado.tarefas.filter(function(t) {
+    return t.texto.toLowerCase().indexOf(q) >= 0;
   });
-  res.innerHTML = html || '<div style="padding:1rem;color:var(--txt3);font-size:.85rem">Nenhum resultado</div>';
+  if (tarefas.length) categorias.push({ icon: '✅', titulo: 'Tarefas (' + tarefas.length + ')', items: tarefas.map(function(t) {
+    return { id: t.id, texto: t.texto, sub: t.data ? dataLocal(t.data) : '', acao: "buscarIrPara('tarefas','" + t.id + "')" };
+  })});
+
+  // 3) Provas
+  var provas = (estado.estudos && estado.estudos.provas) ? estado.estudos.provas.filter(function(p) {
+    return p.texto.toLowerCase().indexOf(q) >= 0 || (p.materia && p.materia.toLowerCase().indexOf(q) >= 0) || (p.conteudo && p.conteudo.toLowerCase().indexOf(q) >= 0);
+  }) : [];
+  if (provas.length) categorias.push({ icon: '📝', titulo: 'Provas (' + provas.length + ')', items: provas.map(function(p) {
+    return { id: p.id, texto: p.texto, sub: p.materia || '', acao: "buscarIrPara('estudos','" + p.id + "')" };
+  })});
+
+  // 4) Trabalhos
+  var trabalhos = (estado.estudos && estado.estudos.trabalhos) ? estado.estudos.trabalhos.filter(function(tr) {
+    return tr.texto.toLowerCase().indexOf(q) >= 0 || (tr.materia && tr.materia.toLowerCase().indexOf(q) >= 0) || (tr.descricao && tr.descricao.toLowerCase().indexOf(q) >= 0);
+  }) : [];
+  if (trabalhos.length) categorias.push({ icon: '📄', titulo: 'Trabalhos (' + trabalhos.length + ')', items: trabalhos.map(function(tr) {
+    return { id: tr.id, texto: tr.texto, sub: tr.materia || '', acao: "buscarIrPara('estudos','" + tr.id + "')" };
+  })});
+
+  // 5) Matérias
+  var materias = (estado.estudos && estado.estudos.materias) ? estado.estudos.materias.filter(function(m) {
+    return m.nome.toLowerCase().indexOf(q) >= 0;
+  }) : [];
+  if (materias.length) categorias.push({ icon: '📚', titulo: 'Matérias (' + materias.length + ')', items: materias.map(function(m) {
+    return { id: m.id, texto: m.nome, sub: '', acao: "buscarIrPara('estudos','" + m.id + "')" };
+  })});
+
+  // 6) Eventos do calendário
+  var eventos = (estado.calEventos || []).filter(function(c) {
+    return c.titulo.toLowerCase().indexOf(q) >= 0 || (c.descricao && c.descricao.toLowerCase().indexOf(q) >= 0) || (c.materia && c.materia.toLowerCase().indexOf(q) >= 0);
+  });
+  if (eventos.length) categorias.push({ icon: '📅', titulo: 'Eventos (' + eventos.length + ')', items: eventos.map(function(c) {
+    return { id: c.id, texto: c.titulo, sub: c.data ? dataLocal(c.data) : '', acao: "buscarIrPara('calendario','" + c.id + "')" };
+  })});
+
+  // 7) Anotações (notas)
+  var notas = estado.notas.filter(function(n) {
+    return (n.titulo && n.titulo.toLowerCase().indexOf(q) >= 0) || (n.texto && n.texto.toLowerCase().indexOf(q) >= 0);
+  });
+  if (notas.length) categorias.push({ icon: '📝', titulo: 'Notas (' + notas.length + ')', items: notas.map(function(n) {
+    return { id: n.id, texto: n.titulo || 'Sem título', sub: n.texto ? n.texto.substring(0, 50) : '', acao: "buscarIrPara('notas','" + n.id + "')" };
+  })});
+
+  // 8) Metas
+  var metas = estado.metas.filter(function(m) {
+    return m.texto.toLowerCase().indexOf(q) >= 0 || (m.descricao && m.descricao.toLowerCase().indexOf(q) >= 0);
+  });
+  if (metas.length) categorias.push({ icon: '🎯', titulo: 'Metas (' + metas.length + ')', items: metas.map(function(m) {
+    return { id: m.id, texto: m.texto, sub: m.prazo ? dataLocal(m.prazo) : '', acao: "buscarIrPara('metas','" + m.id + "')" };
+  })});
+
+  // 9) Hábitos
+  var habitos = estado.habitos.filter(function(h) {
+    return h.nome.toLowerCase().indexOf(q) >= 0;
+  });
+  if (habitos.length) categorias.push({ icon: '🔄', titulo: 'Hábitos (' + habitos.length + ')', items: habitos.map(function(h) {
+    return { id: h.id, texto: h.nome, sub: '', acao: "buscarIrPara('habitos','" + h.id + "')" };
+  })});
+
+  // 10) Lembretes
+  var lembretes = estado.lembretes.filter(function(l) {
+    return l.texto.toLowerCase().indexOf(q) >= 0;
+  });
+  if (lembretes.length) categorias.push({ icon: '🔔', titulo: 'Lembretes (' + lembretes.length + ')', items: lembretes.map(function(l) {
+    return { id: l.id, texto: l.texto, sub: l.data ? dataLocal(l.data) : '', acao: "buscarIrPara('lembretes','" + l.id + "')" };
+  })});
+
+  // Montar HTML
+  var html = '';
+  if (!categorias.length) {
+    html = '<div class="busca-vazio">🔍 Nenhum resultado para "' + esc(q) + '"</div>';
+  } else {
+    categorias.forEach(function(cat) {
+      html += '<div class="busca-cat">';
+      html += '<div class="busca-cat-header">' + cat.icon + ' ' + esc(cat.titulo) + '</div>';
+      cat.items.forEach(function(item) {
+        html += '<div class="busca-item" onclick="' + item.acao + ';fecharBusca({target:document.getElementById(\'buscaOverlay\')})">';
+        html += '<div class="busca-item-texto">' + esc(item.texto) + '</div>';
+        if (item.sub) html += '<small>' + esc(item.sub) + '</small>';
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+    var total = categorias.reduce(function(s, c) { return s + c.items.length; }, 0);
+    html += '<div class="busca-total">' + total + ' resultado' + (total !== 1 ? 's' : '') + '</div>';
+  }
+  res.innerHTML = html;
+}
+
+function buscarIrPara(pagina, itemId) {
+  buscaScrollId = itemId;
+  navegarPara(pagina);
+  // After page renders, try scrolling to item
+  setTimeout(function() { buscaScrollEHighlight(itemId); }, 150);
+}
+
+function buscaScrollEHighlight(itemId) {
+  // Scroll to element with matching id or data-id
+  var el = document.getElementById(itemId) || document.querySelector('[data-id="' + itemId + '"]');
+  if (!el) {
+    // Try finding inside rendered cards by data-id attribute
+    el = document.querySelector('[data-busca-id="' + itemId + '"]');
+  }
+  if (!el) {
+    // Fallback: search for the item text inside cards and try matching
+    // This handles cases where items don't have explicit IDs in DOM
+    return;
+  }
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('busca-highlight');
+    if (buscaHighlightTimer) clearTimeout(buscaHighlightTimer);
+    buscaHighlightTimer = setTimeout(function() {
+      el.classList.remove('busca-highlight');
+    }, 2500);
+  }
 }
 
 // ---- SIDEBAR MOBILE TOGGLE ----
@@ -1260,7 +1384,7 @@ function renderTarefas() {
     var aberta = !!tarefasAbertas[t.id];
     var temDetalhe = !!(t.descricao || t.obs);
     var classe = 'tarefa-item tk-item' + (t.feito ? ' feito' : '') + (atrasada ? ' atrasada' : '') + (prioC ? ' ' + prioC : '');
-    html += '<li class="' + classe + '">';
+    html += '<li class="' + classe + '" data-busca-id="' + t.id + '">'; 
     html += '<div class="tk-row">';
     html += '<div class="tarefa-check" onclick="toggleTarefa(\'' + t.id + '\')" title="' + (t.feito ? 'Desfazer conclusão' : 'Concluir') + '">' + (t.feito ? '✅' : '⬜') + '</div>';
     html += '<div class="tarefa-info">';
@@ -1441,7 +1565,7 @@ function renderCalMes() {
       html += '<div class="cal-dia-eventos">';
       evts.slice(0,3).forEach(function(e){
         var icon = calTipoIcon(e.tipo);
-        html += '<div class="cal-evento" style="background:' + e.cor + '" title="' + esc(e.texto) + '">' + icon + '</div>';
+        html += '<div class="cal-evento" data-busca-id="' + e.id + '" style="background:' + e.cor + '" title="' + esc(e.texto) + '">' + icon + '</div>';
       });
       if (evts.length > 3) html += '<div class="cal-evento-mais">+' + (evts.length-3) + '</div>';
       html += '</div>';
@@ -1755,7 +1879,7 @@ function renderMaterias() {
     var totalDone = tarefasDone + trabsDone;
     var pct = totalItems > 0 ? Math.round((totalDone / totalItems) * 100) : 0;
 
-    html += '<div class="materia-card" style="border-left:4px solid ' + m.cor + '" onclick="abrirMateriaDetalhe(\'' + m.id + '\')" tabindex="0" role="button" aria-label="Ver detalhes de ' + esc(m.nome) + '">';
+    html += '<div class="materia-card" data-busca-id="' + m.id + '" style="border-left:4px solid ' + m.cor + '" onclick="abrirMateriaDetalhe(\'' + m.id + '\')" tabindex="0" role="button" aria-label="Ver detalhes de ' + esc(m.nome) + '">';
     html += '<div class="materia-nome" style="color:' + m.cor + '">' + esc(m.nome) + '</div>';
     if (totalItems > 0) {
       html += '<div class="materia-barra"><div class="materia-fill" style="width:' + pct + '%;background:' + m.cor + '"></div></div>';
@@ -2144,7 +2268,7 @@ function renderProvas() {
     var urgente = dias !== null && dias >= 0 && dias <= 3;
     var corMat = (estado.estudos.materias.find(function(m){ return m.nome === p.materia; }) || {}).cor;
     var corBorda = corMat || 'var(--cor2)';
-    html += '<div class="pv-card' + (urgente ? ' pv-urgente' : '') + (passou ? ' pv-passou' : '') + '" style="border-left:4px solid ' + corBorda + '">';
+    html += '<div class="pv-card' + (urgente ? ' pv-urgente' : '') + (passou ? ' pv-passou' : '') + '" data-busca-id="' + p.id + '" style="border-left:4px solid ' + corBorda + '">'; 
     html += '<div class="pv-top">';
     html += '<span class="pv-mat" style="background:' + corBorda + ';color:#fff">' + (p.materia ? esc(p.materia) : '—') + '</span>';
     if (p.hora) html += '<span class="pv-hora">🕐 ' + esc(p.hora) + '</span>';
@@ -2290,7 +2414,7 @@ function renderTrabalhos() {
     var statusIcon = statusTrabIcons[tr.status] || '⏳';
     var statusCor = statusTrabCores[tr.status] || 'var(--cor3)';
     var concluido = tr.status === 'concluido';
-    html += '<div class="tb-card' + (concluido ? ' tb-concluido' : '') + (urgente && !concluido ? ' tb-urgente' : '') + '" style="border-left:4px solid ' + corBorda + '">';
+    html += '<div class="tb-card' + (concluido ? ' tb-concluido' : '') + (urgente && !concluido ? ' tb-urgente' : '') + '" data-busca-id="' + tr.id + '" style="border-left:4px solid ' + corBorda + '">'; 
     html += '<div class="tb-top">';
     html += '<span class="tb-mat" style="background:' + corBorda + ';color:#fff">' + (tr.materia ? esc(tr.materia) : '—') + '</span>';
     html += '<span class="tb-status" style="background:' + statusCor + ';color:#fff">' + statusIcon + ' ' + esc(tr.status.charAt(0).toUpperCase() + tr.status.slice(1)) + '</span>';
@@ -2349,7 +2473,7 @@ function renderHabitos() {
     var streak = calcularStreak(h);
     var prog = progressoSemanaHabito(h);
     var arr = h.semanas[sk] || [false,false,false,false,false,false,false];
-    html += '<div class="habito-card">';
+    html += '<div class="habito-card" data-busca-id="' + h.id + '">';
     html += '<div class="habito-header">';
     html += '<div class="habito-emoji">' + (h.emoji||'✨') + '</div>';
     html += '<div class="habito-nome">' + esc(h.nome) + '</div>';
@@ -2732,7 +2856,7 @@ function renderMetaCards() {
     var atrasada = !m.feito && m.prazo && m.prazo < hojeStr();
     var pct = m.progresso || 0;
 
-    html += '<div class="meta-card' + (m.feito ? ' meta-concluida' : '') + (atrasada ? ' meta-atrasada' : '') + '">';
+    html += '<div class="meta-card' + (m.feito ? ' meta-concluida' : '') + (atrasada ? ' meta-atrasada' : '') + '" data-busca-id="' + m.id + '">';
     html += '<div class="meta-card-top">';
     html += '<button class="meta-check' + (m.feito ? ' feito' : '') + '" onclick="toggleMetaConclusao(\'' + m.id + '\')" title="' + (m.feito ? 'Desmarcar' : 'Concluir') + '">' + (m.feito ? '✅' : '⬜') + '</button>';
     html += '<div class="meta-card-info">';
@@ -2816,7 +2940,7 @@ function delNota(id) {
 function renderNotas() {
   var html = '';
   estado.notas.forEach(function(n) {
-    html += '<div class="nota-card">';
+    html += '<div class="nota-card" data-busca-id="' + n.id + '">';
     html += '<div class="nota-titulo">' + esc(n.titulo || 'Sem título') + '</div>';
     html += '<div class="nota-texto">' + esc(n.texto).replace(/\n/g,'<br>') + '</div>';
     html += '<div class="nota-meta">' + dataLocal(n.data.slice(0,10)) + '</div>';
@@ -2857,7 +2981,7 @@ function delLembrete(id) {
 function renderLembretes() {
   var html = '';
   estado.lembretes.forEach(function(l) {
-    html += '<div class="lembrete-item' + (l.ativo ? '' : ' inativo') + '">';
+    html += '<div class="lembrete-item' + (l.ativo ? '' : ' inativo') + '" data-busca-id="' + l.id + '">';
     html += '<span class="lembrete-check" onclick="toggleLembrete(\''+l.id+'\')">' + (l.ativo ? '🔔' : '🔕') + '</span>';
     html += '<span class="lembrete-texto">' + esc(l.texto) + '</span>';
     html += '<span class="lembrete-hora">' + (l.hora || '') + (l.data ? ' ' + dataLocal(l.data) : '') + '</span>';
