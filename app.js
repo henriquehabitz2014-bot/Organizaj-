@@ -287,6 +287,11 @@ function navegarPara(pagina, btn) {
   // Close any open sheets
   fecharMoreSheet();
 
+  // Brief page transition indicator
+  var main = document.querySelector('.main-area');
+  if (main) { main.style.opacity = '0.6'; main.style.transition = 'opacity .15s'; }
+  setTimeout(function() { if (main) { main.style.opacity = '1'; } }, 150);
+
   // Switch page visibility
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('ativo'); });
   var target = document.getElementById('page-' + pagina);
@@ -1155,6 +1160,28 @@ function esconderToast() {
   var el = document.getElementById('tkToast');
   if (el) el.classList.remove('visivel');
 }
+
+/* ---- GENERIC TOAST ---- */
+function showToast(msg, type) {
+  var el = document.getElementById('appToast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'appToast';
+    el.setAttribute('aria-live', 'polite');
+    el.setAttribute('role', 'status');
+    el.style.cssText = 'position:fixed;bottom:5.5rem;left:50%;transform:translateX(-50%);z-index:9999;pointer-events:none;max-width:90vw';
+    document.body.appendChild(el);
+  }
+  var icon = '';
+  var bg = 'linear-gradient(135deg,var(--cor),var(--cor2))';
+  if (type === 'success') { icon = '✅ '; bg = 'linear-gradient(135deg,var(--verde),#55efc4)'; }
+  else if (type === 'error') { icon = '❌ '; bg = 'linear-gradient(135deg,var(--vermelho),#e17055)'; }
+  else if (type === 'info') { icon = 'ℹ️ '; bg = 'linear-gradient(135deg,var(--azul),#74b9ff)'; }
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:.5rem;padding:.6rem 1.1rem;border-radius:.7rem;background:' + bg + ';color:#fff;font-size:var(--fs-base);font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);animation:plus-toast-in .4s ease,plus-toast-out .4s ease 2.6s forwards;pointer-events:auto">' + icon + esc(msg) + '</div>';
+  setTimeout(function() { el.innerHTML = ''; }, 3500);
+}
+
+
 
 function desfazerTarefa() {
   if (!tarefaUndo) { tkToast('Nada para desfazer'); return; }

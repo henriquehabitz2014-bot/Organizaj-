@@ -27,10 +27,11 @@
 </script>
 </head>
 <body>
+<a class="skip-link" href="#mainContent">Pular para o conteúdo</a>
 
 <!-- Apoie Banner -->
 <div class="apoie-banner" id="apoieBanner">
-  <div class="apoie-banner-text"><span class="emoji-pulse">💖</span> Apoie o OrganizaJá!</div>
+  <div class="apoie-banner-text"><span class="emoji-pulse" aria-hidden="true">💖</span> Apoie o OrganizaJá!</div>
   <button class="apoie-banner-btn" onclick="abrirPix()">Fazer um PIX</button>
   <button class="apoie-banner-close" onclick="fecharBannerApoie()">✕</button>
 </div>
@@ -45,7 +46,7 @@
 <div class="app-layout">
 
 <!-- Sidebar Desktop -->
-<nav class="sidebar" id="sidebar">
+<nav class="sidebar" id="sidebar" aria-label="Menu principal">
   <div class="sidebar-logo"><span>🚀</span> OrganizaJá</div>
   <div class="sidebar-section">Principal</div>
   <div class="sidebar-item ativo" data-page="inicio" onclick="navegarPara('inicio',this)">
@@ -103,18 +104,18 @@
 </nav>
 
 <!-- Main Area -->
-<div class="main-area">
+<div class="main-area" id="mainContent">
 
 <!-- Top Bar -->
 <div class="topbar">
   <div class="topbar-left">
-    <button class="topbar-btn" id="menuToggle" onclick="toggleSidebar()" style="display:none">☰</button>
+    <button class="topbar-btn" id="menuToggle" onclick="toggleSidebar()" style="display:none" aria-label="Abrir menu">☰</button>
     <div class="topbar-title" id="topbarTitle">Início</div>
   </div>
   <div class="topbar-botoes">
-    <button class="topbar-btn" onclick="abrirBusca()" title="Buscar">🔍</button>
-    <button class="topbar-btn" onclick="toggleTema()" title="Tema" id="temaBtn">🌙</button>
-    <button class="topbar-btn apoie-btn" onclick="abrirPix()" title="Apoie">💖</button>
+    <button class="topbar-btn" onclick="abrirBusca()" title="Buscar" aria-label="Buscar">🔍</button>
+    <button class="topbar-btn" onclick="toggleTema()" title="Tema" id="temaBtn" aria-label="Alternar tema">🌙</button>
+    <button class="topbar-btn apoie-btn" onclick="abrirPix()" title="Apoie" aria-label="Apoie o projeto">💖</button>
   </div>
 </div>
 
@@ -123,7 +124,7 @@
   <div class="busca-box">
     <div class="busca-input-wrap">
       <span>🔍</span>
-      <input type="text" id="buscaInput" placeholder="Buscar em tudo..." oninput="buscarTudo(this.value)">
+      <input type="text" id="buscaInput" placeholder="Buscar em tudo..." oninput="buscarTudo(this.value)" aria-label="Buscar em tudo">
     </div>
     <div class="busca-resultados" id="buscaResultados"></div>
   </div>
@@ -476,7 +477,7 @@
 </div>
 
 <!-- MATERIA MODAL -->
-<div class="tk-modal-bg" id="materiaModal" onclick="fecharMateriaModal(event)">
+<div class="tk-modal-bg" id="materiaModal" onclick="fecharMateriaModal(event)" role="dialog" aria-modal="true" aria-label="Matéria">
   <div class="tk-modal" onclick="event.stopPropagation()">
     <div class="tk-modal-head">
       <h3 id="matModalTitle">＋ Nova matéria</h3>
@@ -504,7 +505,7 @@
 </div>
 
 <!-- ANOTACAO MODAL -->
-<div class="tk-modal-bg" id="anotacaoModal" onclick="fecharAnotacaoModal(event)">
+<div class="tk-modal-bg" id="anotacaoModal" onclick="fecharAnotacaoModal(event)" role="dialog" aria-modal="true" aria-label="Anotação">
   <div class="tk-modal" onclick="event.stopPropagation()">
     <div class="tk-modal-head">
       <h3 id="anotModalTitle">📓 Nova anotação</h3>
@@ -624,7 +625,7 @@
 </div>
 
 <!-- META MODAL -->
-<div class="tk-modal-bg" id="metaModal" onclick="fecharMetaModal(event)">
+<div class="tk-modal-bg" id="metaModal" onclick="fecharMetaModal(event)" role="dialog" aria-modal="true" aria-label="Meta">
   <div class="tk-modal" onclick="event.stopPropagation()">
     <div class="tk-modal-head">
       <h3 id="metaModalTitle">🎯 Nova meta</h3>
@@ -1190,7 +1191,7 @@
 <div class="page" id="page-plus"></div>
 
 <!-- Plus Prompt Modal -->
-<div class="plus-prompt-overlay" id="plusPromptOverlay" onclick="fecharPlusPrompt(event)">
+<div class="plus-prompt-overlay" id="plusPromptOverlay" onclick="fecharPlusPrompt(event)" role="dialog" aria-modal="true" aria-label="Recurso Plus">
   <div class="plus-prompt-modal" onclick="event.stopPropagation()">
     <button class="plus-prompt-x" onclick="fecharPlusPromptBtn()" title="Fechar">✕</button>
     <div class="plus-prompt-icon">⭐</div>
@@ -1209,7 +1210,7 @@
 </div>
 
 <!-- Plus Toast Area -->
-<div id="plusToastArea" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;pointer-events:none"></div>
+<div id="plusToastArea" aria-live="polite" aria-atomic="true" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;pointer-events:none"></div>
 
 <!-- SEO Content (hidden) -->
 <section style="display:none" aria-hidden="true">
@@ -1246,7 +1247,7 @@
 </div><!-- /main-area -->
 
 <!-- Bottom Bar Mobile -->
-<nav class="bottombar" id="bottombar">
+<nav class="bottombar" id="bottombar" aria-label="Navegação rápida">
   <div class="bottombar-item ativo" data-page="inicio" onclick="navegarPara('inicio',this)">
     <div class="b-icon">🏠</div><span>Início</span>
   </div>
@@ -1300,7 +1301,7 @@
 </div><!-- /app-layout -->
 
 <!-- Pix Modal -->
-<div class="pix-modal-bg" id="pixModal" onclick="fecharPix(event)">
+<div class="pix-modal-bg" id="pixModal" onclick="fecharPix(event)" role="dialog" aria-modal="true" aria-label="Apoie via PIX">
   <div class="pix-modal">
     <button class="pix-fechar" onclick="fecharPixBtn()">✕</button>
     <div class="pix-coracao">💖💖💖</div>
@@ -1315,7 +1316,7 @@
 </div>
 
 <!-- Modal Editar Tarefa -->
-<div class="tk-modal-bg" id="tarefaEditModal" onclick="fecharEdicaoTarefa(event)">
+<div class="tk-modal-bg" id="tarefaEditModal" onclick="fecharEdicaoTarefa(event)" role="dialog" aria-modal="true" aria-label="Editar tarefa">
   <div class="tk-modal" onclick="event.stopPropagation()">
     <div class="tk-modal-head">
       <h3>✏️ Editar tarefa</h3>
@@ -1395,7 +1396,7 @@
 </div>
 
 <!-- Calendar Event Modal -->
-<div class="tk-modal-bg" id="calEventModal" onclick="fecharCalEventoModal(event)">
+<div class="tk-modal-bg" id="calEventModal" onclick="fecharCalEventoModal(event)" role="dialog" aria-modal="true" aria-label="Evento do calendário">
   <div class="tk-modal" onclick="event.stopPropagation()">
     <div class="tk-modal-head">
       <h3 id="calEvtModalTitle">＋ Novo evento</h3>
@@ -1453,7 +1454,7 @@
 </div>
 
 <!-- Prova Modal -->
-<div class="tk-modal-bg" id="provaModal" onclick="fecharProvaModal(event)">
+<div class="tk-modal-bg" id="provaModal" onclick="fecharProvaModal(event)" role="dialog" aria-modal="true" aria-label="Prova">
   <div class="tk-modal" onclick="event.stopPropagation()">
     <div class="tk-modal-head">
       <h3 id="provaModalTitle">＋ Nova prova</h3>
@@ -1502,7 +1503,7 @@
 </div>
 
 <!-- Trabalho Modal -->
-<div class="tk-modal-bg" id="trabalhoModal" onclick="fecharTrabalhoModal(event)">
+<div class="tk-modal-bg" id="trabalhoModal" onclick="fecharTrabalhoModal(event)" role="dialog" aria-modal="true" aria-label="Trabalho">
   <div class="tk-modal" onclick="event.stopPropagation()">
     <div class="tk-modal-head">
       <h3 id="trabModalTitle">＋ Novo trabalho</h3>
@@ -1555,7 +1556,7 @@
 </div>
 
 <!-- Confirm Modal -->
-<div class="modal-overlay" id="modalOverlay">
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
   <div class="modal-box">
     <h3 id="modalTitulo">Confirmar</h3>
     <p id="modalMsg">Tem certeza?</p>
@@ -1567,7 +1568,7 @@
 </div>
 
 <!-- OrganizaIA FAB -->
-<button class="oia-fab" id="oiaFab" onclick="abrirOrganizaIA()" title="OrganizaIA">
+<button class="oia-fab" id="oiaFab" onclick="abrirOrganizaIA()" title="OrganizaIA" aria-label="Abrir OrganizaIA">
   <span class="oia-fab-icon">🧠</span>
   <span class="oia-fab-label">OrganizaIA</span>
 </button>
@@ -1583,7 +1584,7 @@
         <div class="oia-head-sub">Seu assistente de organização</div>
       </div>
     </div>
-    <button class="oia-close" onclick="fecharOrganizaIABtn()" title="Fechar">✕</button>
+    <button class="oia-close" onclick="fecharOrganizaIABtn()" title="Fechar" aria-label="Fechar OrganizaIA">✕</button>
   </div>
   <div class="oia-suggestions" id="oiaSuggestions">
     <button class="oia-chip" onclick="oiaEnviarSugestao('Organize minhas tarefas de hoje')">📋 Organizar tarefas de hoje</button>
@@ -1602,13 +1603,13 @@
     <span class="oia-typing-text">OrganizaIA está pensando...</span>
   </div>
   <div class="oia-input-bar">
-    <input class="campo oia-input" id="oiaInput" type="text" placeholder="Pergunte como se organizar..." onkeydown="if(event.key==='Enter')oiaEnviar()">
+    <input class="campo oia-input" id="oiaInput" type="text" placeholder="Pergunte como se organizar..." onkeydown="if(event.key==='Enter')oiaEnviar()" aria-label="Pergunte ao OrganizaIA">
     <button class="oia-send" onclick="oiaEnviar()" title="Enviar">➤</button>
   </div>
 </div>
 
 <!-- Scroll Top -->
-<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆</button>
+<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Voltar ao topo">⬆</button>
 
 <!-- Footer -->
 <footer class="rodape" role="contentinfo">
