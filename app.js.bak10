@@ -46,8 +46,7 @@ var estado = {
   humorHoje: 0,
   humorData: '',
   exerciciosHoje: [],
-  exerciciosData: '',
-  notifConfig: {global:true, tarefas:1, provas:3, trabalhos:2, eventos:1, quietHours:{on:false, start:'22:00', end:'08:00'}}
+  exerciciosData: ''
 };
 
 var modalCallback = null;
@@ -204,25 +203,6 @@ function carregarEstado() {
     estado.filtroTarefas = estado.filtroTarefas === 'feitas' ? 'concluidas' : 'todas';
   }
   migrarTarefas();
-
-  // notifConfig migration
-  if (!estado.notifConfig) {
-    estado.notifConfig = {global:true, tarefas:1, provas:3, trabalhos:2, eventos:1, quietHours:{on:false, start:'22:00', end:'08:00'}};
-  } else {
-    if (estado.notifConfig.global === undefined) estado.notifConfig.global = true;
-    if (estado.notifConfig.tarefas === undefined) estado.notifConfig.tarefas = 1;
-    if (estado.notifConfig.provas === undefined) estado.notifConfig.provas = 3;
-    if (estado.notifConfig.trabalhos === undefined) estado.notifConfig.trabalhos = 2;
-    if (estado.notifConfig.eventos === undefined) estado.notifConfig.eventos = 1;
-    if (!estado.notifConfig.quietHours) estado.notifConfig.quietHours = {on:false, start:'22:00', end:'08:00'};
-  }
-
-  // per-item .lembrete migration
-  var i;
-  if (estado.tarefas) { for (i = 0; i < estado.tarefas.length; i++) { if (estado.tarefas[i].lembrete === undefined) estado.tarefas[i].lembrete = estado.notifConfig.tarefas; } }
-  if (estado.estudos && estado.estudos.provas) { for (i = 0; i < estado.estudos.provas.length; i++) { if (estado.estudos.provas[i].lembrete === undefined) estado.estudos.provas[i].lembrete = estado.notifConfig.provas; } }
-  if (estado.estudos && estado.estudos.trabalhos) { for (i = 0; i < estado.estudos.trabalhos.length; i++) { if (estado.estudos.trabalhos[i].lembrete === undefined) estado.estudos.trabalhos[i].lembrete = estado.notifConfig.trabalhos; } }
-  if (estado.calEventos) { for (i = 0; i < estado.calEventos.length; i++) { if (estado.calEventos[i].lembrete === undefined) estado.calEventos[i].lembrete = estado.notifConfig.eventos; } }
 
   // Visit counter
   var v = parseInt(localStorage.getItem('oj_visits') || '0') + 1;
@@ -571,55 +551,6 @@ function initNotificacoes() {
   scheduleAllNotificacoes();
 }
 
-function isQuietHours() {
-  if (!estado.notifConfig || !estado.notifConfig.quietHours || !estado.notifConfig.quietHours.on) return false;
-  var qh = estado.notifConfig.quietHours;
-  var agora = new Date();
-  var mins = agora.getHours() * 60 + agora.getMinutes();
-  var sp = qh.start.split(':');
-  var sMins = parseInt(sp[0]) * 60 + parseInt(sp[1]);
-  var ep = qh.end.split(':');
-  var eMins = parseInt(ep[0]) * 60 + parseInt(ep[1]);
-  if (sMins > eMins) {
-    return (mins >= sMins || mins < eMins);
-  }
-  return (mins >= sMins && mins < eMins);
-}
-
-function quietHoursEndMs() {
-  if (!estado.notifConfig || !estado.notifConfig.quietHours) return 0;
-  var qh = estado.notifConfig.quietHours;
-  var agora = new Date();
-  var ep = qh.end.split(':');
-  var endH = parseInt(ep[0]);
-  var endM = parseInt(ep[1]);
-  var end = new Date(agora);
-  end.setHours(endH, endM, 0, 0);
-  if (end <= agora) end.setDate(end.getDate() + 1);
-  return end.getTime() - agora.getTime();
-}
-
-function notifDedup(key) {
-  var last = sessionStorage.getItem('oj_notif_' + key);
-  if (last && (Date.now() - parseInt(last)) < 1800000) return true; // 30min dedup
-  sessionStorage.setItem('oj_notif_' + key, String(Date.now()));
-  return false;
-}
-
-function enviarNotificacaoDedup(titulo, corpo, key) {
-  if (notifDedup(key)) return;
-  if (isQuietHours()) {
-    var delay = quietHoursEndMs();
-    if (delay > 0 && delay < 86400000) {
-      notifTimers[key + '_qh'] = setTimeout(function() {
-        enviarNotificacao(titulo, corpo);
-      }, delay);
-    }
-    return;
-  }
-  enviarNotificacao(titulo, corpo);
-}
-
 function scheduleAllNotificacoes() {
   // Clear existing timers
   Object.keys(notifTimers).forEach(function(k) {
@@ -627,11 +558,7 @@ function scheduleAllNotificacoes() {
   });
   notifTimers = {};
 
-  // Check global toggle
-  if (!estado.notifConfig || !estado.notifConfig.global) return;
-
   var agora = Date.now();
-  var DIA = 86400000;
 
   // Lembretes
   estado.lembretes.forEach(function(l) {
@@ -639,23 +566,22 @@ function scheduleAllNotificacoes() {
     var dtStr = (l.data ? l.data + 'T' : hojeStr() + 'T') + (l.hora || '09:00');
     var dt = new Date(dtStr).getTime();
     var diff = dt - agora;
-    if (diff > 0 && diff < DIA) {
+    if (diff > 0 && diff < 86400000) {
       notifTimers['lembrete_' + l.id] = setTimeout(function() {
-        enviarNotificacaoDedup('Lembrete', l.texto, 'lembrete_' + l.id);
+        enviarNotificacao('Lembrete', l.texto);
       }, diff);
     }
   });
 
   // Tarefas with date/time
   estado.tarefas.forEach(function(t) {
-    if (t.feito || !t.data || t.lembrete < 0) return;
+    if (t.feito || !t.data) return;
     var dtStr = t.data + 'T' + (t.hora || '09:00');
     var dt = new Date(dtStr).getTime();
-    var reminderTime = dt - (t.lembrete * DIA);
-    var diff = reminderTime - agora;
-    if (diff > 0 && diff < DIA * 4) {
+    var diff = dt - agora;
+    if (diff > 0 && diff < 86400000) {
       notifTimers['tarefa_' + t.id] = setTimeout(function() {
-        enviarNotificacaoDedup('Tarefa: ' + t.texto, 'Vence ' + (t.lembrete === 0 ? 'hoje' : 'em ' + t.lembrete + ' dia(s)'), 'tarefa_' + t.id);
+        enviarNotificacao('Tarefa: ' + t.texto, 'Vence em breve!');
       }, diff);
     }
   });
@@ -663,43 +589,12 @@ function scheduleAllNotificacoes() {
   // Provas
   if (estado.estudos && estado.estudos.provas) {
     estado.estudos.provas.forEach(function(p) {
-      if (!p.data || p.lembrete < 0) return;
-      var dt = new Date(p.data + 'T' + (p.hora || '09:00')).getTime();
-      var reminderTime = dt - (p.lembrete * DIA);
-      var diff = reminderTime - agora;
-      if (diff > 0 && diff < DIA * 4) {
+      if (!p.data) return;
+      var dt = new Date(p.data + 'T09:00').getTime();
+      var diff = dt - agora;
+      if (diff > 0 && diff < 86400000 * 3) {
         notifTimers['prova_' + p.id] = setTimeout(function() {
-          enviarNotificacaoDedup('Prova: ' + p.texto, (p.lembrete === 0 ? 'Hoje' : 'Em ' + p.lembrete + ' dia(s)') + ' — ' + p.materia, 'prova_' + p.id);
-        }, diff);
-      }
-    });
-  }
-
-  // Trabalhos
-  if (estado.estudos && estado.estudos.trabalhos) {
-    estado.estudos.trabalhos.forEach(function(tb) {
-      if (!tb.data || tb.status === 'Concluído' || tb.lembrete < 0) return;
-      var dt = new Date(tb.data + 'T' + (tb.hora || '23:59')).getTime();
-      var reminderTime = dt - (tb.lembrete * DIA);
-      var diff = reminderTime - agora;
-      if (diff > 0 && diff < DIA * 4) {
-        notifTimers['trabalho_' + tb.id] = setTimeout(function() {
-          enviarNotificacaoDedup('Trabalho: ' + tb.texto, (tb.lembrete === 0 ? 'Vence hoje' : 'Vence em ' + tb.lembrete + ' dia(s)') + ' — ' + tb.materia, 'trabalho_' + tb.id);
-        }, diff);
-      }
-    });
-  }
-
-  // CalEventos
-  if (estado.calEventos) {
-    estado.calEventos.forEach(function(ev) {
-      if (!ev.data || ev.lembrete < 0) return;
-      var dt = new Date(ev.data + 'T' + (ev.hora || '09:00')).getTime();
-      var reminderTime = dt - (ev.lembrete * DIA);
-      var diff = reminderTime - agora;
-      if (diff > 0 && diff < DIA * 4) {
-        notifTimers['evento_' + ev.id] = setTimeout(function() {
-          enviarNotificacaoDedup('Evento: ' + ev.titulo, (ev.lembrete === 0 ? 'Hoje' : 'Em ' + ev.lembrete + ' dia(s)'), 'evento_' + ev.id);
+          enviarNotificacao('Prova: ' + p.texto, 'Dia ' + p.data);
         }, diff);
       }
     });
@@ -1236,8 +1131,7 @@ function addTarefa() {
     status: st,
     obs: tkVal('tarefaObs').trim(),
     feito: st === 'concluida',
-    criado: new Date().toISOString(),
-    lembrete: estado.notifConfig ? estado.notifConfig.tarefas : 1
+    criado: new Date().toISOString()
   });
   estado.tarefas.push(nova);
   salvarEstado();
@@ -1317,7 +1211,6 @@ function editarTarefa(id) {
   tkSet('edTarefaCat', t.categoria || '');
   tkSet('edTarefaStatus', t.status || 'pendente');
   tkSet('edTarefaObs', t.obs || '');
-  tkSet('edTarefaLembrete', t.lembrete !== undefined ? String(t.lembrete) : '-1');
   var m = document.getElementById('tarefaEditModal');
   if (m) m.classList.add('visivel');
   var f = document.getElementById('edTarefaTitulo');
@@ -1352,7 +1245,6 @@ function salvarEdicaoTarefa() {
   t.status = tkVal('edTarefaStatus') || 'pendente';
   t.feito = t.status === 'concluida';
   t.obs = tkVal('edTarefaObs').trim();
-  t.lembrete = parseInt(tkVal('edTarefaLembrete') || '-1');
   salvarEstado();
   fecharEdicaoTarefa();
   atualizarMateriasTarefa();
@@ -1507,7 +1399,6 @@ function renderTarefas() {
     if (t.categoria) metas.push('<span style="color:' + catC + '">' + esc(t.categoria) + '</span>');
     metas.push('<span style="color:var(--txt3)">' + (tkStatusLabel[t.status] || t.status) + '</span>');
     if (atrasada) metas.push('<span style="color:var(--vermelho);font-weight:700">🚨 atrasada</span>');
-    if (t.lembrete >= 0 && estado.notifConfig && estado.notifConfig.global) metas.push('<span class="notif-badge-active">🔔</span>');
     html += '<div class="tarefa-meta">' + metas.join(' ') + '</div>';
     if (temDetalhe) {
       html += '<button class="tk-toggle-det" onclick="toggleDetalheTarefa(\'' + t.id + '\')">' + (aberta ? '▲ Ocultar detalhes' : '▼ Ver detalhes') + '</button>';
@@ -1812,7 +1703,6 @@ function abrirCalEventoModal(editId) {
       document.getElementById('calEvtMateria').value = ce.materia || '';
       document.getElementById('calEvtTipo').value = ce.tipo || 'evento';
       document.getElementById('calEvtDesc').value = ce.descricao || '';
-      document.getElementById('calEvtLembrete').value = ce.lembrete !== undefined ? String(ce.lembrete) : String(estado.notifConfig.eventos);
       document.getElementById('calEvtModalTitle').textContent = '✏️ Editar evento';
     }
   } else {
@@ -1822,7 +1712,6 @@ function abrirCalEventoModal(editId) {
     document.getElementById('calEvtMateria').value = '';
     document.getElementById('calEvtTipo').value = 'evento';
     document.getElementById('calEvtDesc').value = '';
-    document.getElementById('calEvtLembrete').value = String(estado.notifConfig.eventos);
     document.getElementById('calEvtModalTitle').textContent = '＋ Novo evento';
   }
 }
@@ -1841,7 +1730,6 @@ function salvarCalEvento() {
   var materia = document.getElementById('calEvtMateria').value.trim();
   var tipo = document.getElementById('calEvtTipo').value;
   var descricao = document.getElementById('calEvtDesc').value.trim();
-  var lembrete = parseInt(document.getElementById('calEvtLembrete').value);
   if (!titulo) return;
   if (!data) data = estado.calDiaSel || hojeStr();
   if (calEventoEditId) {
@@ -1853,7 +1741,6 @@ function salvarCalEvento() {
       ce.materia = materia;
       ce.tipo = tipo;
       ce.descricao = descricao;
-      ce.lembrete = lembrete;
     }
   } else {
     estado.calEventos.push({
@@ -1863,8 +1750,7 @@ function salvarCalEvento() {
       hora: hora,
       materia: materia,
       tipo: tipo,
-      descricao: descricao,
-      lembrete: lembrete
+      descricao: descricao
     });
   }
   salvarEstado();
@@ -2309,7 +2195,6 @@ function abrirProvaModal(editId) {
       document.getElementById('prvData').value = p.data || '';
       document.getElementById('prvHora').value = p.hora || '';
       document.getElementById('prvConteudo').value = p.conteudo || '';
-      document.getElementById('prvLembrete').value = p.lembrete !== undefined ? String(p.lembrete) : String(estado.notifConfig.provas);
       return;
     }
   }
@@ -2324,7 +2209,6 @@ function abrirProvaModal(editId) {
   document.getElementById('prvData').value = '';
   document.getElementById('prvHora').value = '';
   document.getElementById('prvConteudo').value = '';
-  document.getElementById('prvLembrete').value = String(estado.notifConfig.provas);
 }
 
 function fecharProvaModal(e) {
@@ -2340,7 +2224,6 @@ function salvarProva() {
   var data = document.getElementById('prvData').value;
   var hora = document.getElementById('prvHora').value;
   var conteudo = document.getElementById('prvConteudo').value.trim();
-  var lembrete = parseInt(document.getElementById('prvLembrete').value);
   if (!titulo) return;
   if (provaEditId) {
     var p = estado.estudos.provas.find(function(x){ return x.id === provaEditId; });
@@ -2350,7 +2233,6 @@ function salvarProva() {
       p.data = data;
       p.hora = hora;
       p.conteudo = conteudo;
-      p.lembrete = lembrete;
     }
   } else {
     estado.estudos.provas.push({
@@ -2359,8 +2241,7 @@ function salvarProva() {
       materia: materia,
       data: data,
       hora: hora,
-      conteudo: conteudo,
-      lembrete: lembrete
+      conteudo: conteudo
     });
   }
   salvarEstado();
@@ -2401,7 +2282,6 @@ function renderProvas() {
     } else if (passou) {
       html += '<span class="pv-countdown pv-count-passou">passou</span>';
     }
-    if (p.lembrete >= 0 && estado.notifConfig && estado.notifConfig.global) html += '<span class="notif-badge-active">🔔</span>';
     html += '</div>';
     html += '<div class="pv-acoes">';
     html += '<button class="btn btn-s pv-btn-edit" onclick="abrirProvaModal(\'' + p.id + '\')">✏️ Editar</button>';
@@ -2450,7 +2330,6 @@ function abrirTrabalhoModal(editId) {
       document.getElementById('trbPrazo').value = tr.data || '';
       document.getElementById('trbDescricao').value = tr.descricao || '';
       document.getElementById('trbStatus').value = tr.status || 'pendente';
-      document.getElementById('trbLembrete').value = tr.lembrete !== undefined ? String(tr.lembrete) : String(estado.notifConfig.trabalhos);
       return;
     }
   }
@@ -2460,7 +2339,6 @@ function abrirTrabalhoModal(editId) {
   document.getElementById('trbPrazo').value = '';
   document.getElementById('trbDescricao').value = '';
   document.getElementById('trbStatus').value = 'pendente';
-  document.getElementById('trbLembrete').value = String(estado.notifConfig.trabalhos);
   // Pre-fill materia if opened from materia detail
   if (matDetalheIdAtual) {
     var mPre = estado.estudos.materias.find(function(x){ return x.id === matDetalheIdAtual; });
@@ -2481,7 +2359,6 @@ function salvarTrabalho() {
   var prazo = document.getElementById('trbPrazo').value;
   var descricao = document.getElementById('trbDescricao').value.trim();
   var status = document.getElementById('trbStatus').value;
-  var lembrete = parseInt(document.getElementById('trbLembrete').value);
   if (!titulo) return;
   if (trabalhoEditId) {
     var tr = estado.estudos.trabalhos.find(function(x){ return x.id === trabalhoEditId; });
@@ -2491,7 +2368,6 @@ function salvarTrabalho() {
       tr.data = prazo;
       tr.descricao = descricao;
       tr.status = status;
-      tr.lembrete = lembrete;
     }
   } else {
     estado.estudos.trabalhos.push({
@@ -2500,8 +2376,7 @@ function salvarTrabalho() {
       materia: materia,
       data: prazo,
       descricao: descricao,
-      status: status,
-      lembrete: lembrete
+      status: status
     });
   }
   salvarEstado();
@@ -2553,7 +2428,6 @@ function renderTrabalhos() {
     } else if (passou && !concluido) {
       html += '<span class="tb-countdown tb-count-atrasado">atrasado</span>';
     }
-    if (tr.lembrete >= 0 && estado.notifConfig && estado.notifConfig.global) html += '<span class="notif-badge-active">🔔</span>';
     html += '</div>';
     html += '<div class="tb-acoes">';
     html += '<button class="btn btn-s tb-btn-check" onclick="concluirTrabalho(\'' + tr.id + '\')">' + (concluido ? '↩️ Reabrir' : '✅ Concluir') + '</button>';
@@ -3116,47 +2990,6 @@ function renderLembretes() {
   });
   if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhum lembrete.</div>';
   document.getElementById('lembretesLista').innerHTML = html;
-  renderNotifConfig();
-}
-
-function renderNotifConfig() {
-  if (!estado.notifConfig) return;
-  var nc = estado.notifConfig;
-  document.getElementById('notifGlobal').checked = nc.global ? true : false;
-  document.getElementById('notifTarefas').value = String(nc.tarefas);
-  document.getElementById('notifProvas').value = String(nc.provas);
-  document.getElementById('notifTrabalhos').value = String(nc.trabalhos);
-  document.getElementById('notifEventos').value = String(nc.eventos);
-  document.getElementById('notifQuietOn').checked = nc.quietHours && nc.quietHours.on ? true : false;
-  document.getElementById('notifQuietStart').value = nc.quietHours ? nc.quietHours.start : '22:00';
-  document.getElementById('notifQuietEnd').value = nc.quietHours ? nc.quietHours.end : '08:00';
-  var qr = document.getElementById('notifQuietRow');
-  if (qr) qr.style.display = nc.quietHours && nc.quietHours.on ? '' : 'none';
-  var cs = document.getElementById('notifConfigSection');
-  if (cs) {
-    var items = cs.querySelectorAll('.notif-config-grid .notif-config-item, .notif-config-quiet');
-    for (var i = 0; i < items.length; i++) {
-      items[i].style.opacity = nc.global ? '1' : '0.4';
-      items[i].style.pointerEvents = nc.global ? '' : 'none';
-    }
-  }
-}
-
-function saveNotifConfig() {
-  if (!estado.notifConfig) estado.notifConfig = {};
-  estado.notifConfig.global = document.getElementById('notifGlobal').checked;
-  estado.notifConfig.tarefas = parseInt(document.getElementById('notifTarefas').value);
-  estado.notifConfig.provas = parseInt(document.getElementById('notifProvas').value);
-  estado.notifConfig.trabalhos = parseInt(document.getElementById('notifTrabalhos').value);
-  estado.notifConfig.eventos = parseInt(document.getElementById('notifEventos').value);
-  estado.notifConfig.quietHours = {
-    on: document.getElementById('notifQuietOn').checked,
-    start: document.getElementById('notifQuietStart').value || '22:00',
-    end: document.getElementById('notifQuietEnd').value || '08:00'
-  };
-  salvarEstado();
-  renderNotifConfig();
-  scheduleAllNotificacoes();
 }
 
 // ---- DECISOR ----

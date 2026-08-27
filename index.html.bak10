@@ -684,69 +684,6 @@
         <button class="btn btn-p" onclick="addLembrete()">Salvar</button>
       </div>
       <div id="lembretesLista"></div>
-      <div class="notif-config-section" id="notifConfigSection">
-        <h3 class="secao-titulo" style="font-size:1rem;margin:1rem 0 .5rem">⚙️ Configurações de Notificação</h3>
-        <div class="notif-config-row">
-          <span class="notif-config-label">Notificações globais</span>
-          <label class="notif-toggle"><input type="checkbox" id="notifGlobal" onchange="saveNotifConfig()"><span class="notif-toggle-slider"></span></label>
-        </div>
-        <div class="notif-config-grid">
-          <div class="notif-config-item">
-            <span class="notif-config-label">📋 Tarefas</span>
-            <select class="campo" id="notifTarefas" onchange="saveNotifConfig()">
-              <option value="-1">Desativado</option>
-              <option value="0">No dia</option>
-              <option value="1">1 dia antes</option>
-              <option value="2">2 dias antes</option>
-              <option value="3">3 dias antes</option>
-            </select>
-          </div>
-          <div class="notif-config-item">
-            <span class="notif-config-label">📝 Provas</span>
-            <select class="campo" id="notifProvas" onchange="saveNotifConfig()">
-              <option value="-1">Desativado</option>
-              <option value="0">No dia</option>
-              <option value="1">1 dia antes</option>
-              <option value="2">2 dias antes</option>
-              <option value="3">3 dias antes</option>
-            </select>
-          </div>
-          <div class="notif-config-item">
-            <span class="notif-config-label">📄 Trabalhos</span>
-            <select class="campo" id="notifTrabalhos" onchange="saveNotifConfig()">
-              <option value="-1">Desativado</option>
-              <option value="0">No dia</option>
-              <option value="1">1 dia antes</option>
-              <option value="2">2 dias antes</option>
-              <option value="3">3 dias antes</option>
-            </select>
-          </div>
-          <div class="notif-config-item">
-            <span class="notif-config-label">📌 Eventos</span>
-            <select class="campo" id="notifEventos" onchange="saveNotifConfig()">
-              <option value="-1">Desativado</option>
-              <option value="0">No dia</option>
-              <option value="1">1 dia antes</option>
-              <option value="2">2 dias antes</option>
-              <option value="3">3 dias antes</option>
-            </select>
-          </div>
-        </div>
-        <div class="notif-config-row" style="margin-top:.5rem">
-          <span class="notif-config-label">🌙 Horário silencioso</span>
-          <label class="notif-toggle"><input type="checkbox" id="notifQuietOn" onchange="saveNotifConfig()"><span class="notif-toggle-slider"></span></label>
-        </div>
-        <div class="notif-config-quiet" id="notifQuietRow">
-          <div class="notif-config-item">
-            <span class="notif-config-label">Das</span>
-            <input class="campo" id="notifQuietStart" type="time" value="22:00" onchange="saveNotifConfig()">
-          </div>
-          <div class="notif-config-item">
-            <span class="notif-config-label">Às</span>
-            <input class="campo" id="notifQuietEnd" type="time" value="08:00" onchange="saveNotifConfig()">
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -1247,16 +1184,6 @@
         <label class="tk-lbl" for="edTarefaObs">📌 Observações</label>
         <textarea class="campo tk-ta" id="edTarefaObs" rows="2" placeholder="Anotações extras"></textarea>
       </div>
-      <div class="tk-field">
-        <label class="tk-lbl" for="edTarefaLembrete">🔔 Lembrete</label>
-        <select class="campo" id="edTarefaLembrete">
-          <option value="-1">Desativado</option>
-          <option value="0">No dia</option>
-          <option value="1">1 dia antes</option>
-          <option value="2">2 dias antes</option>
-          <option value="3">3 dias antes</option>
-        </select>
-      </div>
     </div>
     <div class="tk-modal-foot">
       <button class="btn btn-s" onclick="fecharEdicaoTarefa()">Cancelar</button>
@@ -1305,16 +1232,6 @@
         <label class="tk-lbl" for="calEvtDesc">📝 Descrição</label>
         <textarea class="campo tk-ta" id="calEvtDesc" rows="3" placeholder="Detalhes do evento"></textarea>
       </div>
-      <div class="tk-field">
-        <label class="tk-lbl" for="calEvtLembrete">🔔 Lembrete</label>
-        <select class="campo" id="calEvtLembrete">
-          <option value="-1">Desativado</option>
-          <option value="0">No dia</option>
-          <option value="1">1 dia antes</option>
-          <option value="2">2 dias antes</option>
-          <option value="3">3 dias antes</option>
-        </select>
-      </div>
     </div>
     <div class="tk-modal-foot">
       <button class="btn btn-s" onclick="fecharCalEventoModal()">Cancelar</button>
@@ -1353,16 +1270,6 @@
       <div class="tk-field">
         <label class="tk-lbl" for="prvConteudo">📋 Conteúdo</label>
         <textarea class="campo tk-ta" id="prvConteudo" rows="3" placeholder="O que cai na prova?"></textarea>
-      </div>
-      <div class="tk-field">
-        <label class="tk-lbl" for="prvLembrete">🔔 Lembrete</label>
-        <select class="campo" id="prvLembrete">
-          <option value="-1">Desativado</option>
-          <option value="0">No dia</option>
-          <option value="1">1 dia antes</option>
-          <option value="2">2 dias antes</option>
-          <option value="3">3 dias antes</option>
-        </select>
       </div>
     </div>
     <div class="tk-modal-foot">
@@ -1406,16 +1313,6 @@
       <div class="tk-field">
         <label class="tk-lbl" for="trbDescricao">📋 Descrição</label>
         <textarea class="campo tk-ta" id="trbDescricao" rows="3" placeholder="Detalhes do trabalho"></textarea>
-      </div>
-      <div class="tk-field">
-        <label class="tk-lbl" for="trbLembrete">🔔 Lembrete</label>
-        <select class="campo" id="trbLembrete">
-          <option value="-1">Desativado</option>
-          <option value="0">No dia</option>
-          <option value="1">1 dia antes</option>
-          <option value="2">2 dias antes</option>
-          <option value="3">3 dias antes</option>
-        </select>
       </div>
     </div>
     <div class="tk-modal-foot">
