@@ -47,8 +47,7 @@ var estado = {
   humorData: '',
   exerciciosHoje: [],
   exerciciosData: '',
-  notifConfig: {global:true, tarefas:1, provas:3, trabalhos:2, eventos:1, quietHours:{on:false, start:'22:00', end:'08:00'}},
-  perfil: {nome:'', avatar:'', serie:''}
+  notifConfig: {global:true, tarefas:1, provas:3, trabalhos:2, eventos:1, quietHours:{on:false, start:'22:00', end:'08:00'}}
 };
 
 var modalCallback = null;
@@ -218,12 +217,6 @@ function carregarEstado() {
     if (!estado.notifConfig.quietHours) estado.notifConfig.quietHours = {on:false, start:'22:00', end:'08:00'};
   }
 
-  // perfil migration
-  if (!estado.perfil) estado.perfil = {nome:'', avatar:'', serie:''};
-  if (estado.perfil.nome === undefined) estado.perfil.nome = '';
-  if (estado.perfil.avatar === undefined) estado.perfil.avatar = '';
-  if (estado.perfil.serie === undefined) estado.perfil.serie = '';
-
   // per-item .lembrete migration
   var i;
   if (estado.tarefas) { for (i = 0; i < estado.tarefas.length; i++) { if (estado.tarefas[i].lembrete === undefined) estado.tarefas[i].lembrete = estado.notifConfig.tarefas; } }
@@ -268,7 +261,7 @@ var pageNames = {
   humor:'Humor', gratidao:'Gratidão', refeicoes:'Refeições',
   orcamento:'Orçamento', compras:'Compras', planejamento:'Semanal',
   regressiva:'Regressiva', calculadora:'Calculadora', senhas:'Senhas',
-  leitura:'Leitura', revisao:'Revisão', frases:'Frases', vida:'Painel da Vida', perfil:'Perfil'
+  leitura:'Leitura', revisao:'Revisão', frases:'Frases', vida:'Painel da Vida'
 };
 
 function navegarPara(pagina, btn) {
@@ -797,8 +790,7 @@ function renderDashboard() {
   // === SAUDAÇÃO ===
   var h = new Date().getHours();
   var greet = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
-  var nome = estado.perfil && estado.perfil.nome ? estado.perfil.nome : '';
-  document.getElementById('dashGreeting').textContent = greet + (nome ? ', ' + nome : '') + '! 👋';
+  document.getElementById('dashGreeting').textContent = greet + '! 👋';
 
   // === DATA ===
   var dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
@@ -3880,8 +3872,7 @@ function searchPages() {
     {slug:'leitura', nome:'Leitura', icon:'📖'},
     {slug:'revisao', nome:'Revisão', icon:'🔄'},
     {slug:'frases', nome:'Frases', icon:'💬'},
-    {slug:'vida', nome:'Painel da Vida', icon:'🌟'},
-    {slug:'perfil', nome:'Perfil & Config', icon:'⚙️'}
+    {slug:'vida', nome:'Painel da Vida', icon:'🌟'}
   ];
 
   var html = '';
@@ -4197,109 +4188,7 @@ function renderPage(slug) {
     case 'revisao': renderRevisao(); break;
     case 'frases': novaFrase(); break;
     case 'vida': calcularVida(); break;
-    case 'perfil': renderPerfil(); break;
   }
-}
-
-// ---- PERFIL / CONFIGURACOES ----
-
-var perfilEmojis = ['😊','😎','🤓','🦊','🐱','🐶','🦁','🐸','🦋','🌟','🎯','💡','🔥','🎮','🎨','📚'];
-
-function renderPerfil() {
-  // Nome
-  var nomeInput = document.getElementById('perfilNomeInput');
-  if (nomeInput) nomeInput.value = estado.perfil.nome || '';
-
-  // Série
-  var serieSelect = document.getElementById('perfilSerieSelect');
-  if (serieSelect) serieSelect.value = estado.perfil.serie || '';
-
-  // Avatar preview
-  var preview = document.getElementById('perfilAvatarPreview');
-  if (preview) {
-    if (estado.perfil.avatar && estado.perfil.avatar.indexOf('data:') === 0) {
-      preview.innerHTML = '<img src="' + estado.perfil.avatar + '" class="perfil-avatar-real">';
-    } else {
-      preview.textContent = estado.perfil.avatar || '😊';
-    }
-  }
-
-  // Emoji grid
-  var grid = document.getElementById('perfilEmojiGrid');
-  if (grid) {
-    var html = '';
-    for (var i = 0; i < perfilEmojis.length; i++) {
-      var sel = (estado.perfil.avatar === perfilEmojis[i]) ? ' perfil-emoji-sel' : '';
-      html += '<div class="perfil-emoji-item' + sel + '" onclick="escolherEmoji(\'' + perfilEmojis[i] + '\')">' + perfilEmojis[i] + '</div>';
-    }
-    grid.innerHTML = html;
-  }
-
-  // Theme selector
-  var optClaro = document.getElementById('temaOptClaro');
-  var optEscuro = document.getElementById('temaOptEscuro');
-  if (optClaro) optClaro.className = 'config-theme-opt' + (estado.tema === 'claro' ? ' config-theme-active' : '');
-  if (optEscuro) optEscuro.className = 'config-theme-opt' + (estado.tema === 'escuro' ? ' config-theme-active' : '');
-
-  // Notificações — summary + link to lembretes page
-  var notifArea = document.getElementById('configNotifArea');
-  if (notifArea) {
-    var nc = estado.notifConfig || {};
-    var status = nc.global ? 'Ativadas' : 'Desativadas';
-    var stColor = nc.global ? 'var(--cor)' : 'var(--txt3)';
-    notifArea.innerHTML = '<div class="config-row" style="display:flex;align-items:center;justify-content:space-between">' +
-      '<span class="config-label">Notificações globais</span>' +
-      '<span style="color:' + stColor + ';font-size:.85rem;font-weight:600">' + status + '</span>' +
-      '</div>' +
-      '<div class="config-row" style="display:flex;align-items:center;justify-content:space-between">' +
-      '<span class="config-label">Horário silencioso</span>' +
-      '<span style="color:var(--txt2);font-size:.85rem">' +
-      (nc.quietHours && nc.quietHours.on ? nc.quietHours.start + ' – ' + nc.quietHours.end : 'Desativado') +
-      '</span></div>' +
-      '<button class="btn" style="margin-top:.5rem;width:100%" onclick="navegarPara(\'lembretes\')">🔔 Configurar notificações</button>';
-  }
-}
-
-function selecionarAvatar() {
-  document.getElementById('avatarFileInput').click();
-}
-
-function trocarAvatar(evt) {
-  var file = evt.target.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var img = new Image();
-    img.onload = function() {
-      var canvas = document.createElement('canvas');
-      var size = 128;
-      canvas.width = size;
-      canvas.height = size;
-      var ctx = canvas.getContext('2d');
-      var s = Math.min(img.width, img.height);
-      var sx = (img.width - s) / 2;
-      var sy = (img.height - s) / 2;
-      ctx.drawImage(img, sx, sy, s, s, 0, 0, size, size);
-      estado.perfil.avatar = canvas.toDataURL('image/jpeg', 0.7);
-      salvarEstado();
-      renderPerfil();
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function escolherEmoji(emoji) {
-  estado.perfil.avatar = emoji;
-  salvarEstado();
-  renderPerfil();
-}
-
-function mudarTema(t) {
-  estado.tema = t;
-  salvarEstado();
-  aplicarTema();
-  renderPerfil();
 }
 
 // ---- INIT / BOOTSTRAP ----

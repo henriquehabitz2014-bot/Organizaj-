@@ -97,8 +97,6 @@
     <div class="sidebar-tool-mini" onclick="navegarPara('vida')">🌟 Painel da Vida</div>
     <div class="sidebar-tool-mini" onclick="abrirOrganizaIA()">🧠 OrganizaIA</div>
   </div>
-  <div class="sidebar-section" style="margin-top:12px">Conta</div>
-  <div class="sidebar-tool-mini" onclick="navegarPara('perfil')">⚙️ Perfil & Configurações</div>
 </nav>
 
 <!-- Main Area -->
@@ -1086,76 +1084,6 @@
   </div>
 </div>
 
-<!-- Page: Perfil & Configurações -->
-<div class="page" id="page-perfil">
-  <div class="config-page">
-
-    <!-- Perfil Card -->
-    <div class="config-section">
-      <div class="config-section-title">👤 Perfil</div>
-      <div class="perfil-card">
-        <div class="perfil-avatar-wrap" id="perfilAvatarWrap" onclick="selecionarAvatar()">
-          <div class="perfil-avatar-img" id="perfilAvatarPreview">😊</div>
-          <div class="perfil-avatar-edit">✏️</div>
-          <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="trocarAvatar(event)">
-        </div>
-        <div class="perfil-fields">
-          <div class="config-row">
-            <label class="config-label">Nome</label>
-            <input class="config-input" id="perfilNomeInput" type="text" placeholder="Seu nome" maxlength="30" oninput="estado.perfil.nome=this.value;salvarEstado()">
-          </div>
-          <div class="config-row">
-            <label class="config-label">Série / Ano escolar</label>
-            <select class="config-select" id="perfilSerieSelect" onchange="estado.perfil.serie=this.value;salvarEstado()">
-              <option value="">— Selecionar —</option>
-              <option value="1ano">1º ano</option>
-              <option value="2ano">2º ano</option>
-              <option value="3ano">3º ano</option>
-              <option value="4ano">4º ano</option>
-              <option value="5ano">5º ano</option>
-              <option value="6ano">6º ano</option>
-              <option value="7ano">7º ano</option>
-              <option value="8ano">8º ano</option>
-              <option value="9ano">9º ano</option>
-              <option value="1em">1ª série (EM)</option>
-              <option value="2em">2ª série (EM)</option>
-              <option value="3em">3ª série (EM)</option>
-              <option value="facul">Faculdade</option>
-              <option value="outro">Outro</option>
-            </select>
-          </div>
-          <div class="config-row">
-            <label class="config-label">Emoji de avatar</label>
-            <div class="perfil-emoji-grid" id="perfilEmojiGrid"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tema -->
-    <div class="config-section">
-      <div class="config-section-title">🎨 Tema</div>
-      <div class="config-theme-cards">
-        <div class="config-theme-opt" id="temaOptClaro" onclick="mudarTema('claro')">
-          <div class="config-theme-preview tema-preview-claro">☀️</div>
-          <div class="config-theme-label">Claro</div>
-        </div>
-        <div class="config-theme-opt" id="temaOptEscuro" onclick="mudarTema('escuro')">
-          <div class="config-theme-preview tema-preview-escuro">🌙</div>
-          <div class="config-theme-label">Escuro</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Notificações -->
-    <div class="config-section">
-      <div class="config-section-title">🔔 Notificações</div>
-      <div id="configNotifArea"></div>
-    </div>
-
-  </div>
-</div>
-
 <!-- SEO Content (hidden) -->
 <section style="display:none" aria-hidden="true">
   <h2>Ferramentas de organização pessoal gratuitas</h2>
@@ -1237,7 +1165,6 @@
     <div class="sheet-tool" onclick="navegarPara('frases');fecharMoreSheet()"><div class="st-icon">💭</div>Frases</div>
     <div class="sheet-tool" onclick="navegarPara('vida');fecharMoreSheet()"><div class="st-icon">🌟</div>Painel da Vida</div>
     <div class="sheet-tool" onclick="abrirOrganizaIA();fecharMoreSheet()"><div class="st-icon">🧠</div>OrganizaIA</div>
-    <div class="sheet-tool" onclick="navegarPara('perfil');fecharMoreSheet()"><div class="st-icon">⚙️</div>Perfil & Config</div>
   </div>
 </div>
 
