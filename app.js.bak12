@@ -48,8 +48,7 @@ var estado = {
   exerciciosHoje: [],
   exerciciosData: '',
   notifConfig: {global:true, tarefas:1, provas:3, trabalhos:2, eventos:1, quietHours:{on:false, start:'22:00', end:'08:00'}},
-  perfil: {nome:'', avatar:'', serie:''},
-  plus: {ativo: false, expira: '', plano: ''}
+  perfil: {nome:'', avatar:'', serie:''}
 };
 
 var modalCallback = null;
@@ -225,12 +224,6 @@ function carregarEstado() {
   if (estado.perfil.avatar === undefined) estado.perfil.avatar = '';
   if (estado.perfil.serie === undefined) estado.perfil.serie = '';
 
-  // plus migration
-  if (!estado.plus) estado.plus = {ativo: false, expira: '', plano: ''};
-  if (estado.plus.ativo === undefined) estado.plus.ativo = false;
-  if (estado.plus.expira === undefined) estado.plus.expira = '';
-  if (estado.plus.plano === undefined) estado.plus.plano = '';
-
   // per-item .lembrete migration
   var i;
   if (estado.tarefas) { for (i = 0; i < estado.tarefas.length; i++) { if (estado.tarefas[i].lembrete === undefined) estado.tarefas[i].lembrete = estado.notifConfig.tarefas; } }
@@ -275,8 +268,7 @@ var pageNames = {
   humor:'Humor', gratidao:'Gratidão', refeicoes:'Refeições',
   orcamento:'Orçamento', compras:'Compras', planejamento:'Semanal',
   regressiva:'Regressiva', calculadora:'Calculadora', senhas:'Senhas',
-  leitura:'Leitura', revisao:'Revisão', frases:'Frases', vida:'Painel da Vida', perfil:'Perfil',
-  plus:'OrganizaJá Plus'
+  leitura:'Leitura', revisao:'Revisão', frases:'Frases', vida:'Painel da Vida', perfil:'Perfil'
 };
 
 function navegarPara(pagina, btn) {
@@ -409,10 +401,8 @@ function buscarTudo(q) {
       paginas.push({ slug: k, nome: pageNames[k] });
     }
   });
-  var plusPages = ['plus','pomodoro','revisao','planejamento','progresso'];
   if (paginas.length) categorias.push({ icon: '🧭', titulo: 'Páginas', items: paginas.map(function(p) {
-    var badge = (plusPages.indexOf(p.slug) >= 0) ? ' <span class="plus-badge-mini">PLUS</span>' : '';
-    return { id: '__page__' + p.slug, texto: p.nome + badge, acao: "navegarPara('" + esc(p.slug) + "')" };
+    return { id: '__page__' + p.slug, texto: p.nome, acao: "navegarPara('" + esc(p.slug) + "')" };
   })});
 
   // 2) Tarefas
@@ -4175,15 +4165,6 @@ function renderProgresso() {
     h += '</div>';
   }
 
-  // Plus: Estatísticas Avançadas (upsell)
-  if (!estado.plus.ativo) {
-    h += '<div class="prog-secao plus-preview-section" onclick="showPlusPrompt(\'Estatísticas Avançadas\')">';
-    h += '<div class="plus-preview-header"><span class="plus-badge-mini">PLUS</span> 📊 Estatísticas Avançadas</div>';
-    h += '<div class="plus-preview-desc">Gráficos de tendência, streaks, análise por período, comparação semanal e muito mais.</div>';
-    h += '<div class="plus-preview-cta">⭐ Desbloquear com Plus</div>';
-    h += '</div>';
-  }
-
   document.getElementById('progressoConteudo').innerHTML = h;
 }
 
@@ -4217,7 +4198,6 @@ function renderPage(slug) {
     case 'frases': novaFrase(); break;
     case 'vida': calcularVida(); break;
     case 'perfil': renderPerfil(); break;
-    case 'plus': renderPlusPage(); break;
   }
 }
 
@@ -4644,10 +4624,6 @@ function renderHistoricoIA() {
 }
 
 function abrirOrganizaIA() {
-  if (isPlusFeature('organizaia')) {
-    showPlusPrompt('OrganizaIA');
-    return;
-  }
   var overlay = document.getElementById('oiaOverlay');
   var panel = document.getElementById('oiaPanel');
   if (overlay) overlay.classList.add('visivel');
@@ -5134,168 +5110,5 @@ function nomeDiaSemana(dataStr) {
   var d = new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2]));
   var nomes = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
   return nomes[d.getDay()] + ' (' + dataStr.slice(5) + ')';
-}
-
-/* ===== FREEMIUM / PLUS ===== */
-
-var plusFeatures = {
-  organizaia: 'OrganizaIA',
-  progressoAvancado: 'Estatísticas Avançadas',
-  personalizacaoAvancada: 'Personalização Avançada',
-  planejamentoAvancado: 'Planejamento Avançado',
-  revisaoAvancada: 'Revisão Avançada',
-  pomodoroAvancado: 'Pomodoro Avançado'
-};
-
-function isPlusFeature(slug) {
-  if (estado.plus && estado.plus.ativo) return false;
-  return plusFeatures[slug] !== undefined;
-}
-
-function showPlusPrompt(featureName) {
-  var el = document.getElementById('plusPromptOverlay');
-  if (!el) return;
-  var nameEl = document.getElementById('plusPromptFeature');
-  if (nameEl) nameEl.textContent = featureName || 'este recurso';
-  el.classList.add('visivel');
-}
-
-function fecharPlusPrompt(e) {
-  var el = document.getElementById('plusPromptOverlay');
-  if (!el) return;
-  if (e && e.target && e.target.id !== 'plusPromptOverlay') return;
-  el.classList.remove('visivel');
-}
-
-function fecharPlusPromptBtn() {
-  fecharPlusPrompt({target:{id:'plusPromptOverlay'}});
-}
-
-function plusPromptVerPlanos() {
-  fecharPlusPromptBtn();
-  navegarPara('plus');
-}
-
-function renderPlusPage() {
-  var container = document.getElementById('page-plus');
-  if (!container) return;
-  var ativo = estado.plus && estado.plus.ativo;
-  var html = '';
-  html += '<div class="plus-page">';
-
-  // Header
-  html += '<div class="plus-header">';
-  html += '<div class="plus-logo">⭐</div>';
-  html += '<h2 class="plus-title">OrganizaJá Plus</h2>';
-  html += '<p class="plus-subtitle">Libere o máximo do sua organização</p>';
-  html += '</div>';
-
-  if (ativo) {
-    html += '<div class="plus-status-active">';
-    html += '<div class="plus-status-icon">✨</div>';
-    html += '<div class="plus-status-text">Você é assinante Plus!</div>';
-    if (estado.plus.plano) html += '<small>Plano: ' + esc(estado.plus.plano) + '</small>';
-    if (estado.plus.expira) html += '<small>Válido até: ' + dataLocal(estado.plus.expira) + '</small>';
-    html += '</div>';
-  }
-
-  // Plans
-  html += '<div class="plus-plans">';
-
-  // Free plan
-  html += '<div class="plus-plan-card plus-plan-free">';
-  html += '<div class="plus-plan-badge">Grátis</div>';
-  html += '<div class="plus-plan-price">R$ 0<small>/mês</small></div>';
-  html += '<div class="plus-plan-features">';
-  html += '<div class="plus-plan-feat">✅ Tarefas</div>';
-  html += '<div class="plus-plan-feat">📅 Calendário</div>';
-  html += '<div class="plus-plan-feat">📚 Matérias, Provas & Trabalhos</div>';
-  html += '<div class="plus-plan-feat">🎯 Metas básicas</div>';
-  html += '<div class="plus-plan-feat">🔥 Hábitos</div>';
-  html += '<div class="plus-plan-feat">📝 Notas</div>';
-  html += '</div>';
-  if (!ativo) html += '<div class="plus-plan-current">Plano atual</div>';
-  html += '</div>';
-
-  // Plus plan
-  html += '<div class="plus-plan-card plus-plan-paid">';
-  html += '<div class="plus-plan-badge">⭐ Plus</div>';
-  html += '<div class="plus-plan-price">R$ 9,90<small>/mês</small></div>';
-  html += '<div class="plus-plan-features">';
-  html += '<div class="plus-plan-feat">🧠 OrganizaIA (assistente IA)</div>';
-  html += '<div class="plus-plan-feat">📊 Estatísticas avançadas</div>';
-  html += '<div class="plus-plan-feat">🎨 Personalização avançada</div>';
-  html += '<div class="plus-plan-feat">📅 Planejamento avançado</div>';
-  html += '<div class="plus-plan-feat">📚 Recursos extras de estudo</div>';
-  html += '<div class="plus-plan-feat">✅ Tudo do plano Grátis</div>';
-  html += '</div>';
-  html += '<button class="plus-plan-btn" onclick="toastPlusEmBreve()">🚀 Assinar Plus</button>';
-  html += '</div>';
-
-  html += '</div>';
-
-  // Feature comparison table
-  html += '<div class="plus-compare">';
-  html += '<div class="plus-compare-title">Comparação de recursos</div>';
-  html += '<div class="plus-compare-table">';
-  html += '<div class="plus-compare-row plus-compare-header">';
-  html += '<div class="plus-compare-cell">Recurso</div>';
-  html += '<div class="plus-compare-cell">Grátis</div>';
-  html += '<div class="plus-compare-cell">Plus</div>';
-  html += '</div>';
-
-  var features = [
-    ['Tarefas', true, true],
-    ['Calendário', true, true],
-    ['Estudos (Matérias, Provas, Trabalhos)', true, true],
-    ['Metas básicas', true, true],
-    ['Hábitos', true, true],
-    ['Notas', true, true],
-    ['Lembretes', true, true],
-    ['Pomodoro', true, true],
-    ['OrganizaIA (assistente IA)', false, true],
-    ['Estatísticas avançadas', false, true],
-    ['Personalização avançada', false, true],
-    ['Planejamento avançado', false, true],
-    ['Revisão avançada', false, true],
-    ['Pomodoro avançado', false, true]
-  ];
-
-  for (var i = 0; i < features.length; i++) {
-    var f = features[i];
-    html += '<div class="plus-compare-row">';
-    html += '<div class="plus-compare-cell">' + esc(f[0]) + '</div>';
-    html += '<div class="plus-compare-cell">' + (f[1] ? '✅' : '➖') + '</div>';
-    html += '<div class="plus-compare-cell">' + (f[2] ? '✅' : '➖') + '</div>';
-    html += '</div>';
-  }
-  html += '</div></div>';
-
-  // FAQ
-  html += '<div class="plus-faq">';
-  html += '<div class="plus-faq-title">Perguntas frequentes</div>';
-  html += '<div class="plus-faq-item">';
-  html += '<div class="plus-faq-q">O plano Grátis vai continuar funcionando?</div>';
-  html += '<div class="plus-faq-a">Sim! O plano Grátis segue gratuito com todas as funcionalidades atuais. O Plus é opcional.</div>';
-  html += '</div>';
-  html += '<div class="plus-faq-item">';
-  html += '<div class="plus-faq-q">Posso cancelar a qualquer momento?</div>';
-  html += '<div class="plus-faq-a">Sim, você pode cancelar quando quiser. Sem multas, sem burocracia.</div>';
-  html += '</div>';
-  html += '<div class="plus-faq-item">';
-  html += '<div class="plus-faq-q">Quando vai estar disponível?</div>';
-  html += '<div class="plus-faq-a">Estamos preparando tudo! Em breve você poderá assinar direto pelo app.</div>';
-  html += '</div>';
-  html += '</div>';
-
-  html += '</div>';
-  container.innerHTML = html;
-}
-
-function toastPlusEmBreve() {
-  var el = document.getElementById('plusToastArea');
-  if (!el) return;
-  el.innerHTML = '<div class="plus-toast">⭐ Assinatura Plus em breve! Estamos preparando tudo para você.</div>';
-  setTimeout(function() { el.innerHTML = ''; }, 3500);
 }
 
