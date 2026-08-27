@@ -1573,6 +1573,7 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
 .plus-prompt-sec:hover{opacity:.9}
 @keyframes fade-in{from{opacity:0}to{opacity:1}}
 @keyframes scale-in{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes slide-up-fade{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
 /* ===== PLUS PREVIEW SECTION ===== */
 .plus-preview-section{margin:1.2rem 0;padding:1rem;border:1px dashed rgba(108,92,231,.3);border-radius:.8rem;background:linear-gradient(135deg,rgba(108,92,231,.04),rgba(162,155,254,.04))}
@@ -1582,3 +1583,49 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
 .plus-preview-desc{font-size:.8rem;color:var(--txt3);margin-bottom:.8rem;line-height:1.4}
 .plus-preview-cta{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem 1rem;border:none;border-radius:.5rem;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;font-size:.78rem;font-weight:600;cursor:pointer;transition:opacity .2s}
 .plus-preview-cta:hover{opacity:.85}
+
+/* Plus Plan Details */
+.plus-plan-desc{font-size:.8rem;color:var(--txt3);margin-bottom:.6rem;line-height:1.4}
+.plus-plan-savings{font-size:.75rem;font-weight:700;color:#00b894;margin-top:.3rem}
+.plus-plan-badge-popular{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:.6rem;font-weight:800;letter-spacing:.5px;color:#fff;background:linear-gradient(135deg,#f39c12,#e74c3c);padding:3px 10px;border-radius:12px;text-transform:uppercase}
+
+/* Plus Pricing Toggle */
+.plus-pricing-toggle{display:flex;align-items:center;justify-content:center;gap:.8rem;margin:1.2rem 0 .6rem 0}
+.plus-pricing-option{font-size:.85rem;font-weight:600;color:var(--txt2);cursor:pointer;padding:.35rem .8rem;border-radius:2rem;transition:all .2s;border:none;background:none}
+.plus-pricing-option.active{color:#fff;background:linear-gradient(135deg,#6c5ce7,#a29bfe);box-shadow:0 2px 8px rgba(108,92,231,.3)}
+.plus-pricing-save{font-size:.65rem;font-weight:700;color:#00b894;margin-left:.3rem}
+.plus-pricing-detail{font-size:.75rem;color:var(--txt3);text-align:center;margin-bottom:.5rem}
+.plus-pricing-line{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;font-size:.82rem;color:var(--txt2);border-bottom:1px solid var(--borda)}
+.plus-pricing-line:last-child{border-bottom:none}
+.plus-pricing-savings{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .8rem;border-radius:2rem;background:rgba(0,184,148,.1);color:#00b894;font-size:.75rem;font-weight:700;margin:.6rem auto 0 auto}
+
+/* Plus Manage Area */
+.plus-manage{margin:1.5rem 0;padding:1rem;border-radius:.8rem;background:var(--card2);border:1px solid var(--borda)}
+.plus-manage-btn{padding:.5rem 1rem;border:none;border-radius:.5rem;font-size:.8rem;font-weight:600;cursor:pointer;transition:opacity .2s;margin:.3rem}
+.plus-manage-btn:hover{opacity:.85}
+.plus-manage-btn-cancel{background:#e17055;color:#fff}
+.plus-manage-btn-activate{background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff}
+.plus-manage-btn-deactivate{background:var(--card2);color:var(--txt3);border:1px solid var(--borda)}
+
+/* Plus Test Area */
+.plus-test-area{margin:1.5rem 0;padding:1rem;border-radius:.8rem;background:linear-gradient(135deg,rgba(253,203,110,.06),rgba(225,112,85,.06));border:1px dashed rgba(225,112,85,.3)}
+.plus-test-title{font-size:.9rem;font-weight:700;color:var(--txt);margin-bottom:.3rem;display:flex;align-items:center;gap:.4rem}
+.plus-test-desc{font-size:.78rem;color:var(--txt3);margin-bottom:.8rem;line-height:1.4}
+.plus-test-btn{padding:.45rem 1rem;border:none;border-radius:.5rem;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;margin:.3rem}
+.plus-test-btn:hover{opacity:.85}
+.plus-test-btn-on{background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff}
+.plus-test-btn-off{background:var(--card2);color:var(--txt3);border:1px solid var(--borda)}
+
+/* Plus Privacy Note */
+.plus-privacy-note{display:flex;align-items:flex-start;gap:.6rem;margin:1.5rem 0;padding:.8rem;border-radius:.6rem;background:rgba(0,184,148,.06);border:1px solid rgba(0,184,148,.15)}
+.plus-privacy-icon{font-size:1.1rem;flex-shrink:0}
+.plus-privacy-text{font-size:.75rem;color:var(--txt3);line-height:1.5}
+
+/* Plus Toast Conversion */
+.plus-toast-conversion{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);padding:.6rem 1.2rem;border-radius:2rem;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;font-size:.78rem;font-weight:600;box-shadow:0 4px 16px rgba(108,92,231,.3);z-index:7000;animation:slide-up-fade .3s;white-space:nowrap;cursor:pointer;pointer-events:auto}
+.plus-toast-conversion.hiding{opacity:0;transform:translateX(-50%) translateY(10px);transition:all .3s}
+
+/* Plus Prompt Benefits */
+.plus-prompt-benefits{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-bottom:1rem}
+.plus-prompt-benefit{font-size:.7rem;font-weight:600;color:var(--txt2);background:var(--card2);padding:.2rem .6rem;border-radius:2rem;border:1px solid var(--borda)}
+.plus-prompt-benefit::before{content:''}

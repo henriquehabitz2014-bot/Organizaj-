@@ -75,7 +75,7 @@
     <div class="s-icon">🧰</div><span>Mais ferramentas</span><small style="margin-left:auto;font-size:.7rem">▼</small>
   </div>
   <div class="sidebar-tools-panel" id="sidebarTools">
-    <div class="sidebar-tool-mini" onclick="navegarPara('pomodoro')">⏱️ Pomodoro <span class="plus-badge-mini">PLUS</span></div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('pomodoro')">⏱️ Pomodoro</div>
     <div class="sidebar-tool-mini" onclick="navegarPara('metas')">🎯 Metas</div>
     <div class="sidebar-tool-mini" onclick="navegarPara('notas')">📝 Notas</div>
     <div class="sidebar-tool-mini" onclick="navegarPara('lembretes')">🔔 Lembretes</div>
@@ -92,7 +92,7 @@
     <div class="sidebar-tool-mini" onclick="navegarPara('calculadora')">📐 Calculadora</div>
     <div class="sidebar-tool-mini" onclick="navegarPara('senhas')">🔐 Senhas</div>
     <div class="sidebar-tool-mini" onclick="navegarPara('leitura')">📖 Leitura</div>
-    <div class="sidebar-tool-mini" onclick="navegarPara('revisao')">📊 Revisão <span class="plus-badge-mini">PLUS</span></div>
+    <div class="sidebar-tool-mini" onclick="navegarPara('revisao')">📊 Revisão</div>
     <div class="sidebar-tool-mini" onclick="navegarPara('frases')">💭 Frases</div>
     <div class="sidebar-tool-mini" onclick="navegarPara('vida')">🌟 Painel da Vida</div>
     <div class="sidebar-tool-mini" onclick="abrirOrganizaIA()">🧠 OrganizaIA <span class="plus-badge-mini">PLUS</span></div>
@@ -546,7 +546,7 @@
 <div class="page" id="page-progresso">
   <div class="content-wrap">
     <div class="secao">
-      <h2 class="secao-titulo">📊 Meu Progresso <span class="plus-badge-mini">PLUS</span></h2>
+      <h2 class="secao-titulo">📊 Meu Progresso</h2>
       <div id="progressoConteudo"></div>
     </div>
   </div>
@@ -558,7 +558,7 @@
 <div class="page" id="page-pomodoro">
   <div class="content-wrap">
     <div class="secao">
-      <h2 class="secao-titulo">⏱️ Pomodoro <span class="plus-badge-mini">PLUS</span></h2>
+      <h2 class="secao-titulo">⏱️ Pomodoro</h2>
       <div class="pomodoro-tela">
         <div class="pomodoro-label" id="pomoLabel">Foco</div>
         <div class="pomodoro-tempo" id="pomoTempo">25:00</div>
@@ -580,7 +580,7 @@
     </div>
 
     <!-- Plus: Pomodoro Avançado -->
-    <div class="plus-preview-section" onclick="showPlusPrompt('Recursos Avançados de Pomodoro')">
+    <div class="plus-preview-section" onclick="showPlusPrompt('pomodoroAvancado')">
       <div class="plus-preview-header"><span class="plus-badge-mini">PLUS</span> ⏱️ Pomodoro Avançado</div>
       <div class="plus-preview-desc">Sessões automáticas, estatísticas de foco, metas diárias de Pomodoro e histórico detalhado.</div>
       <div class="plus-preview-cta">⭐ Desbloquear com Plus</div>
@@ -927,7 +927,7 @@
 <div class="page" id="page-planejamento">
   <div class="content-wrap">
     <div class="secao">
-      <h2 class="secao-titulo">📅 Planejamento Semanal <span class="plus-badge-mini">PLUS</span></h2>
+      <h2 class="secao-titulo">📅 Planejamento Semanal</h2>
       <div class="linha">
         <input class="campo" id="planejamentoInput" placeholder="Tarefa do planejamento...">
         <input class="campo" id="planejamentoData" type="date">
@@ -937,7 +937,7 @@
       <div class="planej-grid" id="planejGrid" style="display:none"></div>
 
       <!-- Plus: Planejamento Avançado -->
-      <div class="plus-preview-section" onclick="showPlusPrompt('Recursos Avançados de Planejamento')">
+      <div class="plus-preview-section" onclick="showPlusPrompt('planejamentoAvancado')">
         <div class="plus-preview-header"><span class="plus-badge-mini">PLUS</span> 📅 Planejamento Avançado</div>
         <div class="plus-preview-desc">Templates semanais, planejamento mensal, arrastar e soltar tarefas e sinc com calendário.</div>
         <div class="plus-preview-cta">⭐ Desbloquear com Plus</div>
@@ -1050,7 +1050,7 @@
 <div class="page" id="page-revisao">
   <div class="content-wrap">
     <div class="secao">
-      <h2 class="secao-titulo">📊 Revisão Semanal <span class="plus-badge-mini">PLUS</span></h2>
+      <h2 class="secao-titulo">📊 Revisão Semanal</h2>
       <p style="font-size:.82rem;color:var(--txt2);margin-bottom:.8rem">Resumo da sua semana para organizar os pensamentos.</p>
       <div class="revisao-blocos" id="revisaoBlocos"></div>
       <div style="margin-top:.8rem">
@@ -1059,7 +1059,7 @@
       </div>
 
       <!-- Plus: Revisão Avançada -->
-      <div class="plus-preview-section" onclick="showPlusPrompt('Recursos Avançados de Revisão')">
+      <div class="plus-preview-section" onclick="showPlusPrompt('revisaoAvancada')">
         <div class="plus-preview-header"><span class="plus-badge-mini">PLUS</span> 📊 Revisão Avançada</div>
         <div class="plus-preview-desc">Revisão por mês, comparar semanas, análise de tendência e insights automáticos.</div>
         <div class="plus-preview-cta">⭐ Desbloquear com Plus</div>
@@ -1115,7 +1115,7 @@
 
     <!-- Perfil Card -->
     <div class="config-section">
-      <div class="config-section-title">👤 Perfil <span class="plus-badge-mini">PLUS</span></div>
+      <div class="config-section-title">👤 Perfil</div>
       <div class="perfil-card">
         <div class="perfil-avatar-wrap" id="perfilAvatarWrap" onclick="selecionarAvatar()">
           <div class="perfil-avatar-img" id="perfilAvatarPreview">😊</div>
@@ -1177,7 +1177,7 @@
     </div>
 
     <!-- Plus: Personalização Avançada -->
-    <div class="config-section plus-preview-section" onclick="showPlusPrompt('Personalização Avançada')">
+    <div class="config-section plus-preview-section" onclick="showPlusPrompt('personalizacaoAvancada')">
       <div class="plus-preview-header"><span class="plus-badge-mini">PLUS</span> 🎨 Personalização Avançada</div>
       <div class="plus-preview-desc">Cores personalizadas, ícones customizados, temas extras e muito mais.</div>
       <div class="plus-preview-cta">⭐ Desbloquear com Plus</div>
@@ -1195,8 +1195,15 @@
     <button class="plus-prompt-x" onclick="fecharPlusPromptBtn()" title="Fechar">✕</button>
     <div class="plus-prompt-icon">⭐</div>
     <div class="plus-prompt-title">Recurso Plus</div>
-    <div class="plus-prompt-text"><strong id="plusPromptFeature">Este recurso</strong> está disponível no plano OrganizaJá Plus.</div>
-    <button class="plus-prompt-btn" onclick="plusPromptVerPlanos()">⭐ Ver planos Plus</button>
+    <div class="plus-prompt-text"><strong id="plusPromptFeature">Este recurso</strong> faz parte do OrganizaJá Plus.</div>
+    <div class="plus-prompt-desc" id="plusPromptDesc"></div>
+    <div class="plus-prompt-benefits">
+      <div class="plus-prompt-benefit">🤖 OrganizaIA</div>
+      <div class="plus-prompt-benefit">📊 Estatísticas avançadas</div>
+      <div class="plus-prompt-benefit">🧠 Planejamento inteligente</div>
+      <div class="plus-prompt-benefit">🌙 Temas extras</div>
+    </div>
+    <button class="plus-prompt-btn" onclick="plusPromptVerPlanos()">⭐ Conhecer o Plus</button>
     <button class="plus-prompt-sec" onclick="fecharPlusPromptBtn()">Depois</button>
   </div>
 </div>
@@ -1264,7 +1271,7 @@
 <div class="bottombar-more-sheet" id="moreSheet">
   <div class="sheet-handle"></div>
   <div class="sheet-grid">
-    <div class="sheet-tool" onclick="navegarPara('pomodoro');fecharMoreSheet()"><div class="st-icon">⏱️</div>Pomodoro <span class="plus-badge-mini">PLUS</span></div>
+    <div class="sheet-tool" onclick="navegarPara('pomodoro');fecharMoreSheet()"><div class="st-icon">⏱️</div>Pomodoro</div>
     <div class="sheet-tool" onclick="navegarPara('metas');fecharMoreSheet()"><div class="st-icon">🎯</div>Metas</div>
     <div class="sheet-tool" onclick="navegarPara('notas');fecharMoreSheet()"><div class="st-icon">📝</div>Notas</div>
     <div class="sheet-tool" onclick="navegarPara('lembretes');fecharMoreSheet()"><div class="st-icon">🔔</div>Lembretes</div>
@@ -1281,7 +1288,7 @@
     <div class="sheet-tool" onclick="navegarPara('calculadora');fecharMoreSheet()"><div class="st-icon">📐</div>Calculadora</div>
     <div class="sheet-tool" onclick="navegarPara('senhas');fecharMoreSheet()"><div class="st-icon">🔐</div>Senhas</div>
     <div class="sheet-tool" onclick="navegarPara('leitura');fecharMoreSheet()"><div class="st-icon">📖</div>Leitura</div>
-    <div class="sheet-tool" onclick="navegarPara('revisao');fecharMoreSheet()"><div class="st-icon">📊</div>Revisão <span class="plus-badge-mini">PLUS</span></div>
+    <div class="sheet-tool" onclick="navegarPara('revisao');fecharMoreSheet()"><div class="st-icon">📊</div>Revisão</div>
     <div class="sheet-tool" onclick="navegarPara('frases');fecharMoreSheet()"><div class="st-icon">💭</div>Frases</div>
     <div class="sheet-tool" onclick="navegarPara('vida');fecharMoreSheet()"><div class="st-icon">🌟</div>Painel da Vida</div>
     <div class="sheet-tool" onclick="abrirOrganizaIA();fecharMoreSheet()"><div class="st-icon">🧠</div>OrganizaIA <span class="plus-badge-mini">PLUS</span></div>
