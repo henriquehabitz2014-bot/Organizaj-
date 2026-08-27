@@ -579,8 +579,9 @@ html[data-tema="escuro"] .topbar{background:rgba(13,13,26,.85)}
 .pv-count-urg{background:var(--vermelho);animation:pv-pulse 1.5s infinite}
 .pv-count-passou{background:var(--txt3)}
 @keyframes pv-pulse{0%,100%{opacity:1}50%{opacity:.75}}
+.pv-concluido{opacity:.7;border-left-style:dashed}
 .pv-acoes{display:flex;gap:.4rem;flex-wrap:wrap}
-.pv-btn-edit,.pv-btn-del{font-size:var(--fs-2xs);padding:.2rem .55rem;border-radius:var(--raio)}
+.pv-btn-check,.pv-btn-edit,.pv-btn-del{font-size:var(--fs-2xs);padding:.2rem .55rem;border-radius:var(--raio)}
 .pv-empty,.tb-empty{text-align:center;padding:1.5rem;color:var(--txt3)}
 .pv-empty-icon,.tb-empty-icon{font-size:2rem;margin-bottom:.3rem}
 .pv-empty-text,.tb-empty-text{font-size:var(--fs-sm)}

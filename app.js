@@ -183,12 +183,14 @@ function carregarEstado() {
   estado.estudos.provas.forEach(function(p) {
     if (!p.hora) p.hora = '';
     if (!p.conteudo) p.conteudo = '';
+    if (p.concluido === undefined) p.concluido = false;
   });
   // Migration: add descricao/status/hora to existing trabalhos
   estado.estudos.trabalhos.forEach(function(tr) {
     if (!tr.descricao) tr.descricao = '';
     if (!tr.status) tr.status = 'pendente';
     if (!tr.hora) tr.hora = '';
+    if (tr.concluido !== undefined) { delete tr.concluido; }
   });
   // Migration: add anotacoes/metaHoras to existing materias
   estado.estudos.materias.forEach(function(m) {
@@ -994,7 +996,7 @@ function renderDashboard() {
     arr.forEach(function(v){if(v)habitosFeitosSemana++;});
   });
   var habPct = habitosTotalSemana ? Math.round(habitosFeitosSemana / habitosTotalSemana * 100) : 0;
-  var provasFeitas = (estado.estudos && estado.estudos.provas) ? estado.estudos.provas.filter(function(p){return p.data && p.data < hoje}).length : 0;
+  var provasFeitas = (estado.estudos && estado.estudos.provas) ? estado.estudos.provas.filter(function(p){return p.concluido}).length : 0;
   var provasTotal = (estado.estudos && estado.estudos.provas) ? estado.estudos.provas.length : 0;
   var aguaSemana = 0;
   var aguaDias = 0;
@@ -2411,7 +2413,8 @@ function salvarProva() {
       data: data,
       hora: hora,
       conteudo: conteudo,
-      lembrete: lembrete
+      lembrete: lembrete,
+      concluido: false
     });
   }
   salvarEstado();
@@ -2439,7 +2442,8 @@ function renderProvas() {
     var urgente = dias !== null && dias >= 0 && dias <= 3;
     var corMat = (estado.estudos.materias.find(function(m){ return m.nome === p.materia; }) || {}).cor;
     var corBorda = corMat || 'var(--cor2)';
-    html += '<div class="pv-card' + (urgente ? ' pv-urgente' : '') + (passou ? ' pv-passou' : '') + '" data-busca-id="' + p.id + '" style="border-left:4px solid ' + corBorda + '">'; 
+    var concluido = p.concluido ? true : false;
+    html += '<div class="pv-card' + (concluido ? ' pv-concluido' : '') + (urgente && !concluido ? ' pv-urgente' : '') + (passou && !concluido ? ' pv-passou' : '') + '" data-busca-id="' + p.id + '" style="border-left:4px solid ' + corBorda + '">'; 
     html += '<div class="pv-top">';
     html += '<span class="pv-mat" style="background:' + corBorda + ';color:#fff">' + (p.materia ? esc(p.materia) : '—') + '</span>';
     if (p.hora) html += '<span class="pv-hora">🕐 ' + esc(p.hora) + '</span>';
@@ -2456,6 +2460,7 @@ function renderProvas() {
     if (p.lembrete >= 0 && estado.notifConfig && estado.notifConfig.global) html += '<span class="notif-badge-active">🔔</span>';
     html += '</div>';
     html += '<div class="pv-acoes">';
+    html += '<button class="btn btn-s pv-btn-check" onclick="concluirProva(\'' + p.id + '\')">' + (concluido ? '↩️ Reabrir' : '✅ Concluir') + '</button>';
     html += '<button class="btn btn-s pv-btn-edit" onclick="abrirProvaModal(\'' + p.id + '\')">✏️ Editar</button>';
     html += '<button class="btn btn-d pv-btn-del" onclick="delProva(\'' + p.id + '\')">🗑️ Excluir</button>';
     html += '</div>';
@@ -2562,6 +2567,14 @@ function salvarTrabalho() {
   renderCalendario();
   renderDashboard();
   registrarUsoPlus();
+}
+
+function concluirProva(id) {
+  var p = estado.estudos.provas.find(function(x){ return x.id === id; });
+  if (p) {
+    p.concluido = !p.concluido;
+    salvarEstado(); renderProvas(); renderCalendario(); renderDashboard();
+  }
 }
 
 function concluirTrabalho(id) {
@@ -4026,13 +4039,13 @@ function renderProgresso() {
   var provasProximas = provas.filter(function(p) { return p.data && p.data >= hoje; })
     .sort(function(a,b) { return (a.data + (a.hora||'')) > (b.data + (b.hora||'')) ? 1 : -1; })
     .slice(0, 5);
-  var provasFeitas = provas.filter(function(p) { return p.feito; });
+  var provasFeitas = provas.filter(function(p) { return p.concluido; });
 
   // 3) Trabalhos
   var trabalhos = (estado.estudos && estado.estudos.trabalhos) ? estado.estudos.trabalhos : [];
-  var trabalhosEntregues = trabalhos.filter(function(t) { return t.status === 'Entregue' || t.status === 'Concluído'; });
+  var trabalhosEntregues = trabalhos.filter(function(t) { return t.status === 'concluido' || t.status === 'Entregue' || t.status === 'Concluído'; });
   var trPct = trabalhos.length ? Math.round(trabalhosEntregues.length / trabalhos.length * 100) : 0;
-  var trabalhosPendentes = trabalhos.filter(function(t) { return t.status !== 'Entregue' && t.status !== 'Concluído'; })
+  var trabalhosPendentes = trabalhos.filter(function(t) { return t.status !== 'concluido' && t.status !== 'Entregue' && t.status !== 'Concluído'; })
     .sort(function(a,b) { return (a.data||'9999') > (b.data||'9999') ? 1 : -1; })
     .slice(0, 5);
 
@@ -4094,6 +4107,13 @@ function renderProgresso() {
   h += '<div class="prog-card-num">' + trabalhosEntregues.length + '</div>';
   h += '<div class="prog-card-label">Trabalhos entregues</div>';
   h += '<div class="prog-card-sub">de ' + trabalhos.length + ' no total</div>';
+  h += '</div>';
+
+  h += '<div class="prog-card prog-card-provas">';
+  h += '<div class="prog-card-icon">✅</div>';
+  h += '<div class="prog-card-num">' + provasFeitas.length + '</div>';
+  h += '<div class="prog-card-label">Provas concluídas</div>';
+  h += '<div class="prog-card-sub">de ' + provas.length + ' no total</div>';
   h += '</div>';
 
   h += '</div>';
@@ -4919,7 +4939,7 @@ function gerarRespostaPlanoEstudos(provas, trabalhos, materias, hoje) {
     if (!provas[i].concluido) eventos.push({tipo:'prova', materia:provas[i].materia, data:provas[i].data});
   }
   for (var i = 0; i < trabalhos.length; i++) {
-    if (!trabalhos[i].concluido) eventos.push({tipo:'trabalho', materia:trabalhos[i].materia, data:trabalhos[i].data});
+    if (trabalhos[i].status !== 'concluido') eventos.push({tipo:'trabalho', materia:trabalhos[i].materia, data:trabalhos[i].data});
   }
   if (eventos.length === 0) {
     if (materias.length === 0) {
@@ -4968,7 +4988,7 @@ function gerarRespostaPlanejamentoSemanal(t, provas, trabalhos, habitos, hoje) {
       if (!provas[i].concluido && provas[i].data === data) itens.push({t:'📝 Prova: ' + esc(provas[i].materia), prio:'alta'});
     }
     for (var i = 0; i < trabalhos.length; i++) {
-      if (!trabalhos[i].concluido && trabalhos[i].data === data) itens.push({t:'📄 Entrega: ' + esc(trabalhos[i].materia), prio:'alta'});
+      if (trabalhos[i].status !== 'concluido' && trabalhos[i].data === data) itens.push({t:'📄 Entrega: ' + esc(trabalhos[i].materia), prio:'alta'});
     }
     itens.sort(function(a, b) { return prioridadeValor(b.prio) - prioridadeValor(a.prio); });
     dias.push({data:data, nome:nomeDia, itens:itens});
@@ -5007,7 +5027,7 @@ function gerarRespostaAtrasados(t, provas, trabalhos, hoje) {
     if (!provas[i].concluido && provas[i].data && provas[i].data < hoje) atrasados.push({tipo:'prova', nome:provas[i].materia + ' — Prova', data:provas[i].data, prio:'alta'});
   }
   for (var i = 0; i < trabalhos.length; i++) {
-    if (!trabalhos[i].concluido && trabalhos[i].data && trabalhos[i].data < hoje) atrasados.push({tipo:'trabalho', nome:trabalhos[i].materia + ' — Trabalho', data:trabalhos[i].data, prio:'alta'});
+    if (trabalhos[i].status !== 'concluido' && trabalhos[i].data && trabalhos[i].data < hoje) atrasados.push({tipo:'trabalho', nome:trabalhos[i].materia + ' — Trabalho', data:trabalhos[i].data, prio:'alta'});
   }
   if (atrasados.length === 0) {
     return {text:'Nada atrasado!', html:'🎉 <strong>Tá tudo em dia!</strong><br><br>Nenhuma tarefa, prova ou trabalho atrasado. Continue assim! 💪'};
@@ -5101,7 +5121,7 @@ function gerarRespostaProvas(provas, hoje) {
 function gerarRespostaTrabalhos(trabalhos, hoje) {
   var futuros = [];
   for (var i = 0; i < trabalhos.length; i++) {
-    if (!trabalhos[i].concluido && trabalhos[i].data && trabalhos[i].data >= hoje) futuros.push(trabalhos[i]);
+    if (trabalhos[i].status !== 'concluido' && trabalhos[i].data && trabalhos[i].data >= hoje) futuros.push(trabalhos[i]);
   }
   if (futuros.length === 0) {
     return {text:'Nenhum trabalho futuro!', html:'✅ <strong>Nenhum trabalho futuro!</strong><br><br>Tá em dia com as entregas. Se sobrar tempo, adiantou algo para depois!'};
@@ -5129,7 +5149,7 @@ function gerarRespostaMetas(metas) {
   var ativas = 0; var concluidas = 0;
   for (var i = 0; i < metas.length; i++) {
     var m = metas[i];
-    if (m.concluido) { concluidas++; continue; }
+    if (m.feito) { concluidas++; continue; }
     ativas++;
     var pct = m.progresso ? Math.round(m.progresso) : 0;
     html += '• <strong>' + esc(m.nome) + '</strong> — ' + pct + '% concluída';
