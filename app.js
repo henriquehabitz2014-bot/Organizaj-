@@ -53,6 +53,12 @@ var estado = {
 };
 
 var modalCallback = null;
+
+// ---- PERFORMANCE HELPERS ----
+function debounce(fn,ms){var t;return function(){var a=arguments,c=this;clearTimeout(t);t=setTimeout(function(){fn.apply(c,a)},ms||100)}}
+var _domCache={};
+function $(id){return _domCache[id]||(_domCache[id]=document.getElementById(id))}
+function $flushCache(){_domCache={}}
 var pomoInterval = null;
 var pomoSegundos = 25 * 60;
 var pomoRodando = false;
@@ -135,17 +141,37 @@ var catEmojis = {estudo:'📖',trabalho:'💼',pessoal:'🏠',saude:'💚',finan
 var catCores = {estudo:'#6c5ce7',trabalho:'#0984e3',pessoal:'#00b894',saude:'#e17055',financas:'#fdcb6e',outros:'#636e72'};
 
 // ---- LOAD / SAVE ----
+// Flag global: dados carregados com seguranca? Se o parse falhar,
+// NAO deixamos o salvarEstado() final sobrescrever os dados brutos.
+var _estadoCarregadoOk = true;
+
 function carregarEstado() {
+  var raw = null;
   try {
-    var raw = localStorage.getItem('organizaja');
-    if (raw) {
+    raw = localStorage.getItem('organizaja');
+  } catch(e) {
+    // localStorage indisponivel (modo privado / bloqueado pelo navegador)
+    console.warn('localStorage indisponivel ao carregar:', e);
+    _estadoCarregadoOk = false;
+    _avisarStorageIndisponivel();
+  }
+
+  if (raw) {
+    try {
       var parsed = JSON.parse(raw);
       // Merge with defaults
       Object.keys(estado).forEach(function(k) {
         if (parsed[k] !== undefined) estado[k] = parsed[k];
       });
+    } catch(e) {
+      // JSON corrompido/truncado: NAO sobrescrever. Guardar copia bruta
+      // para eventual recuperacao manual e avisar o usuario.
+      console.warn('Dados salvos corrompidos, preservando copia bruta:', e);
+      _estadoCarregadoOk = false;
+      try { localStorage.setItem('organizaja_backup_corrompido', raw); } catch(_){}
+      try { setTimeout(function(){ showToast('Aviso: houve um problema ao ler os dados salvos. Uma copia de seguranca foi mantida.', 'error'); }, 1200); } catch(_){}
     }
-  } catch(e) { console.warn('Erro ao carregar estado:', e); }
+  }
 
   // Migration: add missing fields
   estado.tarefas.forEach(function(t) {
@@ -263,18 +289,62 @@ function carregarEstado() {
     if (b) b.style.display = 'none';
   }
 
-  salvarEstado();
+  // So persiste as migracoes se o carregamento foi seguro.
+  // Se os dados estavam corrompidos, NAO sobrescrevemos a copia bruta.
+  if (_estadoCarregadoOk) salvarEstado();
+}
+
+// Aviso unico caso o navegador nao permita armazenamento local
+var _avisouStorageIndisponivel = false;
+function _avisarStorageIndisponivel() {
+  if (_avisouStorageIndisponivel) return;
+  _avisouStorageIndisponivel = true;
+  try {
+    setTimeout(function() {
+      showToast('Atencao: seu navegador esta bloqueando o armazenamento. Os dados podem nao ser salvos (verifique o modo privado/anonimo).', 'error');
+    }, 1500);
+  } catch(_) {}
+}
+
+// Verifica de fato se localStorage funciona (grava e le de volta)
+function storageDisponivel() {
+  try {
+    var k = '__oj_test__';
+    localStorage.setItem(k, '1');
+    var ok = localStorage.getItem(k) === '1';
+    localStorage.removeItem(k);
+    return ok;
+  } catch(e) { return false; }
 }
 
 function salvarEstado() {
   try {
-    localStorage.setItem('organizaja', JSON.stringify(estado));
-  } catch(e) { console.warn('Erro ao salvar:', e); }
+    var dados = JSON.stringify(estado);
+    localStorage.setItem('organizaja', dados);
+    // Verificacao de gravacao: confirma que realmente persistiu
+    var check = localStorage.getItem('organizaja');
+    if (check !== dados) {
+      console.warn('Falha na verificacao de gravacao do estado.');
+      return false;
+    }
+    return true;
+  } catch(e) {
+    console.warn('Erro ao salvar:', e);
+    var quota = e && (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED' || e.code === 22 || e.code === 1014);
+    try {
+      if (quota) {
+        showToast('Armazenamento cheio. Libere espaco (ex.: remova a foto de perfil ou itens antigos) para nao perder dados.', 'error');
+      } else {
+        _avisarStorageIndisponivel();
+      }
+    } catch(_) {}
+    return false;
+  }
 }
 
 // ---- NAVIGATION ----
 var pageNames = {
-  inicio:'Início', tarefas:'Tarefas', calendario:'Calendário',
+  inicio:'Início', meudia:'Meu Dia', tarefas:'Tarefas', calendario:'Calendário',
   estudos:'Estudos', habitos:'Hábitos', progresso:'Meu Progresso', pomodoro:'Pomodoro',
   metas:'Metas', notas:'Notas', lembretes:'Lembretes',
   decisor:'Decisor', agua:'Água', exercicios:'Exercícios',
@@ -829,7 +899,9 @@ function renderDashboard() {
 
   // === STATUS HERO ===
   var hoje = hojeStr();
-  var tarefasHoje = estado.tarefas.filter(function(t){return !t.feito && t.data === hoje});
+  // Inclui tarefas de hoje E tarefas sem data (criadas pela adicao rapida),
+  // para que aparecam no Dashboard assim como aparecem na aba Tarefas.
+  var tarefasHoje = estado.tarefas.filter(function(t){return !t.feito && (t.data === hoje || !t.data)});
   var atrasadas = estado.tarefas.filter(eAtrasada);
   var pomos = (estado.pomodorosData === hoje) ? estado.pomodorosHoje : 0;
   var agua = (estado.aguaData === hoje) ? estado.aguaHoje : 0;
@@ -845,7 +917,7 @@ function renderDashboard() {
   document.getElementById('dashHeroStatus').innerHTML = statusText;
 
   // === CARDS ===
-  var feitasHoje = estado.tarefas.filter(function(t){return t.feito && t.data === hoje}).length;
+  var feitasHoje = estado.tarefas.filter(function(t){return t.feito && (t.data === hoje || !t.data)}).length;
   var cards = '';
   cards += '<div class="dash-card dc-tarefas"><span class="dc-num">' + tarefasHoje.length + '</span><span class="dc-label">Tarefas hoje</span></div>';
   if (atrasadas.length > 0) {
@@ -1179,7 +1251,8 @@ function showToast(msg, type) {
   if (type === 'success') { icon = '✅ '; bg = 'linear-gradient(135deg,var(--verde),#55efc4)'; }
   else if (type === 'error') { icon = '❌ '; bg = 'linear-gradient(135deg,var(--vermelho),#e17055)'; }
   else if (type === 'info') { icon = 'ℹ️ '; bg = 'linear-gradient(135deg,var(--azul),#74b9ff)'; }
-  el.innerHTML = '<div style="display:flex;align-items:center;gap:.5rem;padding:.6rem 1.1rem;border-radius:.7rem;background:' + bg + ';color:#fff;font-size:var(--fs-base);font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.15);animation:plus-toast-in .4s ease,plus-toast-out .4s ease 2.6s forwards;pointer-events:auto">' + icon + esc(msg) + '</div>';
+  var cls = 'toast-inner toast-inner--' + (type||'default');
+  el.innerHTML = '<div class="' + cls + '">' + icon + esc(msg) + '</div>';
   setTimeout(function() { el.innerHTML = ''; }, 3500);
 }
 
@@ -1547,7 +1620,7 @@ function renderTarefas() {
     var classe = 'tarefa-item tk-item' + (t.feito ? ' feito' : '') + (atrasada ? ' atrasada' : '') + (prioC ? ' ' + prioC : '');
     html += '<li class="' + classe + '" data-busca-id="' + t.id + '">'; 
     html += '<div class="tk-row">';
-    html += '<div class="tarefa-check" onclick="toggleTarefa(\'' + t.id + '\')" title="' + (t.feito ? 'Desfazer conclusão' : 'Concluir') + '">' + (t.feito ? '✅' : '⬜') + '</div>';
+    html += '<div class="tarefa-check" onclick="toggleTarefa(\'' + t.id + '\')" role="checkbox" aria-checked="' + (t.feito ? 'true' : 'false') + '" aria-label="' + (t.feito ? 'Desfazer conclusão' : 'Concluir tarefa') + '" tabindex="0">' + (t.feito ? '✅' : '⬜') + '</div>';
     html += '<div class="tarefa-info">';
     html += '<div class="tarefa-texto">' + (catE ? '<span style="margin-right:.3rem">' + catE + '</span>' : '') + esc(t.texto);
     if (t.prio === 'alta' && !t.feito) html += ' <span class="tk-badge tk-badge-alta">Alta</span>';
@@ -1625,6 +1698,7 @@ function setCalView(v, btn) {
   if (v === 'dia' && !estado.calDiaSel) estado.calDiaSel = hojeStr();
   document.querySelectorAll('.cal-view-toggle button').forEach(function(b){b.classList.remove('ativo');});
   if (btn) btn.classList.add('ativo');
+  salvarEstado();
   renderCalendario();
 }
 
@@ -1644,6 +1718,7 @@ function calNav(dir) {
     dd.setDate(dd.getDate() + dir);
     estado.calDiaSel = dd.getFullYear() + '-' + String(dd.getMonth()+1).padStart(2,'0') + '-' + String(dd.getDate()).padStart(2,'0');
   }
+  salvarEstado();
   renderCalendario();
 }
 
@@ -1653,6 +1728,7 @@ function calHoje() {
   estado.calAno = d.getFullYear();
   estado.calSemanaStart = d;
   estado.calDiaSel = hojeStr();
+  salvarEstado();
   renderCalendario();
 }
 
@@ -1778,6 +1854,7 @@ function abrirCalDia(dateStr) {
   document.querySelectorAll('.cal-view-toggle button').forEach(function(b){b.classList.remove('ativo');});
   var diaBtn = document.querySelector('.cal-view-toggle button[data-view="dia"]');
   if (diaBtn) diaBtn.classList.add('ativo');
+  salvarEstado();
   renderCalendario();
 }
 
@@ -2169,7 +2246,7 @@ function renderMateriaDetalhe(id) {
   if (tEl) {
     var th = '';
     if (tarefas.length === 0) {
-      th = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma tarefa nesta matéria.</div>';
+      th = '<div class="txt3-small">Nenhuma tarefa nesta matéria.</div>';
     } else {
       tarefas.forEach(function(t) {
         th += '<div class="pv-card" style="border-left:4px solid ' + m.cor + ';opacity:' + (t.feito ? '.55' : '1') + '">';
@@ -2186,15 +2263,15 @@ function renderMateriaDetalhe(id) {
   if (pEl) {
     var pvh = '';
     if (provas.length === 0) {
-      pvh = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma prova nesta matéria.</div>';
+      pvh = '<div class="txt3-small">Nenhuma prova nesta matéria.</div>';
     } else {
       provas.forEach(function(p) {
         pvh += '<div class="pv-card" style="border-left:4px solid #e17055">';
         pvh += '<div class="duce-nome">' + esc(p.texto) + '</div>';
         pvh += '<div class="duce-info">📅 ' + dataLocal(p.data) + (p.hora ? ' ' + p.hora : '') + '</div>';
         if (p.conteudo) pvh += '<div class="duce-info">📋 ' + esc(p.conteudo) + '</div>';
-        pvh += '<div class="duce-botoes"><button class="btn btn-s" style="font-size:.65rem;padding:.15rem .4rem" onclick="abrirProvaModal(\'' + p.id + '\')">✏️</button>';
-        pvh += '<button class="btn btn-d" style="font-size:.65rem;padding:.15rem .4rem" onclick="delProva(\'' + p.id + '\')">🗑️</button></div>';
+        pvh += '<div class="duce-botoes"><button class="btn btn-s btn-p-sm" onclick="abrirProvaModal(\'' + p.id + '\')">✏️</button>';
+        pvh += '<button class="btn btn-d btn-p-sm" onclick="delProva(\'' + p.id + '\')">🗑️</button></div>';
         pvh += '</div>';
       });
     }
@@ -2206,7 +2283,7 @@ function renderMateriaDetalhe(id) {
   if (trEl) {
     var trh = '';
     if (trabs.length === 0) {
-      trh = '<div style="color:var(--txt3);font-size:.82rem">Nenhum trabalho nesta matéria.</div>';
+      trh = '<div class="txt3-small">Nenhum trabalho nesta matéria.</div>';
     } else {
       trabs.forEach(function(t) {
         var statusIcon = t.status === 'concluido' ? '✅' : t.status === 'fazendo' ? '🔄' : '⏳';
@@ -2214,8 +2291,8 @@ function renderMateriaDetalhe(id) {
         trh += '<div class="duce-nome">' + statusIcon + ' ' + esc(t.texto) + '</div>';
         trh += '<div class="duce-info">📅 ' + dataLocal(t.data) + (t.hora ? ' ' + t.hora : '') + ' · ' + (t.status === 'concluido' ? 'Concluído' : t.status === 'fazendo' ? 'Fazendo' : 'Pendente') + '</div>';
         if (t.descricao) trh += '<div class="duce-info">📋 ' + esc(t.descricao) + '</div>';
-        trh += '<div class="duce-botoes"><button class="btn btn-s" style="font-size:.65rem;padding:.15rem .4rem" onclick="abrirTrabalhoModal(\'' + t.id + '\')">✏️</button>';
-        trh += '<button class="btn btn-d" style="font-size:.65rem;padding:.15rem .4rem" onclick="delTrabalho(\'' + t.id + '\')">🗑️</button></div>';
+        trh += '<div class="duce-botoes"><button class="btn btn-s btn-p-sm" onclick="abrirTrabalhoModal(\'' + t.id + '\')">✏️</button>';
+        trh += '<button class="btn btn-d btn-p-sm" onclick="delTrabalho(\'' + t.id + '\')">🗑️</button></div>';
         trh += '</div>';
       });
     }
@@ -2297,7 +2374,7 @@ function renderAnotacoes() {
   var anotacoes = m.anotacoes || [];
   var h = '';
   if (anotacoes.length === 0) {
-    h = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma anotação. Clique em ＋ Adicionar.</div>';
+    h = '<div class="txt3-small">Nenhuma anotação. Clique em ＋ Adicionar.</div>';
   } else {
     anotacoes.forEach(function(a, i) {
       h += '<div class="anot-card">';
@@ -2305,8 +2382,8 @@ function renderAnotacoes() {
       if (a.conteudo) h += '<div class="anot-conteudo">' + esc(a.conteudo).replace(/\n/g, '<br>') + '</div>';
       h += '<div class="anot-data">' + (a.editada ? '✏️ ' + esc(a.editada) : '📅 ' + esc(a.data || '')) + '</div>';
       h += '<div class="anot-botoes">';
-      h += '<button class="btn btn-s" style="font-size:.65rem;padding:.15rem .4rem" onclick="editarAnotacao(' + i + ')">✏️</button>';
-      h += '<button class="btn btn-d" style="font-size:.65rem;padding:.15rem .4rem" onclick="delAnotacao(' + i + ')">🗑️</button>';
+      h += '<button class="btn btn-s btn-p-sm" onclick="editarAnotacao(' + i + ')">✏️</button>';
+      h += '<button class="btn btn-d btn-p-sm" onclick="delAnotacao(' + i + ')">🗑️</button>';
       h += '</div></div>';
     });
   }
@@ -3014,6 +3091,8 @@ function mostrarCelebracaoMeta() {
 }
 
 function renderMetaStats() {
+  calcularStreakMetas();
+  salvarEstado();
   var total = estado.metas.length;
   var ativas = estado.metas.filter(function(m) { return !m.feito; }).length;
   var concluidas = estado.metas.filter(function(m) { return m.feito; }).length;
@@ -3142,7 +3221,7 @@ function renderNotas() {
     html += '<button class="btn btn-d" style="font-size:.65rem" onclick="delNota(\''+n.id+'\')">Excluir</button>';
     html += '</div>';
   });
-  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma nota salva.</div>';
+  if (!html) html = '<div class="txt3-small">Nenhuma nota salva.</div>';
   document.getElementById('notasGrid').innerHTML = html;
 }
 
@@ -3183,7 +3262,7 @@ function renderLembretes() {
     html += '<button class="btn btn-d" style="font-size:.65rem" onclick="delLembrete(\''+l.id+'\')">✕</button>';
     html += '</div>';
   });
-  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhum lembrete.</div>';
+  if (!html) html = '<div class="txt3-small">Nenhum lembrete.</div>';
   document.getElementById('lembretesLista').innerHTML = html;
   renderNotifConfig();
 }
@@ -3259,7 +3338,7 @@ function renderDecisor() {
   estado.decisorOpcoes.forEach(function(o, i) {
     html += '<div class="opcao-item">' + esc(o) + ' <button class="btn btn-d" style="font-size:.6rem" onclick="delOpcao('+i+')">✕</button></div>';
   });
-  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Adicione pelo menos 2 opções.</div>';
+  if (!html) html = '<div class="txt3-small">Adicione pelo menos 2 opções.</div>';
   document.getElementById('opcoesLista').innerHTML = html;
   var res = document.getElementById('decisorResultado');
   if (res && estado.decisorOpcoes.length < 2) res.style.display = 'none';
@@ -3321,7 +3400,7 @@ function renderExercicios() {
   lista.forEach(function(e) {
     html += '<div class="exercicio-item">💪 ' + esc(e.texto) + ' <button class="btn btn-d" style="font-size:.6rem" onclick="delExercicio(\''+e.id+'\')">✕</button></div>';
   });
-  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhum exercício registrado hoje.</div>';
+  if (!html) html = '<div class="txt3-small">Nenhum exercício registrado hoje.</div>';
   document.getElementById('exerciciosLista').innerHTML = html;
   document.getElementById('exerciciosCount').textContent = lista.length + ' exercícios hoje';
 }
@@ -3355,7 +3434,7 @@ function renderHumor() {
       hhtml += '<div class="humor-hist-item"><small>' + dataLocal(h.data) + '</small> ' + emojis[h.nivel-1] + '</div>';
     });
   }
-  document.getElementById('humorHistorico').innerHTML = hhtml || '<div style="color:var(--txt3);font-size:.82rem">Sem histórico.</div>';
+  document.getElementById('humorHistorico').innerHTML = hhtml || '<div class="txt3-small">Sem histórico.</div>';
 }
 
 // ---- GRATIDAO ----
@@ -3378,7 +3457,7 @@ function renderGratidao() {
   (estado.gratidoes || []).forEach(function(g) {
     html += '<div class="gratidao-item">🙏 ' + esc(g.texto) + ' <small style="color:var(--txt3)">' + dataLocal(g.data) + '</small> <button class="btn btn-d" style="font-size:.6rem" onclick="delGratidao(\''+g.id+'\')">✕</button></div>';
   });
-  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Comece registrando algo pelo qual é grato.</div>';
+  if (!html) html = '<div class="txt3-small">Comece registrando algo pelo qual é grato.</div>';
   document.getElementById('gratidaoLista').innerHTML = html;
 }
 
@@ -3463,7 +3542,7 @@ function renderOrcamento() {
     html += '<button class="btn btn-d" style="font-size:.6rem" onclick="delDespesa(\''+d.id+'\')">✕</button>';
     html += '</div>';
   });
-  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma despesa este mês.</div>';
+  if (!html) html = '<div class="txt3-small">Nenhuma despesa este mês.</div>';
   document.getElementById('despesasLista').innerHTML = html;
 }
 
@@ -3501,7 +3580,7 @@ function renderCompras() {
     html += '<button class="btn btn-d" style="font-size:.6rem" onclick="delCompra(\''+c.id+'\')">✕</button>';
     html += '</div>';
   });
-  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Lista vazia.</div>';
+  if (!html) html = '<div class="txt3-small">Lista vazia.</div>';
   document.getElementById('comprasLista').innerHTML = html;
 }
 
@@ -3537,7 +3616,7 @@ function renderPlanejamento() {
     html += '<button class="btn btn-d" style="font-size:.6rem" onclick="delPlanejamento(\''+p.id+'\')">✕</button>';
     html += '</div>';
   });
-  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhum planejamento.</div>';
+  if (!html) html = '<div class="txt3-small">Nenhum planejamento.</div>';
   document.getElementById('planejamentosLista').innerHTML = html;
 }
 
@@ -3569,7 +3648,7 @@ function renderRegressivas() {
     html += '<button class="btn btn-d" style="font-size:.6rem" onclick="delRegressiva(\''+r.id+'\')">✕</button>';
     html += '</div>';
   });
-  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma contagem regressiva.</div>';
+  if (!html) html = '<div class="txt3-small">Nenhuma contagem regressiva.</div>';
   document.getElementById('regressivaLista').innerHTML = html;
 }
 
@@ -3622,7 +3701,7 @@ function renderSenhas() {
     html += '<button class="btn btn-d" style="font-size:.6rem" onclick="delSenha(\''+s.id+'\')">Excluir</button>';
     html += '</div>';
   });
-  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma senha salva. ⚠️ Use com cautela — dados ficam no navegador.</div>';
+  if (!html) html = '<div class="txt3-small">Nenhuma senha salva. ⚠️ Use com cautela — dados ficam no navegador.</div>';
   document.getElementById('senhasLista').innerHTML = html;
 }
 
@@ -3678,7 +3757,7 @@ function renderLeitura() {
     html += '<button class="btn btn-d" style="font-size:.6rem" onclick="delLeitura(\''+l.id+'\')">✕</button>';
     html += '</div>';
   });
-  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhum livro ' + (filtro==='todos'?'':'com filtro "'+filtro+'"') + ' na lista.</div>';
+  if (!html) html = '<div class="txt3-small">Nenhum livro ' + (filtro==='todos'?'':'com filtro "'+filtro+'"') + ' na lista.</div>';
   document.getElementById('leiturasLista').innerHTML = html;
 }
 
@@ -3735,7 +3814,7 @@ function renderRevisao() {
       html += '</div>';
     });
   }
-  if (!html) html = '<div style="color:var(--txt3);font-size:.82rem">Nenhuma revisão. Adicione um tema para revisar!</div>';
+  if (!html) html = '<div class="txt3-small">Nenhuma revisão. Adicione um tema para revisar!</div>';
   document.getElementById('revisaoBlocos').innerHTML = html;
 }
 
@@ -3751,6 +3830,7 @@ function novaFrase() {
 
 // ---- PAINEL DA VIDA ----
 function calcularVida() {
+  var vidaPainel = document.getElementById('vidaPainel');
   var hoje = hojeStr();
   var cats = {
     saude: {label:'Saúde',emoji:'💪',max:25},
@@ -3966,15 +4046,8 @@ function closePix() {
 }
 
 // ---- CONFIRM MODAL ----
-function showConfirm(msg, onOk) {
-  document.getElementById('modalMsg').textContent = msg;
-  modalCallback = onOk;
-  document.getElementById('modalOverlay').classList.add('visivel');
-}
-function closeConfirm() {
-  document.getElementById('modalOverlay').classList.remove('visivel');
-  modalCallback = null;
-}
+function showConfirm(msg, onOk) { confirmar(msg, onOk); }
+function closeConfirm() { fecharModal(); }
 
 // ---- APOIE BANNER ----
 function fecharApoie() {
@@ -4249,6 +4322,7 @@ function renderProgresso() {
 function renderPage(slug) {
   switch(slug) {
     case 'inicio': renderDashboard(); break;
+    case 'meudia': renderMeuDia(); break;
     case 'tarefas': renderTarefas(); break;
     case 'calendario': renderCalendario(); break;
     case 'estudos': renderEstudos(); break;
@@ -4277,6 +4351,273 @@ function renderPage(slug) {
     case 'perfil': renderPerfil(); break;
     case 'plus': renderPlusPage(); break;
   }
+}
+
+// ---- MEU DIA ----
+
+function renderMeuDia() {
+  var hoje = hojeStr();
+  var el = document.getElementById('meudiaConteudo');
+  if (!el) return;
+
+  // === Saudação ===
+  var h = new Date().getHours();
+  var greet = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+  var nome = estado.perfil && estado.perfil.nome ? estado.perfil.nome : '';
+  var grel = document.getElementById('meudiaGreeting');
+  if (grel) grel.textContent = greet + (nome ? ', ' + nome : '') + '! ☀️';
+
+  // === Data ===
+  var dias = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  var meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  var d = new Date();
+  var dateEl = document.getElementById('meudiaDate');
+  if (dateEl) dateEl.textContent = dias[d.getDay()] + ', ' + d.getDate() + ' de ' + meses[d.getMonth()];
+
+  // === Coletar todos os itens do dia ===
+  var itens = [];
+
+  // Tarefas de hoje + atrasadas
+  estado.tarefas.forEach(function(t) {
+    if (t.feito) return;
+    var ehHoje = t.data === hoje;
+    var ehAtrasada = eAtrasada(t);
+    if (!ehHoje && !ehAtrasada) return;
+    var nivel = ehAtrasada ? 'urgente' : (t.prio === 'alta' ? 'urgente' : t.prio === 'media' ? 'importante' : 'depois');
+    itens.push({
+      id: t.id, tipo: 'tarefa', texto: t.texto, hora: t.hora || '',
+      materia: t.materia || '', categoria: t.categoria || '',
+      prio: t.prio || 'media', nivel: nivel, atrasada: ehAtrasada,
+      feito: t.feito, acao: "dashToggleTarefa('" + t.id + "')"
+    });
+  });
+
+  // Provas de hoje ou até 3 dias
+  if (estado.estudos && estado.estudos.provas) {
+    estado.estudos.provas.forEach(function(p) {
+      if (p.concluido) return;
+      if (!p.data) return;
+      var diasRest = Math.ceil((new Date(p.data + 'T12:00:00') - new Date()) / 86400000);
+      if (diasRest > 3) return;
+      var nivel = diasRest <= 0 ? 'urgente' : diasRest <= 2 ? 'importante' : 'depois';
+      itens.push({
+        id: p.id, tipo: 'prova', texto: p.texto, hora: p.hora || '',
+        materia: p.materia || '', categoria: '', prio: nivel === 'urgente' ? 'alta' : 'media',
+        nivel: nivel, atrasada: diasRest <= 0,
+        feito: false, acao: "navegarPara('estudos')"
+      });
+    });
+  }
+
+  // Trabalhos de hoje ou até 3 dias
+  if (estado.estudos && estado.estudos.trabalhos) {
+    estado.estudos.trabalhos.forEach(function(tr) {
+      if (tr.status === 'concluido') return;
+      if (!tr.data) return;
+      var diasRest = Math.ceil((new Date(tr.data + 'T12:00:00') - new Date()) / 86400000);
+      if (diasRest > 3) return;
+      var nivel = diasRest <= 0 ? 'urgente' : diasRest <= 2 ? 'importante' : 'depois';
+      itens.push({
+        id: tr.id, tipo: 'trabalho', texto: tr.texto, hora: '',
+        materia: tr.materia || '', categoria: '', prio: nivel === 'urgente' ? 'alta' : 'media',
+        nivel: nivel, atrasada: diasRest <= 0,
+        feito: false, acao: "navegarPara('estudos')",
+        status: tr.status
+      });
+    });
+  }
+
+  // Eventos de hoje
+  estado.calEventos.forEach(function(ev) {
+    if (ev.data !== hoje) return;
+    itens.push({
+      id: ev.id, tipo: 'evento', texto: ev.titulo, hora: ev.hora || '',
+      materia: ev.materia || '', categoria: '', prio: 'media',
+      nivel: 'importante', atrasada: false,
+      feito: false, acao: "navegarPara('calendario')"
+    });
+  });
+
+  // Lembretes de hoje
+  estado.lembretes.forEach(function(l) {
+    if (!l.ativo) return;
+    if (l.data !== hoje) return;
+    itens.push({
+      id: l.id, tipo: 'lembrete', texto: l.texto, hora: l.hora || '',
+      materia: '', categoria: '', prio: 'media',
+      nivel: 'importante', atrasada: false,
+      feito: false, acao: "navegarPara('lembretes')"
+    });
+  });
+
+  // Hábitos pendentes de hoje
+  var diaIdx = getDiaSemana();
+  var sk = getSemanaKey();
+  estado.habitos.forEach(function(h) {
+    var arr = h.semanas[sk] || [false,false,false,false,false,false,false];
+    if (arr[diaIdx]) return;
+    itens.push({
+      id: h.id, tipo: 'habito', texto: h.nome, hora: '',
+      materia: '', categoria: '', prio: 'baixa',
+      nivel: 'depois', atrasada: false,
+      feito: false, acao: "toggleHabitoDash('" + h.id + "')",
+      emoji: h.emoji || '✨'
+    });
+  });
+
+  // === Contagem para progresso ===
+  var totalHoje = itens.length;
+  var totalGeral = estado.tarefas.filter(function(t){return t.data === hoje}).length;
+  var feitasHoje = estado.tarefas.filter(function(t){return t.feito && t.data === hoje}).length;
+  var habitosFeitos = estado.habitos.filter(function(h){
+    var arr = h.semanas[sk] || [false,false,false,false,false,false,false];
+    return arr[diaIdx];
+  }).length;
+  var completos = feitasHoje + habitosFeitos;
+  var totalTudo = totalGeral + estado.habitos.length;
+  var pct = totalTudo > 0 ? Math.round(completos / totalTudo * 100) : 0;
+
+  // === Ordenar itens por prioridade ===
+  var ordemNivel = {urgente:0, importante:1, depois:2};
+  itens.sort(function(a,b){
+    var diff = ordemNivel[a.nivel] - ordemNivel[b.nivel];
+    if (diff !== 0) return diff;
+    if (a.atrasada && !b.atrasada) return -1;
+    if (!a.atrasada && b.atrasada) return 1;
+    var diffP = prioridadeValor(b.prio) - prioridadeValor(a.prio);
+    if (diffP !== 0) return diffP;
+    if (a.hora && b.hora) return a.hora.localeCompare(b.hora);
+    if (a.hora && !b.hora) return -1;
+    if (!a.hora && b.hora) return 1;
+    return 0;
+  });
+
+  // === Agrupar por nível ===
+  var urgente = itens.filter(function(i){return i.nivel === 'urgente'});
+  var importante = itens.filter(function(i){return i.nivel === 'importante'});
+  var depois = itens.filter(function(i){return i.nivel === 'depois'});
+
+  // === Construir HTML ===
+  var html = '';
+
+  // --- Progresso do dia ---
+  html += '<div class="meudia-progresso">';
+  html += '<div class="meudia-prog-header">';
+  html += '<div class="meudia-prog-label">Progresso do dia</div>';
+  html += '<div class="meudia-prog-count">' + completos + '/' + totalTudo + '</div>';
+  html += '</div>';
+  html += '<div class="meudia-prog-bar"><div class="meudia-prog-fill" style="width:' + pct + '%"></div></div>';
+  html += '<div class="meudia-prog-pct">' + pct + '% concluído</div>';
+  html += '</div>';
+
+  // --- Seções de prioridade ---
+  var tipoIcons = {tarefa:'✅', prova:'📝', trabalho:'📄', evento:'🔔', lembrete:'⏰', habito:'🔥'};
+  var tipoLabels = {tarefa:'Tarefa', prova:'Prova', trabalho:'Trabalho', evento:'Evento', lembrete:'Lembrete', habito:'Hábito'};
+
+  function renderGrupo(arr, emoji, titulo, corClasse) {
+    var h2 = '';
+    if (arr.length === 0) {
+      h2 += '<div class="meudia-secao ' + corClasse + '">';
+      h2 += '<div class="meudia-sec-header"><span class="meudia-sec-badge">' + emoji + '</span><span class="meudia-sec-titulo">' + titulo + '</span><span class="meudia-sec-count meudia-sec-count-zero">0</span></div>';
+      h2 += '<div class="meudia-sec-empty">Nada por aqui 🎉</div>';
+      h2 += '</div>';
+      return h2;
+    }
+    h2 += '<div class="meudia-secao ' + corClasse + '">';
+    h2 += '<div class="meudia-sec-header"><span class="meudia-sec-badge">' + emoji + '</span><span class="meudia-sec-titulo">' + titulo + '</span><span class="meudia-sec-count">' + arr.length + '</span></div>';
+    h2 += '<div class="meudia-sec-list">';
+    arr.forEach(function(item) {
+      var icon = item.tipo === 'habito' ? (item.emoji || '✨') : (tipoIcons[item.tipo] || '📌');
+      var catE = item.categoria ? (catEmojis[item.categoria] || '') + ' ' : '';
+      var matE = item.materia ? '<span class="meudia-item-mat">(' + esc(item.materia) + ')</span> ' : '';
+      var atrasadaTag = item.atrasada ? '<span class="meudia-item-atrasada">atrasada</span>' : '';
+      var statusTag = item.status ? '<span class="meudia-item-status">' + (statusTrabIcons[item.status]||'') + ' ' + esc(item.status) + '</span>' : '';
+      h2 += '<div class="meudia-item ' + corClasse + '">';
+      h2 += '<div class="meudia-item-icon">' + icon + '</div>';
+      h2 += '<div class="meudia-item-body">';
+      h2 += '<div class="meudia-item-top">' + catE + esc(item.texto) + ' ' + matE + atrasadaTag + statusTag + '</div>';
+      if (item.hora) h2 += '<div class="meudia-item-hora">🕐 ' + esc(item.hora) + '</div>';
+      h2 += '</div>';
+      h2 += '<button class="meudia-item-go" onclick="' + item.acao + '" title="Ver">→</button>';
+      h2 += '</div>';
+    });
+    h2 += '</div>';
+    h2 += '</div>';
+    return h2;
+  }
+
+  html += renderGrupo(urgente, '🔴', 'Urgente', 'meudia-urg');
+  html += renderGrupo(importante, '🟡', 'Importante', 'meudia-imp');
+  html += renderGrupo(depois, '🟢', 'Depois', 'meudia-dep');
+
+  // --- Por onde começar? ---
+  if (itens.length > 0) {
+    html += '<div class="meudia-sugestao">';
+    html += '<div class="meudia-sug-titulo">💡 Por onde começar?</div>';
+    html += '<div class="meudia-sug-list">';
+    var sugestoes = itens.slice(0, 5);
+    sugestoes.forEach(function(item, idx) {
+      var num = idx + 1;
+      var icon = item.tipo === 'habito' ? (item.emoji || '✨') : (tipoIcons[item.tipo] || '📌');
+      var motivo = '';
+      if (item.atrasada) motivo = 'Já passou do prazo';
+      else if (item.nivel === 'urgente') motivo = 'Alta prioridade';
+      else if (item.nivel === 'importante') motivo = 'Importante para hoje';
+      else motivo = 'Pode ficar para depois';
+      if (item.tipo === 'prova' && !item.atrasada) motivo = 'Prova se aproximando, revise!';
+      if (item.tipo === 'trabalho' && !item.atrasada) motivo = 'Entrega se aproximando';
+      html += '<div class="meudia-sug-item">';
+      html += '<div class="meudia-sug-num">' + num + '</div>';
+      html += '<div class="meudia-sug-body">';
+      html += '<div class="meudia-sug-texto">' + icon + ' ' + esc(item.texto) + '</div>';
+      html += '<div class="meudia-sug-motivo">' + motivo + '</div>';
+      html += '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '</div>';
+  }
+
+  // --- Seção de hábitos de hoje (se houver) ---
+  var habitosFeitos2 = estado.habitos.filter(function(h){
+    var arr = h.semanas[sk] || [false,false,false,false,false,false,false];
+    return arr[diaIdx];
+  });
+  if (estado.habitos.length > 0) {
+    html += '<div class="meudia-habitos">';
+    html += '<div class="meudia-hab-header">🔥 Hábitos de Hoje <span class="meudia-hab-count">' + habitosFeitos2.length + '/' + estado.habitos.length + '</span></div>';
+    html += '<div class="meudia-hab-list">';
+    estado.habitos.forEach(function(h) {
+      var arr = h.semanas[sk] || [false,false,false,false,false,false,false];
+      var feito = arr[diaIdx];
+      html += '<div class="meudia-hab-item ' + (feito ? 'feito' : '') + '" onclick="toggleHabitoDash(\'' + h.id + '\')">';
+      html += '<div class="meudia-hab-check">' + (feito ? '✅' : '⬜') + '</div>';
+      html += '<div class="meudia-hab-nome">' + (h.emoji||'✨') + ' ' + esc(h.nome) + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '</div>';
+  }
+
+  // --- Botão OrganizaIA ---
+  html += '<div class="meudia-oia-wrap">';
+  html += '<button class="meudia-oia-btn" onclick="abrirOrganizaIA();setTimeout(function(){oiaEnviarSugestao(\'Organizar meu dia\')},300)">🧠 Organizar meu dia com IA</button>';
+  html += '</div>';
+
+  // --- Dia vazio ---
+  if (itens.length === 0 && estado.habitos.length === 0) {
+    html += '<div class="meudia-empty">';
+    html += '<div class="meudia-empty-icon">☀️</div>';
+    html += '<div class="meudia-empty-text">Seu dia está livre! Adicione tarefas, provas ou hábitos para começar.</div>';
+    html += '<div class="meudia-empty-actions">';
+    html += '<button class="meudia-empty-btn" onclick="navegarPara(\'tarefas\')">✅ Nova Tarefa</button>';
+    html += '<button class="meudia-empty-btn" onclick="navegarPara(\'estudos\')">📝 Nova Prova</button>';
+    html += '<button class="meudia-empty-btn" onclick="navegarPara(\'habitos\')">🔥 Novo Hábito</button>';
+    html += '</div>';
+    html += '</div>';
+  }
+
+  el.innerHTML = html;
 }
 
 // ---- PERFIL / CONFIGURACOES ----
@@ -4385,6 +4726,18 @@ document.addEventListener('DOMContentLoaded', function() {
   // Load state
   carregarEstado();
 
+  // Verifica se o armazenamento local esta funcionando (modo privado, etc.)
+  if (!storageDisponivel()) { _avisarStorageIndisponivel(); }
+
+  // Rede de seguranca: salva ao fechar/minimizar a aba.
+  // 'visibilitychange' (hidden) e o mais confiavel no celular;
+  // 'pagehide' cobre o fechamento/refresh.
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') { salvarEstado(); }
+  });
+  window.addEventListener('pagehide', function() { salvarEstado(); });
+  window.addEventListener('beforeunload', function() { salvarEstado(); });
+
   // Apply theme
   aplicarTema();
 
@@ -4427,6 +4780,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  // Keyboard support for role="checkbox"
+  document.addEventListener('keydown', function(e) {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute('role') === 'checkbox') {
+      e.preventDefault();
+      e.target.click();
+    }
+  });
+
   // Apoie banner
   if (localStorage.getItem('apoieBannerFechado')) {
     var ab = document.getElementById('apoieBanner');
@@ -4435,7 +4796,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Register service worker if available
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(function(){});
+    // Caminho RELATIVO: funciona tanto na raiz quanto em subpastas
+    // (ex.: GitHub Pages em https://usuario.github.io/repo/).
+    navigator.serviceWorker.register('sw.js').catch(function(){});
   }
 
   // Update regressivas every minute
@@ -5080,9 +5443,9 @@ function gerarRespostaHabitos(habitos) {
     html += emoji + ' <strong>' + esc(h.nome) + '</strong>';
     var semanas = h.semanas || {};
     var semanaAtual = getSemanaKey();
-    var diasSemana = semanas[semanaAtual] || {};
+    var diasSemana = semanas[semanaAtual] || [false,false,false,false,false,false,false];
     var feitos = 0; var total = 7;
-    for (var d in diasSemana) { if (diasSemana[d]) feitos++; }
+    for (var d = 0; d < diasSemana.length; d++) { if (diasSemana[d]) feitos++; }
     var pct = Math.round((feitos / total) * 100);
     html += ' — ' + pct + '% esta semana';
     if (pct >= 80) html += ' 🔥';
